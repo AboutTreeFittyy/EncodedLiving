@@ -1,0 +1,348 @@
+ /*use this to zero out all padding/margins on page*/
+ *{
+	 margin: 0;
+	 padding:0;
+ }
+ /*interesting attributes:
+ border-radius: 15px; rounds corners of a border
+ list-style:none; gets rid of bullets for list-item
+ text-decoration:none; gets rid of underlines on links
+ 
+ */ 
+  
+ .container{
+	 width:80%;
+	 margin:auto;
+	 overflow:hidden;
+ }
+ 
+ #my-header{
+	 border-bottom:3px solid black;
+	 background-color:#124f8c;
+	 padding-bottom:15px;
+	 padding-top:25px;
+ }
+ 
+ #my-header ul{
+	 padding:0;
+	 width:100%;
+	 list-style: none;
+ }
+ 
+ #my-header li{
+	 float:left;
+	 
+	 padding-right: 5%;
+	 display:inline;
+ }
+
+ #my-header a{
+	 color:black;
+	 text-decoration:none;
+	 font-size:30px;
+	 padding-right:15px;
+ }
+ 
+ #my-footer{
+	 padding: 20px;
+	 text-align:center;
+	 margin:auto;
+	 width:100%;
+	 border-top: 2px solid black;
+ }
+ 
+ #my-form{
+	 
+ }
+ 
+ #my-canvas{
+	 padding: 3%;
+	 text-align: center;
+ }
+ 
+ body{
+	 line-height: 2em;
+	 background-color: #ddca9d;
+	 font-family:Arial, Geneva, Helvetica, sans-serif;
+ }
+ 
+ h1{
+	 text-decoration: none;
+	 text-align: center;
+ }
+ 
+ h2{
+	 text-decoration: underline;
+ }
+ 
+ .button{
+	background-color:#333;
+	color:#fff;
+	padding:10px;
+	border:none;
+ }
+ 
+ .button:hover{
+	 background:red;
+	 color:#fff;
+ }
+
+ 
+ /*use these categories for any type of html you want to modify*/
+ .categories li{
+	 padding-bottom:6px;
+	 border-bottom: dotted 1px #333;
+	 /*list-style-image: url('../images/image.png); //this replaces bullets with the image selected*/
+ }
+ 
+ .my-form label{
+	 display:block;/*makes forms labels have own line*/
+ }
+ 
+ .my-form input[type="text"], .my-form textarea{
+	 padding: 8px;
+	 width: 100%;
+ }
+ 
+ .block{
+	 float:left;
+	 width:50%;
+	 border:1px solid #ccc;
+	 padding:10px;
+	 box-sizing:border-box; /*use this to have the borders included with size*/
+ }
+ 
+ /*this should make the background for each even numbered list item gray*/
+ .my-list li:nth-child(even){
+	 background: gray;
+ }
+ 
+ /*this is used to make a control for something if the screen becomes too small so it can reajust
+ @media(max-width:600px){
+	 #main{
+		 width:100%;
+		 float:none;
+	 }
+ }*/
+ 
+ .my-details{
+	text-align:center;
+	padding:20px;
+	font-size:20px;
+	text-decoration:none;
+ }
+ 
+ .my-details a{
+	color:black;
+	text-decoration:none;
+	font-size:20px;
+	padding-right:15px;
+ }
+ 
+ .my-top-showcase{
+	 height: auto;
+	 max-height:700px;
+	 border: 5px solid black;
+	 background:gray;
+	 display:flex;
+	 align-items:center;
+	 justify-content:center;
+	 border-radius:5px;
+	 position:relative;
+	 overflow:hidden;
+ }
+ 
+ .image-container{
+	width:80%;
+	text-align: center;
+ }
+ 
+ .image-container:hover .caption-container{
+	 opacity:1;
+	 bottom:0;
+ }
+
+ .my-screen{
+	max-width:100%;
+	max-height:100%;
+ }
+ 
+ .caption-container{
+	 position:absolute;
+	 background: rgba(0,0,0,0.6);
+	 width:80%;
+	 height:100px;
+	 bottom:-100px;
+	 opacity:0;	 
+	 transition: all 0.3s ease 0s;
+ }
+ 
+ .my-caption{
+	 font-size:40px;
+	 color:#fff;
+	 padding:10px;
+ }
+ 
+ .my-info{
+	 padding: 0 10px;
+	 color: #ccc;
+ }
+ 
+ .my-thumbnail{
+	 height: inherit;
+	 width: auto;
+	 max-width: 20%;
+	 max-height: inherit;
+	 overflow-y: scroll;
+ }
+ 
+ .my-thumbnail img{
+	 opacity: 0.7;
+	 cursor: pointer;
+	 transition:opacity 0.3s ease 0s;
+ }
+ 
+ .my-thumbnail img:hover{
+	 opacity:1;
+}
+ 
+ .my-showcase{
+	 height:500px;
+	 display:flex;
+	 position:relative;
+	 overflow:hidden;
+	 border-top:2px solid black;
+ }
+ 
+ .my-showcase-left{	 
+	 width: 25%;
+	 max-height:80%;
+	 padding-top:25px;
+	 padding-right: 25px;
+	 padding-bottom: 10%;
+ }
+ 
+ .my-showcase-right{
+	 line-height: 2.5em;
+	 width:40%;
+	 max-height:20%;
+	 
+	 text-align:left;
+	 padding:25px;
+	 font-size:20px;
+	 text-decoration:none;
+ }
+ 
+ .my-showcase-right a{
+	 color:black;
+	 text-decoration:none;
+ }
+
+ .my-showcase-right li{
+	 list-style-type:none;
+ }
+ 
+ .my-showcase-bottom{
+	 position:absolute;
+	 bottom:0;
+	 width:100%;
+	 height:20%;
+	 padding-top: 15px;
+	 padding-bottom:15px;
+ }
+ 
+ /*Home page stuff*/
+ .my-home{
+	 height:700px;
+	 display:flex;
+	 position:relative;
+	 overflow:hidden;
+ }
+ 
+ .my-home-left{	 
+	 width:50%;
+	 max-height:80%;
+	 padding-top:25px;	 
+ }
+ 
+ .my-home-right{
+	 width:60%;
+	 max-height:60%;
+	 padding-top:25px;
+	 text-align:left;
+	 padding:20px;
+	 font-size:20px;
+	 text-decoration:none;
+ }
+ 
+ .my-home-right a{
+	 color:blue;
+	 text-decoration:none;
+ }
+
+ .my-home-right li{
+	 list-style-type:none;
+ }
+
+ .my-skill{
+	 border-top:2px solid black;
+	 padding-top:15px;
+	 padding-bottom:25px;
+ }
+
+ .my-skills{
+	 text-align:left;
+ }
+ 
+ .my-skills a{
+	 color:blue;
+	 padding-right:20px;
+	 text-decoration:none;
+ }
+ 
+ .drop{
+	  background-color: black;
+	  color: white;
+	  padding: 16px;
+	  font-size: 16px;
+	  border: none;
+ }
+
+ .dropdown{
+	  position: relative;
+	  display: inline-block;
+ }
+
+ .dropdown-skills{
+	  display: none;
+	  position:absolute;
+	  background-color: #f1f1f1;
+	  min-width:160px;
+	  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	  z-index: 1;
+ }
+
+ .dropdown-skills a{
+	  color:black;
+	  padding:5px;
+	  text-decoration:none;
+	  display:block;
+ }
+
+ .dropdown-skills a:hover{
+	  background-color: red;
+ }
+
+ .dropdown:hover .dropdown-skills{
+	  display:block;
+ }
+
+ .dropdown:hover .drop{
+	  background-color:red;
+ } 
+ 
+ 
+ 
+ 
+ 
+ 
