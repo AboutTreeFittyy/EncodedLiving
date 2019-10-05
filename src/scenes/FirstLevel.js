@@ -30,9 +30,22 @@ export class FirstLevel extends Phaser.Scene{
         this.whip.setVisible(false);
         this.whip.setScale(3);
         this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1);
+        this.player.isFacing = "down";
         this.input.keyboard.on("keydown-F", ()=>{
-            this.playerCont.list[0].play("playerwhipleft");
-            this.playerCont.list[1].play("whip_left");
+            switch(this.player.isFacing){
+                case "left":this.playerCont.list[0].play("playerwhipleft");
+                this.playerCont.list[1].play("whip_left");
+                break;
+                case "right":this.playerCont.list[0].play("playerwhipright");
+                this.playerCont.list[1].play("whip_right");
+                break;
+                case "up":this.playerCont.list[0].play("playerwhipup");
+                this.playerCont.list[1].play("whip_up");
+                break;
+                case "down":this.playerCont.list[0].play("playerwhipdown");
+                this.playerCont.list[1].play("whip_down");
+                break;
+            }            
         })
         //set up keyboard controls
         this.keyboard = this.input.keyboard.addKeys("W, A, S, D");
@@ -83,15 +96,19 @@ export class FirstLevel extends Phaser.Scene{
         if (this.player.body.velocity.x > 0) { //moving right
             this.whip.setPosition(this.player.x+70,this.player.y);
             this.player.play("right", true);
+            this.player.isFacing = "right";
         } else if (this.player.body.velocity.x < 0) { //moving left
-            this.whip.setPosition(this.player.x-70,this.player.y);
+            this.whip.setPosition(this.player.x-70,this.player.y+20);
             this.player.play("left", true);
+            this.player.isFacing = "left";
         } else if (this.player.body.velocity.y < 0) { //moving up
             this.whip.setPosition(this.player.x,this.player.y-70);
             this.player.play("up", true);
+            this.player.isFacing = "up";
         } else if (this.player.body.velocity.y > 0) { //moving down
             this.whip.setPosition(this.player.x,this.player.y+70);
             this.player.play("down", true);
+            this.player.isFacing = "down";
         }
     }
 
@@ -105,13 +122,66 @@ export class FirstLevel extends Phaser.Scene{
                 end: 174
             })
         });
-
         this.anims.create({
             key: "whip_left",
             frameRate: 5,
-            frames: this.anims.generateFrameNumbers(CST.SPRITE.WHIP, {
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.WHIPL, {
                 start: 0,
-                end: 5
+                end: 4
+            }),
+            showOnStart: true,
+            hideOnComplete: true
+        });
+        this.anims.create({
+            key: "playerwhipright",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.PLAYER, {
+                start: 195,
+                end: 200
+            })
+        });
+        this.anims.create({
+            key: "whip_right",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.WHIPR, {
+                start: 0,
+                end: 4
+            }),
+            showOnStart: true,
+            hideOnComplete: true
+        });
+        this.anims.create({
+            key: "playerwhipup",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.PLAYER, {
+                start: 156,
+                end: 161
+            })
+        });
+        this.anims.create({
+            key: "whip_up",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.WHIPU, {
+                start: 0,
+                end: 4
+            }),
+            showOnStart: true,
+            hideOnComplete: true
+        });
+        this.anims.create({
+            key: "playerwhipdown",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.PLAYER, {
+                start: 182,
+                end: 187
+            })
+        });
+        this.anims.create({
+            key: "whip_down",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.WHIPD, {
+                start: 0,
+                end: 4
             }),
             showOnStart: true,
             hideOnComplete: true
@@ -151,7 +221,7 @@ export class FirstLevel extends Phaser.Scene{
         });
         //load map assets
         this.load.image("sheet1", "./assets/image/sheet1.png");
-        this.load.image("itemsall", CST.SPRITE.ITEM);
+        this.load.image("itemsall", "./assets/image/sheet1.png");
         this.load.tilemapTiledJSON("map1", "./assets/maps/map1.json");
     }
 }

@@ -152,7 +152,10 @@ var CST = {
   SPRITE: {
     CAT: "cat.png",
     PLAYER: "player.png",
-    WHIP: "whip.png",
+    WHIPL: "whip_left.png",
+    WHIPR: "whip_right.png",
+    WHIPU: "whip_up.png",
+    WHIPD: "whip_down.png",
     ITEM: "itemsall.png"
   }
 };
@@ -230,12 +233,13 @@ function (_Phaser$Scene) {
             frameHeight: 64,
             frameWidth: 64
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIP) {
-          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
-            frameHeight: 32,
-            frameWidth: 32
-          });
-        }
+        } else //if (CST.SPRITE[prop] == CST.SPRITE.CAT || CST.SPRITE[prop] == CST.SPRITE.ITEM || CST.SPRITE[prop] == CST.SPRITE.WHIP)
+          {
+            this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+              frameHeight: 32,
+              frameWidth: 32
+            });
+          }
       }
     }
   }, {
@@ -548,10 +552,37 @@ function (_Phaser$Scene) {
       this.whip.setVisible(false);
       this.whip.setScale(3);
       this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1);
+      this.player.isFacing = "down";
       this.input.keyboard.on("keydown-F", function () {
-        _this.playerCont.list[0].play("playerwhipleft");
+        switch (_this.player.isFacing) {
+          case "left":
+            _this.playerCont.list[0].play("playerwhipleft");
 
-        _this.playerCont.list[1].play("whip_left");
+            _this.playerCont.list[1].play("whip_left");
+
+            break;
+
+          case "right":
+            _this.playerCont.list[0].play("playerwhipright");
+
+            _this.playerCont.list[1].play("whip_right");
+
+            break;
+
+          case "up":
+            _this.playerCont.list[0].play("playerwhipup");
+
+            _this.playerCont.list[1].play("whip_up");
+
+            break;
+
+          case "down":
+            _this.playerCont.list[0].play("playerwhipdown");
+
+            _this.playerCont.list[1].play("whip_down");
+
+            break;
+        }
       }); //set up keyboard controls
 
       this.keyboard = this.input.keyboard.addKeys("W, A, S, D"); //Set up tiled map
@@ -613,18 +644,22 @@ function (_Phaser$Scene) {
         //moving right
         this.whip.setPosition(this.player.x + 70, this.player.y);
         this.player.play("right", true);
+        this.player.isFacing = "right";
       } else if (this.player.body.velocity.x < 0) {
         //moving left
-        this.whip.setPosition(this.player.x - 70, this.player.y);
+        this.whip.setPosition(this.player.x - 70, this.player.y + 20);
         this.player.play("left", true);
+        this.player.isFacing = "left";
       } else if (this.player.body.velocity.y < 0) {
         //moving up
         this.whip.setPosition(this.player.x, this.player.y - 70);
         this.player.play("up", true);
+        this.player.isFacing = "up";
       } else if (this.player.body.velocity.y > 0) {
         //moving down
         this.whip.setPosition(this.player.x, this.player.y + 70);
         this.player.play("down", true);
+        this.player.isFacing = "down";
       }
     }
   }, {
@@ -642,9 +677,63 @@ function (_Phaser$Scene) {
       this.anims.create({
         key: "whip_left",
         frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIP, {
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPL, {
           start: 0,
-          end: 5
+          end: 4
+        }),
+        showOnStart: true,
+        hideOnComplete: true
+      });
+      this.anims.create({
+        key: "playerwhipright",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
+          start: 195,
+          end: 200
+        })
+      });
+      this.anims.create({
+        key: "whip_right",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPR, {
+          start: 0,
+          end: 4
+        }),
+        showOnStart: true,
+        hideOnComplete: true
+      });
+      this.anims.create({
+        key: "playerwhipup",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
+          start: 156,
+          end: 161
+        })
+      });
+      this.anims.create({
+        key: "whip_up",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPU, {
+          start: 0,
+          end: 4
+        }),
+        showOnStart: true,
+        hideOnComplete: true
+      });
+      this.anims.create({
+        key: "playerwhipdown",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
+          start: 182,
+          end: 187
+        })
+      });
+      this.anims.create({
+        key: "whip_down",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPD, {
+          start: 0,
+          end: 4
         }),
         showOnStart: true,
         hideOnComplete: true
@@ -684,7 +773,7 @@ function (_Phaser$Scene) {
       }); //load map assets
 
       this.load.image("sheet1", "./assets/image/sheet1.png");
-      this.load.image("itemsall", _CST.CST.SPRITE.ITEM);
+      this.load.image("itemsall", "./assets/image/sheet1.png");
       this.load.tilemapTiledJSON("map1", "./assets/maps/map1.json");
     }
   }]);
@@ -731,11 +820,9 @@ var game = new Phaser.Game({
     arcade: {
       debug: true
     }
-    /*,
-    scale:{
+  },
+  scale: {
     mode: Phaser.Scale.FIT
-    }*/
-
   }
 });
 },{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
