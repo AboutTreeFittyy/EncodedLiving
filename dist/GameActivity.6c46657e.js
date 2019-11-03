@@ -397,6 +397,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
@@ -435,8 +439,19 @@ function (_Phaser$Physics$Arcad) {
     _this.setImmovable(true);
 
     _this.hp = 10;
+    _this.money = 0;
     return _this;
   }
+
+  _createClass(CharacterSprite, [{
+    key: "collectItem",
+    value: function collectItem(player, item) {
+      item.setVisible(false);
+      this.physics.world.remove(item.body);
+      this.player.money++;
+      alert("Money: " + this.player.money);
+    }
+  }]);
 
   return CharacterSprite;
 }(Phaser.Physics.Arcade.Sprite);
@@ -547,12 +562,19 @@ function (_Phaser$Scene) {
             })*/
       //add game sprites              
       this.player = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
-      this.player.setCollideWorldBounds(true);
+      this.player.setCollideWorldBounds(true); //align the player hitbox and set its size
+
+      this.player.setSize(32, 48);
+      this.player.setOffset(16, 12); //the whip sprite takes any
+
       this.whip = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.WHIP, 3);
       this.whip.setVisible(false);
       this.whip.setScale(3);
-      this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1);
+      this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1); //initialize player and whip to face down at start
+
       this.player.isFacing = "down";
+      this.player.setPosition(this.player.x, this.player.y);
+      this.whip.setPosition(this.player.x, this.player.y + 70);
       this.input.keyboard.on("keydown-F", function () {
         switch (_this.player.isFacing) {
           case "left":
@@ -599,13 +621,18 @@ function (_Phaser$Scene) {
         collides: true
       }); //get interactive object
 
+      var itemSet = this.physics.add.group();
       var items = mappy.createFromObjects("items", 67, {
         key: _CST.CST.SPRITE.ITEM,
         frame: 2
       }).map(function (sprite) {
-        sprite.setScale(2);
-        sprite.setInteractive();
-      }); //have camera follow player around
+        sprite.setScale(2); //enable body and collider for the items to interact with player collision
+
+        itemSet.add(sprite);
+
+        _this.physics.world.enableBody(sprite);
+      });
+      this.physics.add.collider(this.player, itemSet, this.player.collectItem, null, this); //have camera follow player around
 
       this.cameras.main.startFollow(this.player);
       this.physics.world.setBounds(0, 0, mappy.widthInPixels, mappy.heightInPixels);
@@ -660,7 +687,8 @@ function (_Phaser$Scene) {
         this.whip.setPosition(this.player.x, this.player.y + 70);
         this.player.play("down", true);
         this.player.isFacing = "down";
-      }
+      } //check for collision
+
     }
   }, {
     key: "preload",
@@ -853,7 +881,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57897" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53100" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

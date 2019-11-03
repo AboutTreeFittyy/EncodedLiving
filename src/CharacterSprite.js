@@ -15,5 +15,13 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         scene.physics.world.enableBody(this);
         this.setImmovable(true);
         this.hp = 10;
+        this.money = 0;
+    }
+
+    collectItem(player, item){
+        item.setVisible(false);
+        this.physics.world.remove(item.body);
+        this.player.money++;
+        alert("Money: "+this.player.money);
     }
 }

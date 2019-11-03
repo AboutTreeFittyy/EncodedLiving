@@ -1,6 +1,6 @@
 /* File Name: FirstLevel.js
  * Author: Mathew Boland
- * Last Updated: October 1, 2019
+ * Last Updated: November, 2019
  * Description: This class is used to create the scene for the first level of the game.
  * With the help of other classes it creates the user interface, keybindings, map, saves 
  * progress and makes animations. 
@@ -16,7 +16,8 @@ export class FirstLevel extends Phaser.Scene{
 		super({
 			key: CST.SCENES.FIRSTLEVEL
 		})
-	}
+    }
+
 	create(){
         //start up the theme for level, commenting out now cause its annoying 
 		/*this.sound.play(CST.AUDIO.THEME1, {
@@ -26,11 +27,18 @@ export class FirstLevel extends Phaser.Scene{
         //add game sprites              
         this.player = new CharacterSprite(this, 400, 400, CST.SPRITE.PLAYER, 130);
         this.player.setCollideWorldBounds(true);
+        //align the player hitbox and set its size
+        this.player.setSize(32,48);
+        this.player.setOffset(16,12);
+        //the whip sprite takes any
         this.whip = new CharacterSprite(this, 400, 400, CST.SPRITE.WHIP, 3);
         this.whip.setVisible(false);
         this.whip.setScale(3);
         this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1);
+        //initialize player and whip to face down at start
         this.player.isFacing = "down";
+        this.player.setPosition(this.player.x,this.player.y);
+        this.whip.setPosition(this.player.x,this.player.y+70);
         this.input.keyboard.on("keydown-F", ()=>{
             switch(this.player.isFacing){
                 case "left":this.playerCont.list[0].play("playerwhipleft");
@@ -61,14 +69,19 @@ export class FirstLevel extends Phaser.Scene{
         this.physics.add.collider(this.player, topLayer);
         topLayer.setCollisionByProperty({collides:true});
         //get interactive object
+        let itemSet = this.physics.add.group();
         let items = mappy.createFromObjects("items", 67, {key: CST.SPRITE.ITEM, frame: 2}).map((sprite)=>{
             sprite.setScale(2);
-            sprite.setInteractive();
+            //enable body and collider for the items to interact with player collision
+            itemSet.add(sprite);
+            this.physics.world.enableBody(sprite);
         });
+        this.physics.add.collider(this.player, itemSet, this.player.collectItem, null, this);
         //have camera follow player around
         this.cameras.main.startFollow(this.player);
         this.physics.world.setBounds(0,0, mappy.widthInPixels, mappy.heightInPixels);
     }
+    
     update(){
         if (this.keyboard.D.isDown === true) {
             this.player.setVelocityX(128);
@@ -110,6 +123,8 @@ export class FirstLevel extends Phaser.Scene{
             this.player.play("down", true);
             this.player.isFacing = "down";
         }
+        //check for collision
+
     }
 
 	preload(){
