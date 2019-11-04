@@ -137,13 +137,17 @@ var CST = {
   SCENES: {
     FIRSTLEVEL: "FIRSTLEVEL",
     LOAD: "LOAD",
-    MENU: "MENU"
+    MENU: "MENU",
+    PAUSE: "PAUSE"
   },
   IMAGE: {
     ENCODEDLIVING: "encodedliving.png",
     LOADGAME: "loadgame.png",
     STARTNEWGAME: "startnewgame.png",
-    TITLE: "title_bg.jpg"
+    TITLE: "title_bg.jpg",
+    PAUSED: "paused.png",
+    RESUME: "resume.png",
+    CMD: "cmd.png"
   },
   AUDIO: {
     THEME1: "level_1_theme.mp3",
@@ -446,6 +450,7 @@ function (_Phaser$Physics$Arcad) {
     _this.hp = 10;
     _this.money = 0;
     _this.npcPrev = '';
+    _this.score = 0;
     return _this;
   }
 
@@ -459,8 +464,6 @@ function (_Phaser$Physics$Arcad) {
   }, {
     key: "npcSpeak",
     value: function npcSpeak(player, npc) {
-      //this.player.setVelocityX(0);
-      //this.player.setVelocityY(0);
       //Make sure that you can't just keep talking to someone 
       if (npc.name == this.player.npcPrev) {
         return;
@@ -578,7 +581,18 @@ function (_Phaser$Scene) {
       /*this.sound.play(CST.AUDIO.THEME1, {
       	loop: true
             })*/
+      //Set listener for p to pause game
+      this.input.keyboard.on('keyup-P', function () {
+        _this.scene.launch(_CST.CST.SCENES.PAUSE);
+
+        _this.scene.pause();
+      }); //create info cmd prompt on side
+
+      this.cmd = this.add.image(0, 0, _CST.CST.IMAGE.CMD).setDepth(1);
+      this.cmd.displayHeight = this.game.renderer.height;
+      this.cmd.displayWidth = this.game.renderer.width * 0.2; //cmd.setPosition(0,0);
       //add game sprites              
+
       this.player = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
       this.player.setCollideWorldBounds(true); //align the player hitbox and set its size
 
@@ -771,6 +785,8 @@ function (_Phaser$Scene) {
         this.player.play("down", true);
         this.player.isFacing = "down";
       }
+
+      this.cmd.setPosition(this.player.x - 480, this.player.y);
     }
   }, {
     key: "preload",
@@ -891,7 +907,110 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.FirstLevel = FirstLevel;
-},{"../CST":"src/CST.js","../CharacterSprite":"src/CharacterSprite.js","../Sprite":"src/Sprite.js"}],"src/GameActivity.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../CharacterSprite":"src/CharacterSprite.js","../Sprite":"src/Sprite.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PauseScene = void 0;
+
+var _CST = require("../CST");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var PauseScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(PauseScene, _Phaser$Scene);
+
+  function PauseScene() {
+    _classCallCheck(this, PauseScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(PauseScene).call(this, {
+      key: _CST.CST.SCENES.PAUSE
+    }));
+  }
+
+  _createClass(PauseScene, [{
+    key: "create",
+    value: function create() {
+      var _this = this;
+
+      //add in assets
+      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1);
+      this.add.image(0, 0, _CST.CST.IMAGE.TITLE).setOrigin(0);
+      var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
+      hoverSprite.setScale(2);
+      hoverSprite.setVisible(false); //animate sprites
+
+      this.anims.create({
+        key: "walk",
+        frameRate: 4,
+        repeat: -1,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
+          frames: [0, 1, 2, 3]
+        })
+      }); //create sounds for menu and pause!
+
+      /*this.sound.play(CST.AUDIO.TITLE, {
+      	loop: true
+            })*/
+      //make p resume game as well
+
+      this.input.keyboard.on('keyup-P', function () {
+        _this.sound.pauseAll();
+
+        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.stop();
+      }); //make buttons interactive
+
+      resume.setInteractive();
+      resume.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = resume.x - resume.width / 2 - 50;
+        hoverSprite.y = resume.y;
+      });
+      resume.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      resume.on("pointerup", function () {
+        _this.sound.pauseAll();
+
+        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.stop();
+      });
+    }
+  }, {
+    key: "preload",
+    value: function preload() {}
+  }]);
+
+  return PauseScene;
+}(Phaser.Scene);
+
+exports.PauseScene = PauseScene;
+},{"../CST":"src/CST.js"}],"src/GameActivity.js":[function(require,module,exports) {
 "use strict";
 
 var _LoadScene = require("./scenes/LoadScene");
@@ -899,6 +1018,8 @@ var _LoadScene = require("./scenes/LoadScene");
 var _MenuScene = require("./scenes/MenuScene");
 
 var _FirstLevel = require("./scenes/FirstLevel");
+
+var _PauseScene = require("./scenes/PauseScene");
 
 /* File Name: GameActivity.js
  * Author: Mathew Boland
@@ -920,7 +1041,7 @@ var game = new Phaser.Game({
   width: 1200,
   height: 675,
   parent: 'my-canvas',
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel],
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene],
   render: {
     pixelArt: true
   },
@@ -934,7 +1055,7 @@ var game = new Phaser.Game({
     mode: Phaser.Scale.FIT
   }
 });
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

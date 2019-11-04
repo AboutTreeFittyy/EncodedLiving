@@ -17,13 +17,22 @@ export class FirstLevel extends Phaser.Scene{
 			key: CST.SCENES.FIRSTLEVEL
 		})
     }
-
+    
 	create(){
         //start up the theme for level, commenting out now cause its annoying 
 		/*this.sound.play(CST.AUDIO.THEME1, {
 			loop: true
         })*/
-        
+        //Set listener for p to pause game
+        this.input.keyboard.on('keyup-P', ()=>{
+            this.scene.launch(CST.SCENES.PAUSE);
+            this.scene.pause();
+        })
+        //create info cmd prompt on side
+        this.cmd = this.add.image(0, 0, CST.IMAGE.CMD).setDepth(1);
+        this.cmd.displayHeight = this.game.renderer.height;
+        this.cmd.displayWidth = this.game.renderer.width * 0.2;
+        //cmd.setPosition(0,0);
         //add game sprites              
         this.player = new CharacterSprite(this, 400, 400, CST.SPRITE.PLAYER, 130);
         this.player.setCollideWorldBounds(true);
@@ -73,7 +82,7 @@ export class FirstLevel extends Phaser.Scene{
         this.cameras.main.startFollow(this.player);
         this.physics.world.setBounds(0,0, mappy.widthInPixels, mappy.heightInPixels);
     }
-    
+
     addObjects(map){
         //get interactive objects from the map
         let itemSet = this.physics.add.group();
@@ -136,6 +145,7 @@ export class FirstLevel extends Phaser.Scene{
     }
 
     update(){
+        
         if (this.keyboard.D.isDown === true) {
             this.player.setVelocityX(128);
         }
@@ -176,6 +186,7 @@ export class FirstLevel extends Phaser.Scene{
             this.player.play("down", true);
             this.player.isFacing = "down";
         }
+        this.cmd.setPosition(this.player.x - 480,this.player.y);
     }
 
 	preload(){

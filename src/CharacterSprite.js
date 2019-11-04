@@ -17,6 +17,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.hp = 10;
         this.money = 0;
         this.npcPrev = '';
+        this.score = 0;
     }
 
     collectItem(player, item){
@@ -27,8 +28,6 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     }
 
     npcSpeak(player, npc){
-        //this.player.setVelocityX(0);
-        //this.player.setVelocityY(0);
         //Make sure that you can't just keep talking to someone 
         if(npc.name == this.player.npcPrev){
             return;

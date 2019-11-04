@@ -10,13 +10,17 @@ export const CST = {
 	SCENES:{
 		FIRSTLEVEL: "FIRSTLEVEL",
 		LOAD: "LOAD",
-		MENU: "MENU"		
+		MENU: "MENU",
+		PAUSE: "PAUSE"		
 	},
 	IMAGE: {
 		ENCODEDLIVING:"encodedliving.png",
 		LOADGAME:"loadgame.png",
 		STARTNEWGAME:"startnewgame.png",
-		TITLE:"title_bg.jpg"
+		TITLE:"title_bg.jpg",
+		PAUSED:"paused.png",
+		RESUME:"resume.png",
+		CMD:"cmd.png"
 	},
 	AUDIO:{
 		THEME1:"level_1_theme.mp3",
