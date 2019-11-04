@@ -29,9 +29,11 @@ export class FirstLevel extends Phaser.Scene{
             this.scene.pause();
         })
         //create info cmd prompt on side
-        this.cmd = this.add.image(-500, -500, CST.IMAGE.CMD).setDepth(1);
+        this.cmd = this.add.image(-1000, -1000, CST.IMAGE.CMD).setDepth(1);
         this.cmd.displayHeight = this.game.renderer.height;
-        this.cmd.displayWidth = this.game.renderer.width * 0.3;
+        this.cmd2 = this.add.image(-1000, 1000, CST.IMAGE.CMD).setDepth(1);
+        this.cmd2.displayHeight = this.game.renderer.height;
+        //this.cmd.displayWidth = this.game.renderer.width * 0.3;
         //cmd.setPosition(0,0);
         //add game sprites              
         this.player = new CharacterSprite(this, 400, 400, CST.SPRITE.PLAYER, 130);
@@ -79,9 +81,13 @@ export class FirstLevel extends Phaser.Scene{
         //Add and configure the game objects that are interactive (NPCs/items)
         this.addObjects(mappy);       
         //have camera follow player around
-        this.cameras.add( 0, 0, 365, this.game.renderer.height, false, "cmd");
-        let cam = this.cameras.getCamera("cmd");
-        cam.centerOn(-500,-500);
+        this.cameras.add( 0, 0, this.cmd.displayWidth, this.game.renderer.height, false, "cmd1");
+        let cam1 = this.cameras.getCamera("cmd1");
+        cam1.centerOn(-1000,-1000);
+        //have camera follow player around
+        this.cameras.add( this.game.renderer.width-this.cmd2.displayWidth-50, 0, this.cmd2.displayWidth, this.game.renderer.height, false, "cmd2");
+        let cam2 = this.cameras.getCamera("cmd2");
+        cam2.centerOn(-1000,1000);
         this.cameras.main.startFollow(this.player);
         this.physics.world.setBounds(0,0, mappy.widthInPixels, mappy.heightInPixels);
     }
@@ -189,7 +195,6 @@ export class FirstLevel extends Phaser.Scene{
             this.player.play("down", true);
             this.player.isFacing = "down";
         }
-        //this.cmd.setPosition(this.player.x - 420,this.player.y);
     }
 
 	preload(){

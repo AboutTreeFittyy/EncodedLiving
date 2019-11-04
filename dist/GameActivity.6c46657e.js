@@ -588,9 +588,11 @@ function (_Phaser$Scene) {
         _this.scene.pause();
       }); //create info cmd prompt on side
 
-      this.cmd = this.add.image(-500, -500, _CST.CST.IMAGE.CMD).setDepth(1);
+      this.cmd = this.add.image(-1000, -1000, _CST.CST.IMAGE.CMD).setDepth(1);
       this.cmd.displayHeight = this.game.renderer.height;
-      this.cmd.displayWidth = this.game.renderer.width * 0.3; //cmd.setPosition(0,0);
+      this.cmd2 = this.add.image(-1000, 1000, _CST.CST.IMAGE.CMD).setDepth(1);
+      this.cmd2.displayHeight = this.game.renderer.height; //this.cmd.displayWidth = this.game.renderer.width * 0.3;
+      //cmd.setPosition(0,0);
       //add game sprites              
 
       this.player = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
@@ -654,9 +656,13 @@ function (_Phaser$Scene) {
 
       this.addObjects(mappy); //have camera follow player around
 
-      this.cameras.add(0, 0, 365, this.game.renderer.height, false, "cmd");
-      var cam = this.cameras.getCamera("cmd");
-      cam.centerOn(-500, -500);
+      this.cameras.add(0, 0, this.cmd.displayWidth, this.game.renderer.height, false, "cmd1");
+      var cam1 = this.cameras.getCamera("cmd1");
+      cam1.centerOn(-1000, -1000); //have camera follow player around
+
+      this.cameras.add(this.game.renderer.width - this.cmd2.displayWidth - 50, 0, this.cmd2.displayWidth, this.game.renderer.height, false, "cmd2");
+      var cam2 = this.cameras.getCamera("cmd2");
+      cam2.centerOn(-1000, 1000);
       this.cameras.main.startFollow(this.player);
       this.physics.world.setBounds(0, 0, mappy.widthInPixels, mappy.heightInPixels);
     }
@@ -787,8 +793,7 @@ function (_Phaser$Scene) {
         this.whip.setPosition(this.player.x, this.player.y + 70);
         this.player.play("down", true);
         this.player.isFacing = "down";
-      } //this.cmd.setPosition(this.player.x - 420,this.player.y);
-
+      }
     }
   }, {
     key: "preload",
@@ -1040,7 +1045,7 @@ var _PauseScene = require("./scenes/PauseScene");
 
 /** @type {import("../typings/phaser")}*/
 var game = new Phaser.Game({
-  width: 1200,
+  width: 1600,
   height: 675,
   parent: 'my-canvas',
   scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene],
