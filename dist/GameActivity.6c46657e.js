@@ -588,9 +588,9 @@ function (_Phaser$Scene) {
         _this.scene.pause();
       }); //create info cmd prompt on side
 
-      this.cmd = this.add.image(0, 0, _CST.CST.IMAGE.CMD).setDepth(1);
+      this.cmd = this.add.image(-500, -500, _CST.CST.IMAGE.CMD).setDepth(1);
       this.cmd.displayHeight = this.game.renderer.height;
-      this.cmd.displayWidth = this.game.renderer.width * 0.2; //cmd.setPosition(0,0);
+      this.cmd.displayWidth = this.game.renderer.width * 0.3; //cmd.setPosition(0,0);
       //add game sprites              
 
       this.player = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
@@ -654,6 +654,9 @@ function (_Phaser$Scene) {
 
       this.addObjects(mappy); //have camera follow player around
 
+      this.cameras.add(0, 0, 365, this.game.renderer.height, false, "cmd");
+      var cam = this.cameras.getCamera("cmd");
+      cam.centerOn(-500, -500);
       this.cameras.main.startFollow(this.player);
       this.physics.world.setBounds(0, 0, mappy.widthInPixels, mappy.heightInPixels);
     }
@@ -784,9 +787,8 @@ function (_Phaser$Scene) {
         this.whip.setPosition(this.player.x, this.player.y + 70);
         this.player.play("down", true);
         this.player.isFacing = "down";
-      }
+      } //this.cmd.setPosition(this.player.x - 420,this.player.y);
 
-      this.cmd.setPosition(this.player.x - 480, this.player.y);
     }
   }, {
     key: "preload",
@@ -1083,7 +1085,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53100" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57029" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
