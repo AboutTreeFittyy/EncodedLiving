@@ -60,28 +60,81 @@ export class FirstLevel extends Phaser.Scene{
 
         //Set up tiled map
         let mappy = this.add.tilemap("map1");
-        let terrain = mappy.addTilesetImage("sheet1");
-        let itemset = mappy.addTilesetImage("itemsall");        
+        let terrain = mappy.addTilesetImage("sheet1");        
         //layers
-        let botLayer = mappy.createStaticLayer("bottom_layer", [terrain], 0, 0).setDepth(-1);
+        mappy.createStaticLayer("bottom_layer", [terrain], 0, 0).setDepth(-1);
         let topLayer = mappy.createStaticLayer("top_layer", [terrain], 0, 0);
         //map collisions
         this.physics.add.collider(this.player, topLayer);
         topLayer.setCollisionByProperty({collides:true});
-        //get interactive object
-        let itemSet = this.physics.add.group();
-        let items = mappy.createFromObjects("items", 67, {key: CST.SPRITE.ITEM, frame: 2}).map((sprite)=>{
-            sprite.setScale(2);
-            //enable body and collider for the items to interact with player collision
-            itemSet.add(sprite);
-            this.physics.world.enableBody(sprite);
-        });
-        this.physics.add.collider(this.player, itemSet, this.player.collectItem, null, this);
+        //Add and configure the game objects that are interactive (NPCs/items)
+        this.addObjects(mappy);       
         //have camera follow player around
         this.cameras.main.startFollow(this.player);
         this.physics.world.setBounds(0,0, mappy.widthInPixels, mappy.heightInPixels);
     }
     
+    addObjects(map){
+        //get interactive objects from the map
+        let itemSet = this.physics.add.group();
+        map.createFromObjects("items", 67, {key: CST.SPRITE.ITEM, frame: 2}).map((sprite)=>{            
+            //enable body for the items to interact with player collision
+            itemSet.add(sprite);
+            sprite.setSize(32,32);
+            sprite.body.setOffset(0,0);
+        });
+        //add the collider for all the items
+        this.physics.add.collider(this.player, itemSet, this.player.collectItem, null, this);
+        //make npcs
+        let npcSet = this.physics.add.group();
+        map.createFromObjects("npcs", 69, {key: CST.SPRITE.NPCS, frame: 0}).map((sprite)=>{            
+            //enable body for the items to interact with player collision
+            npcSet.add(sprite);
+            sprite.setScale(1.5);
+            sprite.name = "Nicole";
+            sprite.setSize(128,240);
+            sprite.body.setOffset(0,0);
+            sprite.body.immovable = true;
+        });
+        //add the collider for all the items
+        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+        map.createFromObjects("npcs", 71, {key: CST.SPRITE.NPCS, frame: 2}).map((sprite)=>{            
+            //enable body for the items to interact with player collision
+            npcSet.add(sprite);
+            sprite.setScale(1.5);
+            sprite.name = "Hannah";
+            sprite.setSize(128,240);
+            sprite.body.setOffset(0,0);
+            sprite.body.immovable = true;
+        });
+        //add the collider for all the items
+        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+        //add the collider for all the items
+        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+        map.createFromObjects("npcs", 72, {key: CST.SPRITE.NPCS, frame: 3}).map((sprite)=>{            
+            //enable body for the items to interact with player collision
+            npcSet.add(sprite);
+            sprite.setScale(1.5);
+            sprite.name = "Claire";
+            sprite.setSize(128,240);
+            sprite.body.setOffset(0,0);
+            sprite.body.immovable = true;
+        });
+        //add the collider for all the items
+        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+        map.createFromObjects("npcs", 73, {key: CST.SPRITE.NPCS, frame: 4}).map((sprite)=>{            
+            //enable body for the items to interact with player collision
+            npcSet.add(sprite);
+            sprite.setScale(1.5);
+            sprite.name = "Stevie";
+            sprite.setSize(128,240);
+            sprite.body.setOffset(0,0);
+            sprite.body.immovable = true;
+        });
+        //add the collider for all the items
+        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+    }
+
     update(){
         if (this.keyboard.D.isDown === true) {
             this.player.setVelocityX(128);
@@ -123,8 +176,6 @@ export class FirstLevel extends Phaser.Scene{
             this.player.play("down", true);
             this.player.isFacing = "down";
         }
-        //check for collision
-
     }
 
 	preload(){
@@ -236,7 +287,6 @@ export class FirstLevel extends Phaser.Scene{
         });
         //load map assets
         this.load.image("sheet1", "./assets/image/sheet1.png");
-        this.load.image("itemsall", "./assets/image/sheet1.png");
         this.load.tilemapTiledJSON("map1", "./assets/maps/map1.json");
     }
 }

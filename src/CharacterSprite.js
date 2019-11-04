@@ -16,12 +16,24 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable(true);
         this.hp = 10;
         this.money = 0;
+        this.npcPrev = '';
     }
 
     collectItem(player, item){
         item.setVisible(false);
         this.physics.world.remove(item.body);
         this.player.money++;
-        alert("Money: "+this.player.money);
+        //alert("Money: "+this.player.money);
+    }
+
+    npcSpeak(player, npc){
+        //this.player.setVelocityX(0);
+        //this.player.setVelocityY(0);
+        //Make sure that you can't just keep talking to someone 
+        if(npc.name == this.player.npcPrev){
+            return;
+        }
+        this.player.npcPrev = npc.name;
+        alert("Talked to "+npc.name);
     }
 }

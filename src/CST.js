@@ -29,6 +29,7 @@ export const CST = {
 		WHIPR: "whip_right.png",
 		WHIPU: "whip_up.png",
 		WHIPD: "whip_down.png",
-		ITEM: "itemsall.png"
+		ITEM: "itemsall.png",
+		NPCS: "npcs.png"
 	}
 }
