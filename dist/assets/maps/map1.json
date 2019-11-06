@@ -186,9 +186,38 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":6,
+         "name":"enemies",
+         "objects":[
+                {
+                 "gid":80,
+                 "height":64,
+                 "id":13,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"enemy",
+                         "type":"string",
+                         "value":"nerd"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":44,
+                 "x":468,
+                 "y":92
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":13,
+ "nextlayerid":7,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2019.09.18",
@@ -287,6 +316,19 @@
                          "value":true
                         }]
                 }],
+         "tilewidth":44
+        }, 
+        {
+         "columns":4,
+         "firstgid":79,
+         "image":"..\/sprite\/nerd1.PNG",
+         "imageheight":256,
+         "imagewidth":181,
+         "margin":0,
+         "name":"nerd1",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":64,
          "tilewidth":44
         }],
  "tilewidth":32,

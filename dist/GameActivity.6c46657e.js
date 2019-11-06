@@ -127,7 +127,7 @@ exports.CST = void 0;
 
 /* File Name: CST.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 4, 2019
  * Description: A constant array to hold values for easy access and 
  * interchangability of important commonly used values in the game
  * that can change often in development.
@@ -161,7 +161,8 @@ var CST = {
     WHIPU: "whip_up.png",
     WHIPD: "whip_down.png",
     ITEM: "itemsall.png",
-    NPCS: "npcs.png"
+    NPCS: "npcs.png",
+    NERD1: "nerd1.png"
   }
 };
 exports.CST = CST;
@@ -243,6 +244,11 @@ function (_Phaser$Scene) {
             frameHeight: 80,
             frameWidth: 44
           });
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD1) {
+          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+            frameHeight: 64,
+            frameWidth: 44
+          });
         } else {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 32,
@@ -268,7 +274,6 @@ function (_Phaser$Scene) {
 
       this.load.on("progress", function (percent) {
         loadingBar.fillRect(0, _this.game.renderer.height / 2, _this.game.renderer.width * percent, 50);
-        console.log(percent);
       }); //load menu when complete
 
       this.load.on("complete", function () {
@@ -329,7 +334,8 @@ function (_Phaser$Scene) {
 
       //add in assets
       this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.ENCODEDLIVING).setDepth(1);
-      this.add.image(0, 0, _CST.CST.IMAGE.TITLE).setOrigin(0);
+      var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
+      title.setY(title.height / 2);
       var startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.STARTNEWGAME).setDepth(1);
       var loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, _CST.CST.IMAGE.LOADGAME).setDepth(1); //create sprites
 
@@ -422,7 +428,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 4, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -459,7 +465,8 @@ function (_Phaser$Physics$Arcad) {
     value: function collectItem(player, item) {
       item.setVisible(false);
       this.physics.world.remove(item.body);
-      this.player.money++; //alert("Money: "+this.player.money);
+      this.player.money++;
+      this.cmd1Text.text = this.cmd1Text.text + "Player Money: " + this.player.money + "\n";
     }
   }, {
     key: "npcSpeak",
@@ -470,7 +477,7 @@ function (_Phaser$Physics$Arcad) {
       }
 
       this.player.npcPrev = npc.name;
-      alert("Talked to " + npc.name);
+      this.cmd2Text.text = this.cmd2Text.text + npc.name + "\n";
     }
   }]);
 
@@ -478,17 +485,21 @@ function (_Phaser$Physics$Arcad) {
 }(Phaser.Physics.Arcade.Sprite);
 
 exports.CharacterSprite = CharacterSprite;
-},{}],"src/Sprite.js":[function(require,module,exports) {
+},{}],"src/EnemySprite.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Sprite = void 0;
+exports.EnemySprite = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
@@ -500,32 +511,67 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-/* File Name: Sprite.js
+/* File Name: EnemySprite.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
- * Description: Class used to create and hold the value of a Sprite object
+ * Last Updated: November 4, 2019
+ * Description: A class to create and hold the value of a CharacterSprite object
+ * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
-var Sprite =
+var EnemySprite =
 /*#__PURE__*/
-function (_Phaser$GameObjects$S) {
-  _inherits(Sprite, _Phaser$GameObjects$S);
+function (_Phaser$Physics$Arcad) {
+  _inherits(EnemySprite, _Phaser$Physics$Arcad);
 
-  function Sprite(scene, x, y, texture, frame) {
+  function EnemySprite(scene, x, y, texture, frame, name, hp) {
     var _this;
 
-    _classCallCheck(this, Sprite);
+    _classCallCheck(this, EnemySprite);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Sprite).call(this, scene, x, y, texture, frame));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(EnemySprite).call(this, scene, x, y, texture, frame));
     scene.sys.updateList.add(_assertThisInitialized(_this));
     scene.sys.displayList.add(_assertThisInitialized(_this));
+
+    _this.setScale(2);
+
+    scene.physics.world.enableBody(_assertThisInitialized(_this));
+
+    _this.setImmovable(true);
+
+    _this.hp = hp;
+    _this.name = name;
+    _this.startX = x;
+    _this.startY = y;
+    _this.collideName = '';
     return _this;
   }
 
-  return Sprite;
-}(Phaser.GameObjects.Sprite);
+  _createClass(EnemySprite, [{
+    key: "enemyCollide",
+    value: function enemyCollide(player, enemy) {
+      //Make sure that you can't just keep talking to someone 
+      if (enemy.name == "nerdup") {
+        enemy.setVelocityY(-90);
+        enemy.name = "nerddown";
+      } else if (enemy.name == "nerddown") {
+        enemy.setVelocityY(90);
+        enemy.name = "nerdup";
+      }
 
-exports.Sprite = Sprite;
+      if (player.name == "nerdup") {
+        player.setVelocityY(-90);
+        player.name = "nerddown";
+      } else if (player.name == "nerddown") {
+        player.setVelocityY(90);
+        player.name = "nerdup";
+      }
+    }
+  }]);
+
+  return EnemySprite;
+}(Phaser.Physics.Arcade.Sprite);
+
+exports.EnemySprite = EnemySprite;
 },{}],"src/scenes/FirstLevel.js":[function(require,module,exports) {
 "use strict";
 
@@ -538,7 +584,7 @@ var _CST = require("../CST");
 
 var _CharacterSprite = require("../CharacterSprite");
 
-var _Sprite = require("../Sprite");
+var _EnemySprite = require("../EnemySprite");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -586,14 +632,23 @@ function (_Phaser$Scene) {
         _this.scene.launch(_CST.CST.SCENES.PAUSE);
 
         _this.scene.pause();
-      }); //create info cmd prompt on side
+      }); //create info cmd prompts on sides
 
-      this.cmd = this.add.image(-1000, -1000, _CST.CST.IMAGE.CMD).setDepth(1);
-      this.cmd.displayHeight = this.game.renderer.height;
+      this.cmd1 = this.add.image(-1000, -1000, _CST.CST.IMAGE.CMD).setDepth(1);
+      this.cmd1.displayHeight = this.game.renderer.height;
       this.cmd2 = this.add.image(-1000, 1000, _CST.CST.IMAGE.CMD).setDepth(1);
-      this.cmd2.displayHeight = this.game.renderer.height; //this.cmd.displayWidth = this.game.renderer.width * 0.3;
-      //cmd.setPosition(0,0);
-      //add game sprites              
+      this.cmd2.displayHeight = this.game.renderer.height; //now make their text fields
+
+      this.cmd1Text = this.add.text(this.cmd1.x - this.cmd1.width / 2, this.cmd1.y - this.cmd1.height / 2, 'C:/Users/Player/Stats>\n', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2);
+      this.cmd1Text.setColor("green");
+      this.cmd2Text = this.add.text(this.cmd2.x - this.cmd2.width / 2, this.cmd2.y - this.cmd2.height / 2, 'C:/Users/Player/Conversations>\n', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2);
+      this.cmd2Text.setColor("green"); //Create a counter for the lines entered so we can keep track of when they run out
+
+      this.cmd2Lines = 1; //add game sprites              
 
       this.player = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
       this.player.setCollideWorldBounds(true); //align the player hitbox and set its size
@@ -601,7 +656,7 @@ function (_Phaser$Scene) {
       this.player.setSize(32, 48);
       this.player.setOffset(16, 12); //the whip sprite takes any
 
-      this.whip = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.WHIP, 3);
+      this.whip = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.WHIP, 0);
       this.whip.setVisible(false);
       this.whip.setScale(3);
       this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1); //initialize player and whip to face down at start
@@ -656,7 +711,7 @@ function (_Phaser$Scene) {
 
       this.addObjects(mappy); //have camera follow player around
 
-      this.cameras.add(0, 0, this.cmd.displayWidth, this.game.renderer.height, false, "cmd1");
+      this.cameras.add(0, 0, this.cmd1.displayWidth, this.game.renderer.height, false, "cmd1");
       var cam1 = this.cameras.getCamera("cmd1");
       cam1.centerOn(-1000, -1000); //have camera follow player around
 
@@ -669,6 +724,8 @@ function (_Phaser$Scene) {
   }, {
     key: "addObjects",
     value: function addObjects(map) {
+      var _this2 = this;
+
       //get interactive objects from the map
       var itemSet = this.physics.add.group();
       map.createFromObjects("items", 67, {
@@ -695,9 +752,7 @@ function (_Phaser$Scene) {
         sprite.setSize(128, 240);
         sprite.body.setOffset(0, 0);
         sprite.body.immovable = true;
-      }); //add the collider for all the items
-
-      this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+      });
       map.createFromObjects("npcs", 71, {
         key: _CST.CST.SPRITE.NPCS,
         frame: 2
@@ -709,11 +764,7 @@ function (_Phaser$Scene) {
         sprite.setSize(128, 240);
         sprite.body.setOffset(0, 0);
         sprite.body.immovable = true;
-      }); //add the collider for all the items
-
-      this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this); //add the collider for all the items
-
-      this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+      });
       map.createFromObjects("npcs", 72, {
         key: _CST.CST.SPRITE.NPCS,
         frame: 3
@@ -725,9 +776,7 @@ function (_Phaser$Scene) {
         sprite.setSize(128, 240);
         sprite.body.setOffset(0, 0);
         sprite.body.immovable = true;
-      }); //add the collider for all the items
-
-      this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+      });
       map.createFromObjects("npcs", 73, {
         key: _CST.CST.SPRITE.NPCS,
         frame: 4
@@ -739,13 +788,48 @@ function (_Phaser$Scene) {
         sprite.setSize(128, 240);
         sprite.body.setOffset(0, 0);
         sprite.body.immovable = true;
-      }); //add the collider for all the items
+      }); //add the collider for all the npcs
 
-      this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+      this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this); //make enemies
+
+      this.enemySet = this.physics.add.group();
+      this.enemyCont = this.add.container(); //using npcs 6 frame to have blank inserted as i make my own sprite after
+
+      map.createFromObjects("enemies", 80, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 6
+      }).map(function (sprite) {
+        sprite = new _EnemySprite.EnemySprite(_this2, sprite.x, sprite.y, _CST.CST.SPRITE.NERD1, 1, "nerddown", 5);
+        sprite.body.setSize(22, 44);
+        sprite.body.setOffset(16, 16);
+
+        _this2.enemySet.add(sprite);
+
+        _this2.enemyCont.add(sprite);
+
+        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
+
+        _this2.physics.add.collider(_this2.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
+
+
+        _this2.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
+      });
     }
   }, {
     key: "update",
     value: function update() {
+      //Play enemy animations and move them as needed
+      for (var i = 0; i < this.enemyCont.count('visible', true); i++) {
+        if (this.enemyCont.list[i].name == "nerddown") {
+          this.enemyCont.list[i].play("nerd1down", true);
+          this.enemyCont.list[i].setVelocityY(90);
+        } else if (this.enemyCont.list[i].name == "nerdup") {
+          this.enemyCont.list[i].play("nerd1up", true);
+          this.enemyCont.list[i].setVelocityY(-90);
+        }
+      } //Set player movement on keypress
+
+
       if (this.keyboard.D.isDown === true) {
         this.player.setVelocityX(128);
       }
@@ -798,7 +882,40 @@ function (_Phaser$Scene) {
   }, {
     key: "preload",
     value: function preload() {
-      //add in player attack sprites
+      //Make nerd1 sprite
+      this.anims.create({
+        key: "nerd1left",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
+          start: 5,
+          end: 7
+        })
+      });
+      this.anims.create({
+        key: "nerd1right",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
+          start: 9,
+          end: 11
+        })
+      });
+      this.anims.create({
+        key: "nerd1down",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
+          start: 1,
+          end: 3
+        })
+      });
+      this.anims.create({
+        key: "nerd1up",
+        frameRate: 5,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
+          start: 13,
+          end: 15
+        })
+      }); //add in whip attack sprites
+
       this.anims.create({
         key: "playerwhipleft",
         frameRate: 5,
@@ -834,7 +951,8 @@ function (_Phaser$Scene) {
         }),
         showOnStart: true,
         hideOnComplete: true
-      });
+      }); //Player whip animation
+
       this.anims.create({
         key: "playerwhipup",
         frameRate: 5,
@@ -914,7 +1032,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.FirstLevel = FirstLevel;
-},{"../CST":"src/CST.js","../CharacterSprite":"src/CharacterSprite.js","../Sprite":"src/Sprite.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../CharacterSprite":"src/CharacterSprite.js","../EnemySprite":"src/EnemySprite.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -962,7 +1080,8 @@ function (_Phaser$Scene) {
 
       //add in assets
       this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1);
-      this.add.image(0, 0, _CST.CST.IMAGE.TITLE).setOrigin(0);
+      var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
+      title.setY(title.height / 2);
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
       hoverSprite.setScale(2);
@@ -1090,7 +1209,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57029" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58795" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

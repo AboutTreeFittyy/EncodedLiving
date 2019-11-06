@@ -1,6 +1,6 @@
 /* File Name: FirstLevel.js
  * Author: Mathew Boland
- * Last Updated: November, 2019
+ * Last Updated: November 4, 2019
  * Description: This class is used to create the scene for the first level of the game.
  * With the help of other classes it creates the user interface, keybindings, map, saves 
  * progress and makes animations. 
@@ -8,7 +8,7 @@
 */
 import {CST} from "../CST";
 import { CharacterSprite } from "../CharacterSprite";
-import { Sprite } from "../Sprite";
+import { EnemySprite } from "../EnemySprite";
 
 export class FirstLevel extends Phaser.Scene{
     
@@ -28,13 +28,18 @@ export class FirstLevel extends Phaser.Scene{
             this.scene.launch(CST.SCENES.PAUSE);
             this.scene.pause();
         })
-        //create info cmd prompt on side
-        this.cmd = this.add.image(-1000, -1000, CST.IMAGE.CMD).setDepth(1);
-        this.cmd.displayHeight = this.game.renderer.height;
+        //create info cmd prompts on sides
+        this.cmd1 = this.add.image(-1000, -1000, CST.IMAGE.CMD).setDepth(1);
+        this.cmd1.displayHeight = this.game.renderer.height;
         this.cmd2 = this.add.image(-1000, 1000, CST.IMAGE.CMD).setDepth(1);
         this.cmd2.displayHeight = this.game.renderer.height;
-        //this.cmd.displayWidth = this.game.renderer.width * 0.3;
-        //cmd.setPosition(0,0);
+        //now make their text fields
+        this.cmd1Text = this.add.text(this.cmd1.x - (this.cmd1.width/2), this.cmd1.y - (this.cmd1.height/2), 'C:/Users/Player/Stats>\n', { fontFamily: '"Roboto Condensed"' }).setDepth(2);
+        this.cmd1Text.setColor("green");
+        this.cmd2Text = this.add.text(this.cmd2.x - (this.cmd2.width/2), this.cmd2.y - (this.cmd2.height/2), 'C:/Users/Player/Conversations>\n', { fontFamily: '"Roboto Condensed"' }).setDepth(2);
+        this.cmd2Text.setColor("green");
+        //Create a counter for the lines entered so we can keep track of when they run out
+        this.cmd2Lines = 1;
         //add game sprites              
         this.player = new CharacterSprite(this, 400, 400, CST.SPRITE.PLAYER, 130);
         this.player.setCollideWorldBounds(true);
@@ -42,7 +47,7 @@ export class FirstLevel extends Phaser.Scene{
         this.player.setSize(32,48);
         this.player.setOffset(16,12);
         //the whip sprite takes any
-        this.whip = new CharacterSprite(this, 400, 400, CST.SPRITE.WHIP, 3);
+        this.whip = new CharacterSprite(this, 400, 400, CST.SPRITE.WHIP, 0);
         this.whip.setVisible(false);
         this.whip.setScale(3);
         this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1);
@@ -81,7 +86,7 @@ export class FirstLevel extends Phaser.Scene{
         //Add and configure the game objects that are interactive (NPCs/items)
         this.addObjects(mappy);       
         //have camera follow player around
-        this.cameras.add( 0, 0, this.cmd.displayWidth, this.game.renderer.height, false, "cmd1");
+        this.cameras.add( 0, 0, this.cmd1.displayWidth, this.game.renderer.height, false, "cmd1");
         let cam1 = this.cameras.getCamera("cmd1");
         cam1.centerOn(-1000,-1000);
         //have camera follow player around
@@ -114,8 +119,6 @@ export class FirstLevel extends Phaser.Scene{
             sprite.body.setOffset(0,0);
             sprite.body.immovable = true;
         });
-        //add the collider for all the items
-        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
         map.createFromObjects("npcs", 71, {key: CST.SPRITE.NPCS, frame: 2}).map((sprite)=>{            
             //enable body for the items to interact with player collision
             npcSet.add(sprite);
@@ -125,10 +128,6 @@ export class FirstLevel extends Phaser.Scene{
             sprite.body.setOffset(0,0);
             sprite.body.immovable = true;
         });
-        //add the collider for all the items
-        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
-        //add the collider for all the items
-        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
         map.createFromObjects("npcs", 72, {key: CST.SPRITE.NPCS, frame: 3}).map((sprite)=>{            
             //enable body for the items to interact with player collision
             npcSet.add(sprite);
@@ -138,8 +137,6 @@ export class FirstLevel extends Phaser.Scene{
             sprite.body.setOffset(0,0);
             sprite.body.immovable = true;
         });
-        //add the collider for all the items
-        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
         map.createFromObjects("npcs", 73, {key: CST.SPRITE.NPCS, frame: 4}).map((sprite)=>{            
             //enable body for the items to interact with player collision
             npcSet.add(sprite);
@@ -149,24 +146,48 @@ export class FirstLevel extends Phaser.Scene{
             sprite.body.setOffset(0,0);
             sprite.body.immovable = true;
         });
-        //add the collider for all the items
+        //add the collider for all the npcs
         this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
+        //make enemies
+        this.enemySet = this.physics.add.group();
+        this.enemyCont = this.add.container();
+        //using npcs 6 frame to have blank inserted as i make my own sprite after
+        map.createFromObjects("enemies", 80, {key: CST.SPRITE.NPCS, frame: 6}).map((sprite)=>{
+            sprite = new EnemySprite(this, sprite.x, sprite.y, CST.SPRITE.NERD1, 1, "nerddown", 5);
+            sprite.body.setSize(22,44);
+            sprite.body.setOffset(16,16);
+            this.enemySet.add(sprite);
+            this.enemyCont.add(sprite);
+            sprite.setCollideWorldBounds(true);
+            //This triggers when enemy hits player
+            this.physics.add.collider(this.player, sprite, sprite.enemyCollide, null, this);
+            //This triggers when they hit an npc
+            this.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, this);
+        });
     }
 
     update(){
-        
+        //Play enemy animations and move them as needed
+        for(let i = 0; i < this.enemyCont.count('visible', true); i++){
+            if(this.enemyCont.list[i].name=="nerddown"){
+                this.enemyCont.list[i].play("nerd1down", true);
+                this.enemyCont.list[i].setVelocityY(90);
+            }else if(this.enemyCont.list[i].name=="nerdup"){
+                this.enemyCont.list[i].play("nerd1up", true);
+                this.enemyCont.list[i].setVelocityY(-90);
+            }
+            
+        }       
+        //Set player movement on keypress
         if (this.keyboard.D.isDown === true) {
             this.player.setVelocityX(128);
         }
-
         if (this.keyboard.W.isDown === true) {
             this.player.setVelocityY(-128);
         }
-
         if (this.keyboard.S.isDown === true) {
             this.player.setVelocityY(128);
         }
-
         if (this.keyboard.A.isDown === true) {
             this.player.setVelocityX(-128);
         }
@@ -175,8 +196,7 @@ export class FirstLevel extends Phaser.Scene{
         }
         if (this.keyboard.W.isUp && this.keyboard.S.isUp) { //not pressing y movement
             this.player.setVelocityY(0);
-        }
-        
+        }        
         //set animations for player
         if (this.player.body.velocity.x > 0) { //moving right
             this.whip.setPosition(this.player.x+70,this.player.y);
@@ -198,7 +218,40 @@ export class FirstLevel extends Phaser.Scene{
     }
 
 	preload(){
-        //add in player attack sprites
+        //Make nerd1 sprite
+        this.anims.create({
+            key: "nerd1left",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.NERD1, {
+                start: 5,
+                end: 7
+            })
+        });
+        this.anims.create({
+            key: "nerd1right",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.NERD1, {
+                start: 9,
+                end: 11
+            })
+        });
+        this.anims.create({
+            key: "nerd1down",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.NERD1, {
+                start: 1,
+                end: 3
+            })
+        });
+        this.anims.create({
+            key: "nerd1up",
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers(CST.SPRITE.NERD1, {
+                start: 13,
+                end: 15
+            })
+        });
+        //add in whip attack sprites
         this.anims.create({
             key: "playerwhipleft",
             frameRate: 5,
@@ -235,6 +288,7 @@ export class FirstLevel extends Phaser.Scene{
             showOnStart: true,
             hideOnComplete: true
         });
+        //Player whip animation
         this.anims.create({
             key: "playerwhipup",
             frameRate: 5,

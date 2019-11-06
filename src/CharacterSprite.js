@@ -1,6 +1,6 @@
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 4, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -24,7 +24,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         item.setVisible(false);
         this.physics.world.remove(item.body);
         this.player.money++;
-        //alert("Money: "+this.player.money);
+        this.cmd1Text.text = this.cmd1Text.text+"Player Money: "+this.player.money+"\n";
     }
 
     npcSpeak(player, npc){
@@ -33,6 +33,6 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         this.player.npcPrev = npc.name;
-        alert("Talked to "+npc.name);
+        this.cmd2Text.text = this.cmd2Text.text+npc.name+"\n";
     }
 }

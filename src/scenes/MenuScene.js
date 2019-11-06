@@ -16,7 +16,8 @@ export class MenuScene extends Phaser.Scene{
 	create(){
 		//add in assets
 		this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, CST.IMAGE.ENCODEDLIVING).setDepth(1);
-		this.add.image(0,0,CST.IMAGE.TITLE).setOrigin(0);
+		let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
+		title.setY(title.height/2);
 		let startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.STARTNEWGAME).setDepth(1);
 		let loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 +100, CST.IMAGE.LOADGAME).setDepth(1);
 		//create sprites

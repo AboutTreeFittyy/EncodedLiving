@@ -1,6 +1,6 @@
 /* File Name: LoadScene.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 4, 2019
  * Description: This class loads the bulk of the data for the game while displaying 
  * a horizontal loading bar.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -42,9 +42,14 @@ export class LoadScene extends Phaser.Scene{
 					frameHeight: 64,
 					frameWidth: 64
 				});
-			}   else if (CST.SPRITE[prop] == CST.SPRITE.NPCS){
+			}else if (CST.SPRITE[prop] == CST.SPRITE.NPCS){
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
 					frameHeight: 80,
+					frameWidth: 44
+				});
+			}else if (CST.SPRITE[prop] == CST.SPRITE.NERD1){
+				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
+					frameHeight: 64,
 					frameWidth: 44
 				});
 			}else{
@@ -70,7 +75,6 @@ export class LoadScene extends Phaser.Scene{
 		//display loading bar
 		this.load.on("progress", (percent)=>{
 			loadingBar.fillRect(0, this.game.renderer.height / 2, this.game.renderer.width * percent, 50);
-			console.log(percent);
 		})
 
 		//load menu when complete
