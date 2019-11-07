@@ -8,16 +8,16 @@ import {CST} from "../CST";
 export class ShopScene extends Phaser.Scene{
 	constructor(){
 		super({
-			key: CST.SCENES.PAUSE
+			key: CST.SCENES.SHOP
 		})
 	}
 
 	create(){
 		//add in assets
-		this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, CST.IMAGE.PAUSED).setDepth(1);
-		let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
+		this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.10, CST.IMAGE.FIDDY).setDepth(1);
+		let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.SHOP);
 		title.setY(title.height/2);
-        let resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.RESUME).setDepth(1);
+        let resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.9, CST.IMAGE.EXIT).setDepth(1);
 		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.CAT);
 		hoverSprite.setScale(2);
 		hoverSprite.setVisible(false);
@@ -35,7 +35,7 @@ export class ShopScene extends Phaser.Scene{
 			loop: true
         })*/
         //make p resume game as well
-        this.input.keyboard.on('keyup-P', ()=>{
+        this.input.keyboard.on('keyup-Y', ()=>{
             this.sound.pauseAll();
             this.scene.resume(CST.SCENES.FIRSTLEVEL);
             this.scene.stop();

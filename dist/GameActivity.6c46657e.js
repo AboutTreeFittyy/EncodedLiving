@@ -148,7 +148,10 @@ var CST = {
     TITLE: "title_bg.jpg",
     PAUSED: "paused.png",
     RESUME: "resume.png",
-    CMD: "cmd.png"
+    CMD: "cmd.png",
+    SHOP: "shop.png",
+    FIDDY: "fiddy.png",
+    EXIT: "exit.png"
   },
   AUDIO: {
     THEME1: "level_1_theme.mp3",
@@ -637,6 +640,11 @@ function (_Phaser$Scene) {
       //Set listener for p to pause game
       this.input.keyboard.on('keyup-P', function () {
         _this.scene.launch(_CST.CST.SCENES.PAUSE);
+
+        _this.scene.pause();
+      });
+      this.input.keyboard.on('keyup-Y', function () {
+        _this.scene.launch(_CST.CST.SCENES.SHOP);
 
         _this.scene.pause();
       }); //create info cmd prompts on sides
@@ -1217,7 +1225,7 @@ function (_Phaser$Scene) {
     _classCallCheck(this, ShopScene);
 
     return _possibleConstructorReturn(this, _getPrototypeOf(ShopScene).call(this, {
-      key: _CST.CST.SCENES.PAUSE
+      key: _CST.CST.SCENES.SHOP
     }));
   }
 
@@ -1227,10 +1235,10 @@ function (_Phaser$Scene) {
       var _this = this;
 
       //add in assets
-      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1);
-      var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
+      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.10, _CST.CST.IMAGE.FIDDY).setDepth(1);
+      var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.SHOP);
       title.setY(title.height / 2);
-      var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
+      var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.9, _CST.CST.IMAGE.EXIT).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
       hoverSprite.setScale(2);
       hoverSprite.setVisible(false); //animate sprites
@@ -1249,7 +1257,7 @@ function (_Phaser$Scene) {
             })*/
       //make p resume game as well
 
-      this.input.keyboard.on('keyup-P', function () {
+      this.input.keyboard.on('keyup-Y', function () {
         _this.sound.pauseAll();
 
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);

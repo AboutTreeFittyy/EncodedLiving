@@ -28,6 +28,10 @@ export class FirstLevel extends Phaser.Scene{
             this.scene.launch(CST.SCENES.PAUSE);
             this.scene.pause();
         })
+        this.input.keyboard.on('keyup-Y', ()=>{
+            this.scene.launch(CST.SCENES.SHOP);
+            this.scene.pause();
+        })
         //create info cmd prompts on sides
         this.cmd1 = this.add.image(-1000, -1000, CST.IMAGE.CMD).setDepth(1);
         this.cmd1.displayHeight = this.game.renderer.height;
