@@ -22,17 +22,18 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 
     collectItem(player, item){
         item.setVisible(false);
-        this.physics.world.remove(item.body);
-        this.player.money++;
-        this.cmd1Text.text = this.cmd1Text.text+"Player Money: "+this.player.money+"\n";
+        //this.physics.world.remove(item.body);
+        item.destroy(item.body);
+        player.money++;
+        player.scene.cmd1Text.text = player.scene.cmd1Text.text+"Player Money: "+player.money+"\n";
     }
 
     npcSpeak(player, npc){
         //Make sure that you can't just keep talking to someone 
-        if(npc.name == this.player.npcPrev){
+        if(npc.name == player.npcPrev){
             return;
         }
-        this.player.npcPrev = npc.name;
-        this.cmd2Text.text = this.cmd2Text.text+npc.name+"\n";
+        player.npcPrev = npc.name;
+        player.scene.cmd2Text.text = player.scene.cmd2Text.text+npc.name+"\n";
     }
 }

@@ -9,6 +9,7 @@
 import {CST} from "../CST";
 import { CharacterSprite } from "../CharacterSprite";
 import { EnemySprite } from "../EnemySprite";
+import { LevelManager } from "../LevelManager";
 
 export class FirstLevel extends Phaser.Scene{
     
@@ -88,7 +89,8 @@ export class FirstLevel extends Phaser.Scene{
         this.physics.add.collider(this.player, topLayer);
         topLayer.setCollisionByProperty({collides:true});
         //Add and configure the game objects that are interactive (NPCs/items)
-        this.addObjects(mappy);       
+        //this.addObjects(mappy);      
+        this.lm = new LevelManager(this, mappy); 
         //have camera follow player around
         this.cameras.add( 0, 0, this.cmd1.displayWidth, this.game.renderer.height, false, "cmd1");
         let cam1 = this.cameras.getCamera("cmd1");
@@ -101,88 +103,7 @@ export class FirstLevel extends Phaser.Scene{
         this.physics.world.setBounds(0,0, mappy.widthInPixels, mappy.heightInPixels);
     }
 
-    addObjects(map){
-        //get interactive objects from the map
-        let itemSet = this.physics.add.group();
-        map.createFromObjects("items", 67, {key: CST.SPRITE.ITEM, frame: 2}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            itemSet.add(sprite);
-            sprite.setSize(32,32);
-            sprite.body.setOffset(0,0);
-        });
-        //add the collider for all the items
-        this.physics.add.collider(this.player, itemSet, this.player.collectItem, null, this);
-        //make npcs
-        let npcSet = this.physics.add.group();
-        map.createFromObjects("npcs", 69, {key: CST.SPRITE.NPCS, frame: 0}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = "Nicole";
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-            sprite.body.immovable = true;
-        });
-        map.createFromObjects("npcs", 71, {key: CST.SPRITE.NPCS, frame: 2}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = "Hannah";
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-            sprite.body.immovable = true;
-        });
-        map.createFromObjects("npcs", 72, {key: CST.SPRITE.NPCS, frame: 3}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = "Claire";
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-            sprite.body.immovable = true;
-        });
-        map.createFromObjects("npcs", 73, {key: CST.SPRITE.NPCS, frame: 4}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = "Stevie";
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-            sprite.body.immovable = true;
-        });
-        //add the collider for all the npcs
-        this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this);
-        //make enemies
-        this.enemySet = this.physics.add.group();
-        this.enemyCont = this.add.container();
-        //using npcs 6 frame to have blank inserted as i make my own sprite after
-        map.createFromObjects("enemies", 80, {key: CST.SPRITE.NPCS, frame: 6}).map((sprite)=>{
-            sprite = new EnemySprite(this, sprite.x, sprite.y, CST.SPRITE.NERD1, 1, "nerddown", 5);
-            sprite.body.setSize(22,44);
-            sprite.body.setOffset(16,16);
-            this.enemySet.add(sprite);
-            this.enemyCont.add(sprite);
-            sprite.setCollideWorldBounds(true);
-            //This triggers when enemy hits player
-            this.physics.add.collider(this.player, sprite, sprite.enemyCollide, null, this);
-            //This triggers when they hit an npc
-            this.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, this);
-        });
-         //using npcs 6 frame to have blank inserted as i make my own sprite after
-         map.createFromObjects("enemies", 95, {key: CST.SPRITE.NPCS, frame: 6}).map((sprite)=>{
-            sprite = new EnemySprite(this, sprite.x, sprite.y, CST.SPRITE.JASON, 1, "jason", 5);
-            sprite.body.setSize(22,44);
-            sprite.setScale(1.5);
-            sprite.body.setOffset(16,16);
-            this.enemySet.add(sprite);
-            this.enemyCont.add(sprite);
-            sprite.setCollideWorldBounds(true);
-            //This triggers when enemy hits player
-            this.physics.add.collider(this.player, sprite, sprite.enemyCollide, null, this);
-            //This triggers when they hit an npc
-            this.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, this);
-        });
-    }
+    
 
     update(){
         //Play enemy animations and move them as needed

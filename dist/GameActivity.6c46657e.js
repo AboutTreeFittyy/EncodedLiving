@@ -473,21 +473,22 @@ function (_Phaser$Physics$Arcad) {
   _createClass(CharacterSprite, [{
     key: "collectItem",
     value: function collectItem(player, item) {
-      item.setVisible(false);
-      this.physics.world.remove(item.body);
-      this.player.money++;
-      this.cmd1Text.text = this.cmd1Text.text + "Player Money: " + this.player.money + "\n";
+      item.setVisible(false); //this.physics.world.remove(item.body);
+
+      item.destroy(item.body);
+      player.money++;
+      player.scene.cmd1Text.text = player.scene.cmd1Text.text + "Player Money: " + player.money + "\n";
     }
   }, {
     key: "npcSpeak",
     value: function npcSpeak(player, npc) {
       //Make sure that you can't just keep talking to someone 
-      if (npc.name == this.player.npcPrev) {
+      if (npc.name == player.npcPrev) {
         return;
       }
 
-      this.player.npcPrev = npc.name;
-      this.cmd2Text.text = this.cmd2Text.text + npc.name + "\n";
+      player.npcPrev = npc.name;
+      player.scene.cmd2Text.text = player.scene.cmd2Text.text + npc.name + "\n";
     }
   }]);
 
@@ -582,7 +583,157 @@ function (_Phaser$Physics$Arcad) {
 }(Phaser.Physics.Arcade.Sprite);
 
 exports.EnemySprite = EnemySprite;
-},{}],"src/scenes/FirstLevel.js":[function(require,module,exports) {
+},{}],"src/LevelManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LevelManager = void 0;
+
+var _CST = require("./CST");
+
+var _EnemySprite = require("./EnemySprite");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var LevelManager =
+/*#__PURE__*/
+function () {
+  function LevelManager(scene, map) {
+    _classCallCheck(this, LevelManager);
+
+    this.scene = scene;
+    this.map = map;
+    this.addObjects();
+  }
+
+  _createClass(LevelManager, [{
+    key: "addObjects",
+    value: function addObjects() {
+      var _this = this;
+
+      //get interactive objects from the map
+      var itemSet = this.scene.physics.add.group();
+      this.map.createFromObjects("items", 67, {
+        key: _CST.CST.SPRITE.ITEM,
+        frame: 2
+      }).map(function (sprite) {
+        //enable body for the items to interact with player collision
+        itemSet.add(sprite);
+        sprite.setSize(32, 32);
+        sprite.body.setOffset(0, 0);
+      }); //add the collider for all the items
+
+      this.scene.physics.add.collider(this.scene.player, itemSet, this.scene.player.collectItem, null, this); //make npcs
+
+      var npcSet = this.scene.physics.add.group();
+      this.map.createFromObjects("npcs", 69, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 0
+      }).map(function (sprite) {
+        //enable body for the items to interact with player collision
+        npcSet.add(sprite);
+        sprite.setScale(1.5);
+        sprite.name = "Nicole";
+        sprite.setSize(128, 240);
+        sprite.body.setOffset(0, 0);
+        sprite.body.immovable = true;
+      });
+      this.map.createFromObjects("npcs", 71, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 2
+      }).map(function (sprite) {
+        //enable body for the items to interact with player collision
+        npcSet.add(sprite);
+        sprite.setScale(1.5);
+        sprite.name = "Hannah";
+        sprite.setSize(128, 240);
+        sprite.body.setOffset(0, 0);
+        sprite.body.immovable = true;
+      });
+      this.map.createFromObjects("npcs", 72, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 3
+      }).map(function (sprite) {
+        //enable body for the items to interact with player collision
+        npcSet.add(sprite);
+        sprite.setScale(1.5);
+        sprite.name = "Claire";
+        sprite.setSize(128, 240);
+        sprite.body.setOffset(0, 0);
+        sprite.body.immovable = true;
+      });
+      this.map.createFromObjects("npcs", 73, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 4
+      }).map(function (sprite) {
+        //enable body for the items to interact with player collision
+        npcSet.add(sprite);
+        sprite.setScale(1.5);
+        sprite.name = "Stevie";
+        sprite.setSize(128, 240);
+        sprite.body.setOffset(0, 0);
+        sprite.body.immovable = true;
+      }); //add the collider for all the npcs
+
+      this.scene.physics.add.collider(this.scene.player, npcSet, this.scene.player.npcSpeak, null, this); //make enemies
+
+      this.scene.enemySet = this.scene.physics.add.group();
+      this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank inserted as i make my own sprite after
+
+      this.map.createFromObjects("enemies", 80, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 6
+      }).map(function (sprite) {
+        sprite = new _EnemySprite.EnemySprite(_this.scene, sprite.x, sprite.y, _CST.CST.SPRITE.NERD1, 1, "nerddown", 5);
+        sprite.body.setSize(22, 44);
+        sprite.body.setOffset(16, 16);
+
+        _this.scene.enemySet.add(sprite);
+
+        _this.scene.enemyCont.add(sprite);
+
+        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
+
+        _this.scene.physics.add.collider(_this.scene.player, sprite, sprite.enemyCollide, null, _this); //This triggers when they hit an npc
+
+
+        _this.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this);
+      }); //using npcs 6 frame to have blank inserted as i make my own sprite after
+
+      this.map.createFromObjects("enemies", 95, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 6
+      }).map(function (sprite) {
+        sprite = new _EnemySprite.EnemySprite(_this.scene, sprite.x, sprite.y, _CST.CST.SPRITE.JASON, 1, "jason", 5);
+        sprite.body.setSize(22, 44);
+        sprite.setScale(1.5);
+        sprite.body.setOffset(16, 16);
+
+        _this.scene.enemySet.add(sprite);
+
+        _this.scene.enemyCont.add(sprite);
+
+        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
+
+        _this.scene.physics.add.collider(_this.scene.player, sprite, sprite.enemyCollide, null, _this); //This triggers when they hit an npc
+
+
+        _this.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this);
+      });
+    }
+  }]);
+
+  return LevelManager;
+}();
+
+exports.LevelManager = LevelManager;
+},{"./CST":"src/CST.js","./EnemySprite":"src/EnemySprite.js"}],"src/scenes/FirstLevel.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -595,6 +746,8 @@ var _CST = require("../CST");
 var _CharacterSprite = require("../CharacterSprite");
 
 var _EnemySprite = require("../EnemySprite");
+
+var _LevelManager = require("../LevelManager");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -723,8 +876,9 @@ function (_Phaser$Scene) {
       topLayer.setCollisionByProperty({
         collides: true
       }); //Add and configure the game objects that are interactive (NPCs/items)
+      //this.addObjects(mappy);      
 
-      this.addObjects(mappy); //have camera follow player around
+      this.lm = new _LevelManager.LevelManager(this, mappy); //have camera follow player around
 
       this.cameras.add(0, 0, this.cmd1.displayWidth, this.game.renderer.height, false, "cmd1");
       var cam1 = this.cameras.getCamera("cmd1");
@@ -735,121 +889,6 @@ function (_Phaser$Scene) {
       cam2.centerOn(-1000, 1000);
       this.cameras.main.startFollow(this.player);
       this.physics.world.setBounds(0, 0, mappy.widthInPixels, mappy.heightInPixels);
-    }
-  }, {
-    key: "addObjects",
-    value: function addObjects(map) {
-      var _this2 = this;
-
-      //get interactive objects from the map
-      var itemSet = this.physics.add.group();
-      map.createFromObjects("items", 67, {
-        key: _CST.CST.SPRITE.ITEM,
-        frame: 2
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        itemSet.add(sprite);
-        sprite.setSize(32, 32);
-        sprite.body.setOffset(0, 0);
-      }); //add the collider for all the items
-
-      this.physics.add.collider(this.player, itemSet, this.player.collectItem, null, this); //make npcs
-
-      var npcSet = this.physics.add.group();
-      map.createFromObjects("npcs", 69, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 0
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Nicole";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      });
-      map.createFromObjects("npcs", 71, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 2
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Hannah";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      });
-      map.createFromObjects("npcs", 72, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 3
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Claire";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      });
-      map.createFromObjects("npcs", 73, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 4
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Stevie";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      }); //add the collider for all the npcs
-
-      this.physics.add.collider(this.player, npcSet, this.player.npcSpeak, null, this); //make enemies
-
-      this.enemySet = this.physics.add.group();
-      this.enemyCont = this.add.container(); //using npcs 6 frame to have blank inserted as i make my own sprite after
-
-      map.createFromObjects("enemies", 80, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 6
-      }).map(function (sprite) {
-        sprite = new _EnemySprite.EnemySprite(_this2, sprite.x, sprite.y, _CST.CST.SPRITE.NERD1, 1, "nerddown", 5);
-        sprite.body.setSize(22, 44);
-        sprite.body.setOffset(16, 16);
-
-        _this2.enemySet.add(sprite);
-
-        _this2.enemyCont.add(sprite);
-
-        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
-
-        _this2.physics.add.collider(_this2.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
-
-
-        _this2.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
-      }); //using npcs 6 frame to have blank inserted as i make my own sprite after
-
-      map.createFromObjects("enemies", 95, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 6
-      }).map(function (sprite) {
-        sprite = new _EnemySprite.EnemySprite(_this2, sprite.x, sprite.y, _CST.CST.SPRITE.JASON, 1, "jason", 5);
-        sprite.body.setSize(22, 44);
-        sprite.setScale(1.5);
-        sprite.body.setOffset(16, 16);
-
-        _this2.enemySet.add(sprite);
-
-        _this2.enemyCont.add(sprite);
-
-        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
-
-        _this2.physics.add.collider(_this2.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
-
-
-        _this2.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
-      });
     }
   }, {
     key: "update",
@@ -1084,7 +1123,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.FirstLevel = FirstLevel;
-},{"../CST":"src/CST.js","../CharacterSprite":"src/CharacterSprite.js","../EnemySprite":"src/EnemySprite.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../CharacterSprite":"src/CharacterSprite.js","../EnemySprite":"src/EnemySprite.js","../LevelManager":"src/LevelManager.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1311,14 +1350,6 @@ var _ShopScene = require("./scenes/ShopScene");
  * Description: JavaScript file used to manage the phaser 3 game
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
-// THIS IS JUST HERE FOR QUICK USE MAKING NEW HEADERS FOR LATER FILES
-
-/* File Name: 
- * Author: Mathew Boland
- * Last Updated: 
- * Description: 
- *
-*/
 
 /** @type {import("../typings/phaser")}*/
 var game = new Phaser.Game({
@@ -1367,7 +1398,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58795" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63385" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
