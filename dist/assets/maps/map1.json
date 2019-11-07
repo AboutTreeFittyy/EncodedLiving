@@ -209,6 +209,24 @@
                  "width":44,
                  "x":468,
                  "y":92
+                }, 
+                {
+                 "gid":95,
+                 "height":80,
+                 "id":14,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"enemy",
+                         "type":"string",
+                         "value":"jason"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":44,
+                 "x":54,
+                 "y":105
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -217,7 +235,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":14,
+ "nextobjectid":15,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2019.09.18",
@@ -329,6 +347,19 @@
          "spacing":0,
          "tilecount":16,
          "tileheight":64,
+         "tilewidth":44
+        }, 
+        {
+         "columns":3,
+         "firstgid":95,
+         "image":"..\/sprite\/jason.png",
+         "imageheight":216,
+         "imagewidth":145,
+         "margin":0,
+         "name":"jason",
+         "spacing":0,
+         "tilecount":6,
+         "tileheight":80,
          "tilewidth":44
         }],
  "tilewidth":32,

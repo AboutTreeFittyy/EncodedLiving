@@ -164,11 +164,26 @@ export class FirstLevel extends Phaser.Scene{
             //This triggers when they hit an npc
             this.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, this);
         });
+         //using npcs 6 frame to have blank inserted as i make my own sprite after
+         map.createFromObjects("enemies", 95, {key: CST.SPRITE.NPCS, frame: 6}).map((sprite)=>{
+            sprite = new EnemySprite(this, sprite.x, sprite.y, CST.SPRITE.JASON, 1, "jason", 5);
+            sprite.body.setSize(22,44);
+            sprite.setScale(1.5);
+            sprite.body.setOffset(16,16);
+            this.enemySet.add(sprite);
+            this.enemyCont.add(sprite);
+            sprite.setCollideWorldBounds(true);
+            //This triggers when enemy hits player
+            this.physics.add.collider(this.player, sprite, sprite.enemyCollide, null, this);
+            //This triggers when they hit an npc
+            this.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, this);
+        });
     }
 
     update(){
         //Play enemy animations and move them as needed
         for(let i = 0; i < this.enemyCont.count('visible', true); i++){
+            //check for nerds
             if(this.enemyCont.list[i].name=="nerddown"){
                 this.enemyCont.list[i].play("nerd1down", true);
                 this.enemyCont.list[i].setVelocityY(90);
@@ -176,7 +191,21 @@ export class FirstLevel extends Phaser.Scene{
                 this.enemyCont.list[i].play("nerd1up", true);
                 this.enemyCont.list[i].setVelocityY(-90);
             }
-            
+            //check for jasons
+            if(this.enemyCont.list[i].name=="jason"){
+                //have jason look at player general direction unless behind
+                if(this.player.y > this.enemyCont.list[i].y+50){
+                    //face down
+                    this.enemyCont.list[i].setFrame(1);
+                }else if(this.player.x > this.enemyCont.list[i].x){
+                    //face right to player
+                    this.enemyCont.list[i].setFrame(7);
+                }else if(this.player.x < this.enemyCont.list[i].x){
+                    //face left to player
+                    this.enemyCont.list[i].setFrame(4);
+                }
+                
+            }
         }       
         //Set player movement on keypress
         if (this.keyboard.D.isDown === true) {

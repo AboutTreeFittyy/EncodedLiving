@@ -11,7 +11,8 @@ export const CST = {
 		FIRSTLEVEL: "FIRSTLEVEL",
 		LOAD: "LOAD",
 		MENU: "MENU",
-		PAUSE: "PAUSE"		
+		PAUSE: "PAUSE",
+		SHOP: "SHOP"		
 	},
 	IMAGE: {
 		ENCODEDLIVING:"encodedliving.png",
@@ -35,6 +36,7 @@ export const CST = {
 		WHIPD: "whip_down.png",
 		ITEM: "itemsall.png",
 		NPCS: "npcs.png",
-		NERD1: "nerd1.png"
+		NERD1: "nerd1.png",
+		JASON: "jason.png"
 	}
 }

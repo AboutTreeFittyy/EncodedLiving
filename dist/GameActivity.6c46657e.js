@@ -138,7 +138,8 @@ var CST = {
     FIRSTLEVEL: "FIRSTLEVEL",
     LOAD: "LOAD",
     MENU: "MENU",
-    PAUSE: "PAUSE"
+    PAUSE: "PAUSE",
+    SHOP: "SHOP"
   },
   IMAGE: {
     ENCODEDLIVING: "encodedliving.png",
@@ -162,7 +163,8 @@ var CST = {
     WHIPD: "whip_down.png",
     ITEM: "itemsall.png",
     NPCS: "npcs.png",
-    NERD1: "nerd1.png"
+    NERD1: "nerd1.png",
+    JASON: "jason.png"
   }
 };
 exports.CST = CST;
@@ -248,6 +250,11 @@ function (_Phaser$Scene) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 64,
             frameWidth: 44
+          });
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON) {
+          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+            frameHeight: 72,
+            frameWidth: 48
           });
         } else {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
@@ -813,6 +820,27 @@ function (_Phaser$Scene) {
 
 
         _this2.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
+      }); //using npcs 6 frame to have blank inserted as i make my own sprite after
+
+      map.createFromObjects("enemies", 95, {
+        key: _CST.CST.SPRITE.NPCS,
+        frame: 6
+      }).map(function (sprite) {
+        sprite = new _EnemySprite.EnemySprite(_this2, sprite.x, sprite.y, _CST.CST.SPRITE.JASON, 1, "jason", 5);
+        sprite.body.setSize(22, 44);
+        sprite.setScale(1.5);
+        sprite.body.setOffset(16, 16);
+
+        _this2.enemySet.add(sprite);
+
+        _this2.enemyCont.add(sprite);
+
+        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
+
+        _this2.physics.add.collider(_this2.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
+
+
+        _this2.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
       });
     }
   }, {
@@ -820,12 +848,28 @@ function (_Phaser$Scene) {
     value: function update() {
       //Play enemy animations and move them as needed
       for (var i = 0; i < this.enemyCont.count('visible', true); i++) {
+        //check for nerds
         if (this.enemyCont.list[i].name == "nerddown") {
           this.enemyCont.list[i].play("nerd1down", true);
           this.enemyCont.list[i].setVelocityY(90);
         } else if (this.enemyCont.list[i].name == "nerdup") {
           this.enemyCont.list[i].play("nerd1up", true);
           this.enemyCont.list[i].setVelocityY(-90);
+        } //check for jasons
+
+
+        if (this.enemyCont.list[i].name == "jason") {
+          //have jason look at player general direction unless behind
+          if (this.player.y > this.enemyCont.list[i].y + 50) {
+            //face down
+            this.enemyCont.list[i].setFrame(1);
+          } else if (this.player.x > this.enemyCont.list[i].x) {
+            //face right to player
+            this.enemyCont.list[i].setFrame(7);
+          } else if (this.player.x < this.enemyCont.list[i].x) {
+            //face left to player
+            this.enemyCont.list[i].setFrame(4);
+          }
         }
       } //Set player movement on keypress
 
@@ -1136,6 +1180,110 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.PauseScene = PauseScene;
+},{"../CST":"src/CST.js"}],"src/scenes/ShopScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ShopScene = void 0;
+
+var _CST = require("../CST");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var ShopScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(ShopScene, _Phaser$Scene);
+
+  function ShopScene() {
+    _classCallCheck(this, ShopScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(ShopScene).call(this, {
+      key: _CST.CST.SCENES.PAUSE
+    }));
+  }
+
+  _createClass(ShopScene, [{
+    key: "create",
+    value: function create() {
+      var _this = this;
+
+      //add in assets
+      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1);
+      var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
+      title.setY(title.height / 2);
+      var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
+      hoverSprite.setScale(2);
+      hoverSprite.setVisible(false); //animate sprites
+
+      this.anims.create({
+        key: "walk",
+        frameRate: 4,
+        repeat: -1,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
+          frames: [0, 1, 2, 3]
+        })
+      }); //create sounds for menu and pause!
+
+      /*this.sound.play(CST.AUDIO.TITLE, {
+      	loop: true
+            })*/
+      //make p resume game as well
+
+      this.input.keyboard.on('keyup-P', function () {
+        _this.sound.pauseAll();
+
+        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.stop();
+      }); //make buttons interactive
+
+      resume.setInteractive();
+      resume.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = resume.x - resume.width / 2 - 50;
+        hoverSprite.y = resume.y;
+      });
+      resume.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      resume.on("pointerup", function () {
+        _this.sound.pauseAll();
+
+        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.stop();
+      });
+    }
+  }, {
+    key: "preload",
+    value: function preload() {}
+  }]);
+
+  return ShopScene;
+}(Phaser.Scene);
+
+exports.ShopScene = ShopScene;
 },{"../CST":"src/CST.js"}],"src/GameActivity.js":[function(require,module,exports) {
 "use strict";
 
@@ -1146,6 +1294,8 @@ var _MenuScene = require("./scenes/MenuScene");
 var _FirstLevel = require("./scenes/FirstLevel");
 
 var _PauseScene = require("./scenes/PauseScene");
+
+var _ShopScene = require("./scenes/ShopScene");
 
 /* File Name: GameActivity.js
  * Author: Mathew Boland
@@ -1167,7 +1317,7 @@ var game = new Phaser.Game({
   width: 1600,
   height: 675,
   parent: 'my-canvas',
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene],
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene, _ShopScene.ShopScene],
   render: {
     pixelArt: true
   },
@@ -1181,7 +1331,7 @@ var game = new Phaser.Game({
     mode: Phaser.Scale.FIT
   }
 });
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js","./scenes/ShopScene":"src/scenes/ShopScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

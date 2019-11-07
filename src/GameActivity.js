@@ -16,12 +16,13 @@ import {LoadScene} from "./scenes/LoadScene";
 import {MenuScene} from "./scenes/MenuScene";
 import {FirstLevel} from "./scenes/FirstLevel";
 import {PauseScene} from "./scenes/PauseScene";
+import {ShopScene} from "./scenes/ShopScene";
 let game = new Phaser.Game({
 	width: 1600,
 	height: 675,
 	parent: 'my-canvas',
 	scene:[
-		LoadScene, MenuScene, FirstLevel, PauseScene
+		LoadScene, MenuScene, FirstLevel, PauseScene, ShopScene
 	],
 	render:{
 		pixelArt: true
