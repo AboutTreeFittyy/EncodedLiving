@@ -1,6 +1,6 @@
 /* File Name: EnemySprite.js
  * Author: Mathew Boland
- * Last Updated: November 4, 2019
+ * Last Updated: November 8, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -50,5 +50,33 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
             player.setVelocityX(-90);
             player.name = "nerd1right";
         }    
+        //Check if it's enemy thats set
+        if(enemy.name == "nerd2up"){
+            enemy.setVelocityY(-90);
+            enemy.name = "nerd2down";
+        } else if(enemy.name == "nerd2down"){
+            enemy.setVelocityY(90);
+            enemy.name = "nerd2up";
+        } else if(enemy.name == "nerd2right"){
+            enemy.setVelocityX(90);
+            enemy.name = "nerd2left";
+        } else if(enemy.name == "nerd2left"){
+            enemy.setVelocityX(-90);
+            enemy.name = "nerd2right";
+        }  
+        //Check if it's player thats set
+        if(player.name == "nerd2up"){
+            player.setVelocityY(-90);
+            player.name = "nerd2down";
+        } else if(player.name == "nerd2down"){
+            player.setVelocityY(90);
+            player.name = "nerd2up";
+        } else if(player.name == "nerd2right"){
+            player.setVelocityX(90);
+            player.name = "nerd2left";
+        } else if(player.name == "nerd2left"){
+            player.setVelocityX(-90);
+            player.name = "nerd2right";
+        }   
     }
 }

@@ -78,7 +78,6 @@ export class LevelManager{
                     }else if (this.scene.npcCont.list[i].startX + 50 < this.scene.npcCont.list[i].x){
                         //npc behind
                         this.scene.npcCont.list[i].setVelocityX(-128);
-                        //alert();
                         anim = "left";
                     }else{
                         this.scene.npcCont.list[i].setVelocityX(0);
@@ -106,9 +105,9 @@ export class LevelManager{
         } 
         //Scan through all the enemy objects to update them
         for(let i = 0; i < this.scene.enemyCont.count('visible', true); i++){
-            let anim = "nothing";  
+            let anim = "nothing"; 
             switch(this.scene.enemyCont.list[i].name){
-                /*case "nerd1down":
+                case "nerd1down":
                     this.scene.enemyCont.list[i].play("nerd1down", true);
                     this.scene.enemyCont.list[i].setVelocityY(90);
                     break;
@@ -124,19 +123,65 @@ export class LevelManager{
                         this.scene.enemyCont.list[i].play("nerd1right", true);
                         this.scene.enemyCont.list[i].setVelocityX(90);
                         break;
+                case "nerd2down":
+                    this.scene.enemyCont.list[i].play("nerd2down", true);
+                    this.scene.enemyCont.list[i].setVelocityY(90);
+                    break;
+                case "nerd2up":
+                    this.scene.enemyCont.list[i].play("nerd2up", true);
+                    this.scene.enemyCont.list[i].setVelocityY(-90);
+                    break;
+                case "nerd2left":
+                        this.scene.enemyCont.list[i].play("nerd2left", true);
+                        this.scene.enemyCont.list[i].setVelocityX(-90);
+                        break;
+                case "nerd2right":
+                        this.scene.enemyCont.list[i].play("nerd2right", true);
+                        this.scene.enemyCont.list[i].setVelocityX(90);
+                        break;
                 case "jason":
-                    //have jason look at player general direction unless behind
-                    if(this.scene.player.y > this.scene.enemyCont.list[i].y+50){
-                        //face down
-                        this.scene.enemyCont.list[i].setFrame(1);
-                    }else if(this.scene.player.x > this.scene.enemyCont.list[i].x){
-                        //face right to player
-                        this.scene.enemyCont.list[i].setFrame(7);
-                    }else if(this.scene.player.x < this.scene.enemyCont.list[i].x){
-                        //face left to player
-                        this.scene.enemyCont.list[i].setFrame(4);
+                    //Now check if they've been pushed from their origin
+                    if(this.scene.enemyCont.list[i].startY - 50 > this.scene.enemyCont.list[i].y){
+                        //npc below
+                        this.scene.enemyCont.list[i].setVelocityY(128);
+                        anim = "down";
+                    }else if (this.scene.enemyCont.list[i].startY + 50 < this.scene.enemyCont.list[i].y){
+                        //npc above
+                        this.scene.enemyCont.list[i].setVelocityY(-128);
+                        anim = "up";
+                    }else{
+                        this.scene.enemyCont.list[i].setVelocityY(0);
                     }
-                    break;*/
+                    if(this.scene.enemyCont.list[i].startX - 50 > this.scene.enemyCont.list[i].x){
+                        //npc in front
+                        this.scene.enemyCont.list[i].setVelocityX(128);
+                        anim = "right";
+                    }else if (this.scene.enemyCont.list[i].startX + 50 < this.scene.enemyCont.list[i].x){
+                        //npc behind
+                        this.scene.enemyCont.list[i].setVelocityX(-128);
+                        anim = "left";
+                    }else{
+                        this.scene.enemyCont.list[i].setVelocityX(0);
+                    }
+                    if(anim != "nothing"){
+                        this.scene.enemyCont.list[i].play("jason" + anim, true);
+                    }else{
+                        //have npc look at player general direction unless behind
+                        if(this.scene.player.y > this.scene.enemyCont.list[i].y+50){
+                            //face down
+                            this.scene.enemyCont.list[i].setFrame(4);
+                        }else if(this.scene.player.y < this.scene.enemyCont.list[i].y-50){
+                            //face up
+                            this.scene.enemyCont.list[i].setFrame(40);
+                        }else if(this.scene.player.x > this.scene.enemyCont.list[i].x){
+                            //face right to player
+                            this.scene.enemyCont.list[i].setFrame(28);
+                        }else if(this.scene.player.x < this.scene.enemyCont.list[i].x){
+                            //face left to player
+                            this.scene.enemyCont.list[i].setFrame(16);
+                        }
+                    }
+                    break;
             }
         } 
     }
@@ -253,11 +298,16 @@ export class LevelManager{
         this.scene.enemyCont = this.scene.add.container();
         //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
         //Make different enemies
-        /*this.createEnemies(80, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 2);
-        this.createEnemies(92, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2);
-        this.createEnemies(88, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2);
-        this.createEnemies(84, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2);
-        this.createEnemies(95, CST.SPRITE.NPCS, 6, CST.SPRITE.JASON, 1, "jason", 5, 1.5);*/
+        this.createEnemies(560, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 2);
+        this.createEnemies(564, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2);
+        this.createEnemies(568, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2);
+        this.createEnemies(572, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2);
+        this.createEnemies(576, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 2);
+        this.createEnemies(579, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 2);
+        this.createEnemies(582, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 2);
+        this.createEnemies(585, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 2);
+        this.createEnemies(467, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
+        this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
 
     createItems(key, frame, name){
@@ -270,16 +320,6 @@ export class LevelManager{
         });
     }
 
-    /*createNPCS(key, frame, name){
-        this.map.createFromObjects("npcs", key, {key: CST.SPRITE.NPCS, frame: frame}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            this.npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = name;
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-        });
-    }*/
     createNPCS(key, cst1, frame, cst2, down, up, left, right, name){
         this.map.createFromObjects("npcs", key, {key: cst1, frame: frame}).map((sprite)=>{
             sprite = new Sprite(this.scene, sprite.x, sprite.y, cst2, down, up, left, right, name);
@@ -288,7 +328,6 @@ export class LevelManager{
             sprite.body.setOffset(16,16);
             this.scene.npcSet.add(sprite);
             this.scene.npcCont.add(sprite);
-            //sprite.setCollideWorldBounds(true);
             //This triggers when enemy hits player
             this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
         });
@@ -306,7 +345,7 @@ export class LevelManager{
             //This triggers when enemy hits player
             this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
             //This triggers when they hit an npc
-            //this.scene.physics.add.collider(this.npcSet, sprite, sprite.enemyCollide, null, this);
+            this.scene.physics.add.collider(this.scene.npcSet, sprite, sprite.enemyCollide, null, this);
         });
     }
 }

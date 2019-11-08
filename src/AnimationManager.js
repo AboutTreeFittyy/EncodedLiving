@@ -18,6 +18,16 @@ export class AnimationManager{
         this.createAnimation("nerd1right", 15, CST.SPRITE.NERD1, 9, 11, false);
         this.createAnimation("nerd1down", 15, CST.SPRITE.NERD1, 1, 3, false);
         this.createAnimation("nerd1up", 15, CST.SPRITE.NERD1, 13, 15, false);
+        //Nerd variant 2 animations
+        this.createAnimation("nerd2left", 15, CST.SPRITE.NERD2, 5, 7, false);
+        this.createAnimation("nerd2right", 15, CST.SPRITE.NERD2, 9, 11, false);
+        this.createAnimation("nerd2down", 15, CST.SPRITE.NERD2, 1, 3, false);
+        this.createAnimation("nerd2up", 15, CST.SPRITE.NERD2, 13, 15, false);
+        //Jason enemy animations
+        this.createAnimation("jasonleft", 10, CST.SPRITE.NPC_LOT, 15, 17, false);
+        this.createAnimation("jasonright", 10, CST.SPRITE.NPC_LOT, 27, 29, false);
+        this.createAnimation("jasondown", 10, CST.SPRITE.NPC_LOT, 3, 5, false);
+        this.createAnimation("jasonup", 10, CST.SPRITE.NPC_LOT, 39, 41, false);
         //Nicole npc walking sprites
         this.createAnimation("nicoledown", 10, CST.SPRITE.NPC_LOT, 6, 8, false);
         this.createAnimation("nicoleleft", 10, CST.SPRITE.NPC_LOT, 18, 20, false);

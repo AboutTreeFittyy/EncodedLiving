@@ -40,6 +40,7 @@ export const CST = {
 		ITEM: "itemsall.png",
 		NPCS: "npcs.png",
 		NERD1: "nerd1.png",
+		NERD2: "nerd2.png",
 		JASON: "jason.png",
 		NPC_LOT: "npc_lot.png"
 	}

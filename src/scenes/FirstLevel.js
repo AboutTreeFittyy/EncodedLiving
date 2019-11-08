@@ -29,12 +29,12 @@ export class FirstLevel extends Phaser.Scene{
         let terrain3 = mappy.addTilesetImage("ground3");         
         //layers
         mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
-        let topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
+        this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
         //Create the level using this scene and the map made above
         this.lm = new LevelManager(this, mappy); 
         //map collisions
-        this.physics.add.collider(this.player, topLayer);
-        topLayer.setCollisionByProperty({collides:true});               
+        this.physics.add.collider(this.player, this.topLayer);
+        this.topLayer.setCollisionByProperty({collides:true});               
     }   
 
     update(){

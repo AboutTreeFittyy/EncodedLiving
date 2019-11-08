@@ -167,6 +167,7 @@ var CST = {
     ITEM: "itemsall.png",
     NPCS: "npcs.png",
     NERD1: "nerd1.png",
+    NERD2: "nerd2.png",
     JASON: "jason.png",
     NPC_LOT: "npc_lot.png"
   }
@@ -250,12 +251,7 @@ function (_Phaser$Scene) {
             frameHeight: 80,
             frameWidth: 44
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD1) {
-          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
-            frameHeight: 64,
-            frameWidth: 45
-          });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NPC_LOT) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD1 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD2 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NPC_LOT) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 64,
             frameWidth: 48
@@ -494,7 +490,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 /* File Name: EnemySprite.js
  * Author: Mathew Boland
- * Last Updated: November 4, 2019
+ * Last Updated: November 8, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -558,6 +554,36 @@ function (_Phaser$Physics$Arcad) {
       } else if (player.name == "nerd1left") {
         player.setVelocityX(-90);
         player.name = "nerd1right";
+      } //Check if it's enemy thats set
+
+
+      if (enemy.name == "nerd2up") {
+        enemy.setVelocityY(-90);
+        enemy.name = "nerd2down";
+      } else if (enemy.name == "nerd2down") {
+        enemy.setVelocityY(90);
+        enemy.name = "nerd2up";
+      } else if (enemy.name == "nerd2right") {
+        enemy.setVelocityX(90);
+        enemy.name = "nerd2left";
+      } else if (enemy.name == "nerd2left") {
+        enemy.setVelocityX(-90);
+        enemy.name = "nerd2right";
+      } //Check if it's player thats set
+
+
+      if (player.name == "nerd2up") {
+        player.setVelocityY(-90);
+        player.name = "nerd2down";
+      } else if (player.name == "nerd2down") {
+        player.setVelocityY(90);
+        player.name = "nerd2up";
+      } else if (player.name == "nerd2right") {
+        player.setVelocityX(90);
+        player.name = "nerd2left";
+      } else if (player.name == "nerd2left") {
+        player.setVelocityX(-90);
+        player.name = "nerd2right";
       }
     }
   }]);
@@ -753,8 +779,7 @@ function () {
               anim = "right";
             } else if (this.scene.npcCont.list[i].startX + 50 < this.scene.npcCont.list[i].x) {
               //npc behind
-              this.scene.npcCont.list[i].setVelocityX(-128); //alert();
-
+              this.scene.npcCont.list[i].setVelocityX(-128);
               anim = "left";
             } else {
               this.scene.npcCont.list[i].setVelocityX(0);
@@ -787,7 +812,114 @@ function () {
       for (var _i = 0; _i < this.scene.enemyCont.count('visible', true); _i++) {
         var _anim = "nothing";
 
-        switch (this.scene.enemyCont.list[_i].name) {}
+        switch (this.scene.enemyCont.list[_i].name) {
+          case "nerd1down":
+            this.scene.enemyCont.list[_i].play("nerd1down", true);
+
+            this.scene.enemyCont.list[_i].setVelocityY(90);
+
+            break;
+
+          case "nerd1up":
+            this.scene.enemyCont.list[_i].play("nerd1up", true);
+
+            this.scene.enemyCont.list[_i].setVelocityY(-90);
+
+            break;
+
+          case "nerd1left":
+            this.scene.enemyCont.list[_i].play("nerd1left", true);
+
+            this.scene.enemyCont.list[_i].setVelocityX(-90);
+
+            break;
+
+          case "nerd1right":
+            this.scene.enemyCont.list[_i].play("nerd1right", true);
+
+            this.scene.enemyCont.list[_i].setVelocityX(90);
+
+            break;
+
+          case "nerd2down":
+            this.scene.enemyCont.list[_i].play("nerd2down", true);
+
+            this.scene.enemyCont.list[_i].setVelocityY(90);
+
+            break;
+
+          case "nerd2up":
+            this.scene.enemyCont.list[_i].play("nerd2up", true);
+
+            this.scene.enemyCont.list[_i].setVelocityY(-90);
+
+            break;
+
+          case "nerd2left":
+            this.scene.enemyCont.list[_i].play("nerd2left", true);
+
+            this.scene.enemyCont.list[_i].setVelocityX(-90);
+
+            break;
+
+          case "nerd2right":
+            this.scene.enemyCont.list[_i].play("nerd2right", true);
+
+            this.scene.enemyCont.list[_i].setVelocityX(90);
+
+            break;
+
+          case "jason":
+            //Now check if they've been pushed from their origin
+            if (this.scene.enemyCont.list[_i].startY - 50 > this.scene.enemyCont.list[_i].y) {
+              //npc below
+              this.scene.enemyCont.list[_i].setVelocityY(128);
+
+              _anim = "down";
+            } else if (this.scene.enemyCont.list[_i].startY + 50 < this.scene.enemyCont.list[_i].y) {
+              //npc above
+              this.scene.enemyCont.list[_i].setVelocityY(-128);
+
+              _anim = "up";
+            } else {
+              this.scene.enemyCont.list[_i].setVelocityY(0);
+            }
+
+            if (this.scene.enemyCont.list[_i].startX - 50 > this.scene.enemyCont.list[_i].x) {
+              //npc in front
+              this.scene.enemyCont.list[_i].setVelocityX(128);
+
+              _anim = "right";
+            } else if (this.scene.enemyCont.list[_i].startX + 50 < this.scene.enemyCont.list[_i].x) {
+              //npc behind
+              this.scene.enemyCont.list[_i].setVelocityX(-128);
+
+              _anim = "left";
+            } else {
+              this.scene.enemyCont.list[_i].setVelocityX(0);
+            }
+
+            if (_anim != "nothing") {
+              this.scene.enemyCont.list[_i].play("jason" + _anim, true);
+            } else {
+              //have npc look at player general direction unless behind
+              if (this.scene.player.y > this.scene.enemyCont.list[_i].y + 50) {
+                //face down
+                this.scene.enemyCont.list[_i].setFrame(4);
+              } else if (this.scene.player.y < this.scene.enemyCont.list[_i].y - 50) {
+                //face up
+                this.scene.enemyCont.list[_i].setFrame(40);
+              } else if (this.scene.player.x > this.scene.enemyCont.list[_i].x) {
+                //face right to player
+                this.scene.enemyCont.list[_i].setFrame(28);
+              } else if (this.scene.player.x < this.scene.enemyCont.list[_i].x) {
+                //face left to player
+                this.scene.enemyCont.list[_i].setFrame(16);
+              }
+            }
+
+            break;
+        }
       }
     }
   }, {
@@ -930,11 +1062,16 @@ function () {
       this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
       //Make different enemies
 
-      /*this.createEnemies(80, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 2);
-      this.createEnemies(92, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2);
-      this.createEnemies(88, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2);
-      this.createEnemies(84, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2);
-      this.createEnemies(95, CST.SPRITE.NPCS, 6, CST.SPRITE.JASON, 1, "jason", 5, 1.5);*/
+      this.createEnemies(560, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 2);
+      this.createEnemies(564, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 2);
+      this.createEnemies(568, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 2);
+      this.createEnemies(572, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 2);
+      this.createEnemies(576, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 2);
+      this.createEnemies(579, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 2);
+      this.createEnemies(582, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 2);
+      this.createEnemies(585, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 2);
+      this.createEnemies(467, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
+      this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
   }, {
     key: "createItems",
@@ -954,17 +1091,6 @@ function () {
         sprite.body.setOffset(0, 0);
       });
     }
-    /*createNPCS(key, frame, name){
-        this.map.createFromObjects("npcs", key, {key: CST.SPRITE.NPCS, frame: frame}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            this.npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = name;
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-        });
-    }*/
-
   }, {
     key: "createNPCS",
     value: function createNPCS(key, cst1, frame, cst2, down, up, left, right, name) {
@@ -981,8 +1107,7 @@ function () {
 
         _this3.scene.npcSet.add(sprite);
 
-        _this3.scene.npcCont.add(sprite); //sprite.setCollideWorldBounds(true);
-        //This triggers when enemy hits player
+        _this3.scene.npcCont.add(sprite); //This triggers when enemy hits player
 
 
         _this3.scene.physics.add.collider(_this3.scene.player, sprite, sprite.enemyCollide, null, _this3);
@@ -1009,8 +1134,9 @@ function () {
         sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
 
         _this4.scene.physics.add.collider(_this4.scene.player, sprite, sprite.enemyCollide, null, _this4); //This triggers when they hit an npc
-        //this.scene.physics.add.collider(this.npcSet, sprite, sprite.enemyCollide, null, this);
 
+
+        _this4.scene.physics.add.collider(_this4.scene.npcSet, sprite, sprite.enemyCollide, null, _this4);
       });
     }
   }]);
@@ -1051,7 +1177,17 @@ function () {
       this.createAnimation("nerd1left", 15, _CST.CST.SPRITE.NERD1, 5, 7, false);
       this.createAnimation("nerd1right", 15, _CST.CST.SPRITE.NERD1, 9, 11, false);
       this.createAnimation("nerd1down", 15, _CST.CST.SPRITE.NERD1, 1, 3, false);
-      this.createAnimation("nerd1up", 15, _CST.CST.SPRITE.NERD1, 13, 15, false); //Nicole npc walking sprites
+      this.createAnimation("nerd1up", 15, _CST.CST.SPRITE.NERD1, 13, 15, false); //Nerd variant 2 animations
+
+      this.createAnimation("nerd2left", 15, _CST.CST.SPRITE.NERD2, 5, 7, false);
+      this.createAnimation("nerd2right", 15, _CST.CST.SPRITE.NERD2, 9, 11, false);
+      this.createAnimation("nerd2down", 15, _CST.CST.SPRITE.NERD2, 1, 3, false);
+      this.createAnimation("nerd2up", 15, _CST.CST.SPRITE.NERD2, 13, 15, false); //Jason enemy animations
+
+      this.createAnimation("jasonleft", 10, _CST.CST.SPRITE.NPC_LOT, 15, 17, false);
+      this.createAnimation("jasonright", 10, _CST.CST.SPRITE.NPC_LOT, 27, 29, false);
+      this.createAnimation("jasondown", 10, _CST.CST.SPRITE.NPC_LOT, 3, 5, false);
+      this.createAnimation("jasonup", 10, _CST.CST.SPRITE.NPC_LOT, 39, 41, false); //Nicole npc walking sprites
 
       this.createAnimation("nicoledown", 10, _CST.CST.SPRITE.NPC_LOT, 6, 8, false);
       this.createAnimation("nicoleleft", 10, _CST.CST.SPRITE.NPC_LOT, 18, 20, false);
@@ -1179,12 +1315,12 @@ function (_Phaser$Scene) {
       var terrain3 = mappy.addTilesetImage("ground3"); //layers
 
       mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
-      var topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2); //Create the level using this scene and the map made above
+      this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2); //Create the level using this scene and the map made above
 
       this.lm = new _LevelManager.LevelManager(this, mappy); //map collisions
 
-      this.physics.add.collider(this.player, topLayer);
-      topLayer.setCollisionByProperty({
+      this.physics.add.collider(this.player, this.topLayer);
+      this.topLayer.setCollisionByProperty({
         collides: true
       });
     }
@@ -1536,7 +1672,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63385" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56600" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
