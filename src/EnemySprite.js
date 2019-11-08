@@ -22,20 +22,33 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
     }
 
     enemyCollide(player, enemy){
-        //Make sure that you can't just keep talking to someone 
-        if(enemy.name == "nerdup"){
+        //Check if it's enemy thats set
+        if(enemy.name == "nerd1up"){
             enemy.setVelocityY(-90);
-            enemy.name = "nerddown";
-        } else if(enemy.name == "nerddown"){
+            enemy.name = "nerd1down";
+        } else if(enemy.name == "nerd1down"){
             enemy.setVelocityY(90);
-            enemy.name = "nerdup";
+            enemy.name = "nerd1up";
+        } else if(enemy.name == "nerd1right"){
+            enemy.setVelocityX(90);
+            enemy.name = "nerd1left";
+        } else if(enemy.name == "nerd1left"){
+            enemy.setVelocityX(-90);
+            enemy.name = "nerd1right";
         }  
-        if(player.name == "nerdup"){
+        //Check if it's player thats set
+        if(player.name == "nerd1up"){
             player.setVelocityY(-90);
-            player.name = "nerddown";
-        } else if(player.name == "nerddown"){
+            player.name = "nerd1down";
+        } else if(player.name == "nerd1down"){
             player.setVelocityY(90);
-            player.name = "nerdup";
+            player.name = "nerd1up";
+        } else if(player.name == "nerd1right"){
+            player.setVelocityX(90);
+            player.name = "nerd1left";
+        } else if(player.name == "nerd1left"){
+            player.setVelocityX(-90);
+            player.name = "nerd1right";
         }    
     }
 }

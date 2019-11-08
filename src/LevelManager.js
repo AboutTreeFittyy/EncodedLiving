@@ -19,6 +19,42 @@ export class LevelManager{
         this.setInputs();
     }
 
+    updateEnemies(){
+        for(let i = 0; i < this.scene.enemyCont.count('visible', true); i++){
+            switch(this.scene.enemyCont.list[i].name){
+                case "nerd1down":
+                    this.scene.enemyCont.list[i].play("nerd1down", true);
+                    this.scene.enemyCont.list[i].setVelocityY(90);
+                    break;
+                case "nerd1up":
+                    this.scene.enemyCont.list[i].play("nerd1up", true);
+                    this.scene.enemyCont.list[i].setVelocityY(-90);
+                    break;
+                case "nerd1left":
+                        this.scene.enemyCont.list[i].play("nerd1left", true);
+                        this.scene.enemyCont.list[i].setVelocityX(-90);
+                        break;
+                case "nerd1right":
+                        this.scene.enemyCont.list[i].play("nerd1right", true);
+                        this.scene.enemyCont.list[i].setVelocityX(90);
+                        break;
+                case "jason":
+                    //have jason look at player general direction unless behind
+                    if(this.scene.player.y > this.scene.enemyCont.list[i].y+50){
+                        //face down
+                        this.scene.enemyCont.list[i].setFrame(1);
+                    }else if(this.scene.player.x > this.scene.enemyCont.list[i].x){
+                        //face right to player
+                        this.scene.enemyCont.list[i].setFrame(7);
+                    }else if(this.scene.player.x < this.scene.enemyCont.list[i].x){
+                        //face left to player
+                        this.scene.enemyCont.list[i].setFrame(4);
+                    }
+                    break;
+            }
+        } 
+    }
+
     setPlayer(){
         //add game sprites              
         this.scene.player = new CharacterSprite(this.scene, 400, 400, CST.SPRITE.PLAYER, 130);
@@ -98,63 +134,60 @@ export class LevelManager{
     }
 
     setObjects(){
-        //get interactive objects from the map
-        let itemSet = this.scene.physics.add.group();
-        this.map.createFromObjects("items", 67, {key: CST.SPRITE.ITEM, frame: 2}).map((sprite)=>{            
+        //Make item physcis group
+        this.itemSet = this.scene.physics.add.group();
+        //Make items from map
+        this.createItems(67, 2, "money");
+        //add the collider for all the items
+        this.scene.physics.add.collider(this.scene.player, this.itemSet, this.scene.player.collectItem, null, this);
+        //make group for npcs physics
+        this.npcSet = this.scene.physics.add.group();
+        //make npcs from map
+        this.createNPCS(69, 0, "Nicole");
+        this.createNPCS(71, 2, "Hannah");
+        this.createNPCS(72, 3, "Claire");
+        this.createNPCS(73, 4, "Stevie");
+        //add the collider for all the npcs
+        this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
+        //make enemies group and container to handle them with
+        this.scene.enemySet = this.scene.physics.add.group();
+        this.scene.enemyCont = this.scene.add.container();
+        //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
+        //Make different enemies
+        this.createEnemies(80, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 2)
+        this.createEnemies(92, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2)
+        this.createEnemies(88, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2)
+        this.createEnemies(84, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2)
+        this.createEnemies(95, CST.SPRITE.NPCS, 6, CST.SPRITE.JASON, 1, "jason", 5, 1.5);
+    }
+
+    createItems(key, frame, name){
+        this.map.createFromObjects("items", key, {key: CST.SPRITE.ITEM, frame: frame}).map((sprite)=>{            
             //enable body for the items to interact with player collision
-            itemSet.add(sprite);
+            sprite.name = name;
+            this.itemSet.add(sprite);
             sprite.setSize(32,32);
             sprite.body.setOffset(0,0);
         });
-        //add the collider for all the items
-        this.scene.physics.add.collider(this.scene.player, itemSet, this.scene.player.collectItem, null, this);
-        //make npcs
-        let npcSet = this.scene.physics.add.group();
-        this.map.createFromObjects("npcs", 69, {key: CST.SPRITE.NPCS, frame: 0}).map((sprite)=>{            
+    }
+
+    createNPCS(key, frame, name){
+        this.map.createFromObjects("npcs", key, {key: CST.SPRITE.NPCS, frame: frame}).map((sprite)=>{            
             //enable body for the items to interact with player collision
-            npcSet.add(sprite);
+            this.npcSet.add(sprite);
             sprite.setScale(1.5);
-            sprite.name = "Nicole";
+            sprite.name = name;
             sprite.setSize(128,240);
             sprite.body.setOffset(0,0);
             sprite.body.immovable = true;
         });
-        this.map.createFromObjects("npcs", 71, {key: CST.SPRITE.NPCS, frame: 2}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = "Hannah";
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-            sprite.body.immovable = true;
-        });
-        this.map.createFromObjects("npcs", 72, {key: CST.SPRITE.NPCS, frame: 3}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = "Claire";
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-            sprite.body.immovable = true;
-        });
-        this.map.createFromObjects("npcs", 73, {key: CST.SPRITE.NPCS, frame: 4}).map((sprite)=>{            
-            //enable body for the items to interact with player collision
-            npcSet.add(sprite);
-            sprite.setScale(1.5);
-            sprite.name = "Stevie";
-            sprite.setSize(128,240);
-            sprite.body.setOffset(0,0);
-            sprite.body.immovable = true;
-        });
-        //add the collider for all the npcs
-        this.scene.physics.add.collider(this.scene.player, npcSet, this.scene.player.npcSpeak, null, this);
-        //make enemies
-        this.scene.enemySet = this.scene.physics.add.group();
-        this.scene.enemyCont = this.scene.add.container();
-        //using npcs 6 frame to have blank inserted as i make my own sprite after
-        this.map.createFromObjects("enemies", 80, {key: CST.SPRITE.NPCS, frame: 6}).map((sprite)=>{
-            sprite = new EnemySprite(this.scene, sprite.x, sprite.y, CST.SPRITE.NERD1, 1, "nerddown", 5);
+    }
+
+    createEnemies(key, cst1, frame, cst2, st, name, hp, size){
+        this.map.createFromObjects("enemies", key, {key: cst1, frame: frame}).map((sprite)=>{
+            sprite = new EnemySprite(this.scene, sprite.x, sprite.y, cst2, st, name, hp);
             sprite.body.setSize(22,44);
+            sprite.setScale(size);
             sprite.body.setOffset(16,16);
             this.scene.enemySet.add(sprite);
             this.scene.enemyCont.add(sprite);
@@ -162,21 +195,7 @@ export class LevelManager{
             //This triggers when enemy hits player
             this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
             //This triggers when they hit an npc
-            this.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, this);
-        });
-         //using npcs 6 frame to have blank inserted as i make my own sprite after
-         this.map.createFromObjects("enemies", 95, {key: CST.SPRITE.NPCS, frame: 6}).map((sprite)=>{
-            sprite = new EnemySprite(this.scene, sprite.x, sprite.y, CST.SPRITE.JASON, 1, "jason", 5);
-            sprite.body.setSize(22,44);
-            sprite.setScale(1.5);
-            sprite.body.setOffset(16,16);
-            this.scene.enemySet.add(sprite);
-            this.scene.enemyCont.add(sprite);
-            sprite.setCollideWorldBounds(true);
-            //This triggers when enemy hits player
-            this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
-            //This triggers when they hit an npc
-            this.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, this);
+            this.scene.physics.add.collider(this.npcSet, sprite, sprite.enemyCollide, null, this);
         });
     }
 }

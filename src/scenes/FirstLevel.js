@@ -1,10 +1,9 @@
 /* File Name: FirstLevel.js
  * Author: Mathew Boland
- * Last Updated: November 4, 2019
+ * Last Updated: November 7, 2019
  * Description: This class is used to create the scene for the first level of the game.
  * With the help of other classes it creates the user interface, keybindings, map, saves 
  * progress and makes animations. 
- * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
 import {CST} from "../CST";
 import { LevelManager } from "../LevelManager";
@@ -38,30 +37,7 @@ export class FirstLevel extends Phaser.Scene{
 
     update(){
         //Play enemy animations and move them as needed
-        for(let i = 0; i < this.enemyCont.count('visible', true); i++){
-            //check for nerds
-            if(this.enemyCont.list[i].name=="nerddown"){
-                this.enemyCont.list[i].play("nerd1down", true);
-                this.enemyCont.list[i].setVelocityY(90);
-            }else if(this.enemyCont.list[i].name=="nerdup"){
-                this.enemyCont.list[i].play("nerd1up", true);
-                this.enemyCont.list[i].setVelocityY(-90);
-            }
-            //check for jasons
-            if(this.enemyCont.list[i].name=="jason"){
-                //have jason look at player general direction unless behind
-                if(this.player.y > this.enemyCont.list[i].y+50){
-                    //face down
-                    this.enemyCont.list[i].setFrame(1);
-                }else if(this.player.x > this.enemyCont.list[i].x){
-                    //face right to player
-                    this.enemyCont.list[i].setFrame(7);
-                }else if(this.player.x < this.enemyCont.list[i].x){
-                    //face left to player
-                    this.enemyCont.list[i].setFrame(4);
-                }                
-            }
-        }       
+        this.lm.updateEnemies();      
         //Set player movement on keypress
         if (this.keyboard.D.isDown === true) {
             this.player.setVelocityX(128);

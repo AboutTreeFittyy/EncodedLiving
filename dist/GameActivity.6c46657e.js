@@ -252,7 +252,7 @@ function (_Phaser$Scene) {
         } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD1) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 64,
-            frameWidth: 44
+            frameWidth: 45
           });
         } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
@@ -474,21 +474,34 @@ function (_Phaser$Physics$Arcad) {
   _createClass(EnemySprite, [{
     key: "enemyCollide",
     value: function enemyCollide(player, enemy) {
-      //Make sure that you can't just keep talking to someone 
-      if (enemy.name == "nerdup") {
+      //Check if it's enemy thats set
+      if (enemy.name == "nerd1up") {
         enemy.setVelocityY(-90);
-        enemy.name = "nerddown";
-      } else if (enemy.name == "nerddown") {
+        enemy.name = "nerd1down";
+      } else if (enemy.name == "nerd1down") {
         enemy.setVelocityY(90);
-        enemy.name = "nerdup";
-      }
+        enemy.name = "nerd1up";
+      } else if (enemy.name == "nerd1right") {
+        enemy.setVelocityX(90);
+        enemy.name = "nerd1left";
+      } else if (enemy.name == "nerd1left") {
+        enemy.setVelocityX(-90);
+        enemy.name = "nerd1right";
+      } //Check if it's player thats set
 
-      if (player.name == "nerdup") {
+
+      if (player.name == "nerd1up") {
         player.setVelocityY(-90);
-        player.name = "nerddown";
-      } else if (player.name == "nerddown") {
+        player.name = "nerd1down";
+      } else if (player.name == "nerd1down") {
         player.setVelocityY(90);
-        player.name = "nerdup";
+        player.name = "nerd1up";
+      } else if (player.name == "nerd1right") {
+        player.setVelocityX(90);
+        player.name = "nerd1left";
+      } else if (player.name == "nerd1left") {
+        player.setVelocityX(-90);
+        player.name = "nerd1right";
       }
     }
   }]);
@@ -619,6 +632,48 @@ function () {
   }
 
   _createClass(LevelManager, [{
+    key: "updateEnemies",
+    value: function updateEnemies() {
+      for (var i = 0; i < this.scene.enemyCont.count('visible', true); i++) {
+        switch (this.scene.enemyCont.list[i].name) {
+          case "nerd1down":
+            this.scene.enemyCont.list[i].play("nerd1down", true);
+            this.scene.enemyCont.list[i].setVelocityY(90);
+            break;
+
+          case "nerd1up":
+            this.scene.enemyCont.list[i].play("nerd1up", true);
+            this.scene.enemyCont.list[i].setVelocityY(-90);
+            break;
+
+          case "nerd1left":
+            this.scene.enemyCont.list[i].play("nerd1left", true);
+            this.scene.enemyCont.list[i].setVelocityX(-90);
+            break;
+
+          case "nerd1right":
+            this.scene.enemyCont.list[i].play("nerd1right", true);
+            this.scene.enemyCont.list[i].setVelocityX(90);
+            break;
+
+          case "jason":
+            //have jason look at player general direction unless behind
+            if (this.scene.player.y > this.scene.enemyCont.list[i].y + 50) {
+              //face down
+              this.scene.enemyCont.list[i].setFrame(1);
+            } else if (this.scene.player.x > this.scene.enemyCont.list[i].x) {
+              //face right to player
+              this.scene.enemyCont.list[i].setFrame(7);
+            } else if (this.scene.player.x < this.scene.enemyCont.list[i].x) {
+              //face left to player
+              this.scene.enemyCont.list[i].setFrame(4);
+            }
+
+            break;
+        }
+      }
+    }
+  }, {
     key: "setPlayer",
     value: function setPlayer() {
       //add game sprites              
@@ -726,116 +781,93 @@ function () {
   }, {
     key: "setObjects",
     value: function setObjects() {
-      var _this2 = this;
+      //Make item physcis group
+      this.itemSet = this.scene.physics.add.group(); //Make items from map
 
-      //get interactive objects from the map
-      var itemSet = this.scene.physics.add.group();
-      this.map.createFromObjects("items", 67, {
-        key: _CST.CST.SPRITE.ITEM,
-        frame: 2
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        itemSet.add(sprite);
-        sprite.setSize(32, 32);
-        sprite.body.setOffset(0, 0);
-      }); //add the collider for all the items
+      this.createItems(67, 2, "money"); //add the collider for all the items
 
-      this.scene.physics.add.collider(this.scene.player, itemSet, this.scene.player.collectItem, null, this); //make npcs
+      this.scene.physics.add.collider(this.scene.player, this.itemSet, this.scene.player.collectItem, null, this); //make group for npcs physics
 
-      var npcSet = this.scene.physics.add.group();
-      this.map.createFromObjects("npcs", 69, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 0
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Nicole";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      });
-      this.map.createFromObjects("npcs", 71, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 2
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Hannah";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      });
-      this.map.createFromObjects("npcs", 72, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 3
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Claire";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      });
-      this.map.createFromObjects("npcs", 73, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 4
-      }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        npcSet.add(sprite);
-        sprite.setScale(1.5);
-        sprite.name = "Stevie";
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
-      }); //add the collider for all the npcs
+      this.npcSet = this.scene.physics.add.group(); //make npcs from map
 
-      this.scene.physics.add.collider(this.scene.player, npcSet, this.scene.player.npcSpeak, null, this); //make enemies
+      this.createNPCS(69, 0, "Nicole");
+      this.createNPCS(71, 2, "Hannah");
+      this.createNPCS(72, 3, "Claire");
+      this.createNPCS(73, 4, "Stevie"); //add the collider for all the npcs
+
+      this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this); //make enemies group and container to handle them with
 
       this.scene.enemySet = this.scene.physics.add.group();
-      this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank inserted as i make my own sprite after
+      this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
+      //Make different enemies
 
-      this.map.createFromObjects("enemies", 80, {
-        key: _CST.CST.SPRITE.NPCS,
-        frame: 6
+      this.createEnemies(80, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 2);
+      this.createEnemies(92, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 2);
+      this.createEnemies(88, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 2);
+      this.createEnemies(84, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 2);
+      this.createEnemies(95, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.JASON, 1, "jason", 5, 1.5);
+    }
+  }, {
+    key: "createItems",
+    value: function createItems(key, frame, name) {
+      var _this2 = this;
+
+      this.map.createFromObjects("items", key, {
+        key: _CST.CST.SPRITE.ITEM,
+        frame: frame
       }).map(function (sprite) {
-        sprite = new _EnemySprite.EnemySprite(_this2.scene, sprite.x, sprite.y, _CST.CST.SPRITE.NERD1, 1, "nerddown", 5);
-        sprite.body.setSize(22, 44);
-        sprite.body.setOffset(16, 16);
+        //enable body for the items to interact with player collision
+        sprite.name = name;
 
-        _this2.scene.enemySet.add(sprite);
+        _this2.itemSet.add(sprite);
 
-        _this2.scene.enemyCont.add(sprite);
+        sprite.setSize(32, 32);
+        sprite.body.setOffset(0, 0);
+      });
+    }
+  }, {
+    key: "createNPCS",
+    value: function createNPCS(key, frame, name) {
+      var _this3 = this;
 
-        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
-
-        _this2.scene.physics.add.collider(_this2.scene.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
-
-
-        _this2.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
-      }); //using npcs 6 frame to have blank inserted as i make my own sprite after
-
-      this.map.createFromObjects("enemies", 95, {
+      this.map.createFromObjects("npcs", key, {
         key: _CST.CST.SPRITE.NPCS,
-        frame: 6
+        frame: frame
       }).map(function (sprite) {
-        sprite = new _EnemySprite.EnemySprite(_this2.scene, sprite.x, sprite.y, _CST.CST.SPRITE.JASON, 1, "jason", 5);
-        sprite.body.setSize(22, 44);
+        //enable body for the items to interact with player collision
+        _this3.npcSet.add(sprite);
+
         sprite.setScale(1.5);
+        sprite.name = name;
+        sprite.setSize(128, 240);
+        sprite.body.setOffset(0, 0);
+        sprite.body.immovable = true;
+      });
+    }
+  }, {
+    key: "createEnemies",
+    value: function createEnemies(key, cst1, frame, cst2, st, name, hp, size) {
+      var _this4 = this;
+
+      this.map.createFromObjects("enemies", key, {
+        key: cst1,
+        frame: frame
+      }).map(function (sprite) {
+        sprite = new _EnemySprite.EnemySprite(_this4.scene, sprite.x, sprite.y, cst2, st, name, hp);
+        sprite.body.setSize(22, 44);
+        sprite.setScale(size);
         sprite.body.setOffset(16, 16);
 
-        _this2.scene.enemySet.add(sprite);
+        _this4.scene.enemySet.add(sprite);
 
-        _this2.scene.enemyCont.add(sprite);
+        _this4.scene.enemyCont.add(sprite);
 
         sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
 
-        _this2.scene.physics.add.collider(_this2.scene.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
+        _this4.scene.physics.add.collider(_this4.scene.player, sprite, sprite.enemyCollide, null, _this4); //This triggers when they hit an npc
 
 
-        _this2.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
+        _this4.scene.physics.add.collider(_this4.npcSet, sprite, sprite.enemyCollide, null, _this4);
       });
     }
   }]);
@@ -873,20 +905,20 @@ function () {
     key: "setAnimations",
     value: function setAnimations() {
       //Nerd variant 1 animations
-      this.createAnimation("nerd1left", 5, _CST.CST.SPRITE.NERD1, 5, 7, false);
-      this.createAnimation("nerd1right", 5, _CST.CST.SPRITE.NERD1, 9, 11, false);
-      this.createAnimation("nerd1down", 5, _CST.CST.SPRITE.NERD1, 1, 3, false);
-      this.createAnimation("nerd1up", 5, _CST.CST.SPRITE.NERD1, 13, 15, false); //My poorly made whip sprites       
+      this.createAnimation("nerd1left", 15, _CST.CST.SPRITE.NERD1, 5, 7, false);
+      this.createAnimation("nerd1right", 15, _CST.CST.SPRITE.NERD1, 9, 11, false);
+      this.createAnimation("nerd1down", 15, _CST.CST.SPRITE.NERD1, 1, 3, false);
+      this.createAnimation("nerd1up", 15, _CST.CST.SPRITE.NERD1, 13, 15, false); //My poorly made whip sprites       
 
-      this.createAnimation("whip_left", 5, _CST.CST.SPRITE.WHIPL, 0, 4, true);
-      this.createAnimation("whip_up", 5, _CST.CST.SPRITE.WHIPU, 0, 4, true);
-      this.createAnimation("whip_right", 5, _CST.CST.SPRITE.WHIPR, 0, 4, true);
-      this.createAnimation("whip_down", 5, _CST.CST.SPRITE.WHIPD, 0, 4, true); //Player whip animation
+      this.createAnimation("whip_left", 15, _CST.CST.SPRITE.WHIPL, 0, 4, true);
+      this.createAnimation("whip_up", 15, _CST.CST.SPRITE.WHIPU, 0, 4, true);
+      this.createAnimation("whip_right", 15, _CST.CST.SPRITE.WHIPR, 0, 4, true);
+      this.createAnimation("whip_down", 15, _CST.CST.SPRITE.WHIPD, 0, 4, true); //Player whip animation
 
-      this.createAnimation("playerwhipleft", 5, _CST.CST.SPRITE.PLAYER, 169, 174, false);
-      this.createAnimation("playerwhipup", 5, _CST.CST.SPRITE.PLAYER, 156, 161, false);
-      this.createAnimation("playerwhipright", 5, _CST.CST.SPRITE.PLAYER, 195, 200, false);
-      this.createAnimation("playerwhipdown", 5, _CST.CST.SPRITE.PLAYER, 182, 187, false); //Player directional movements
+      this.createAnimation("playerwhipleft", 15, _CST.CST.SPRITE.PLAYER, 169, 174, false);
+      this.createAnimation("playerwhipup", 15, _CST.CST.SPRITE.PLAYER, 156, 161, false);
+      this.createAnimation("playerwhipright", 15, _CST.CST.SPRITE.PLAYER, 195, 200, false);
+      this.createAnimation("playerwhipdown", 15, _CST.CST.SPRITE.PLAYER, 182, 187, false); //Player directional movements
 
       this.createAnimation("left", 10, _CST.CST.SPRITE.PLAYER, 117, 125, false);
       this.createAnimation("right", 10, _CST.CST.SPRITE.PLAYER, 143, 151, false);
@@ -995,32 +1027,7 @@ function (_Phaser$Scene) {
     key: "update",
     value: function update() {
       //Play enemy animations and move them as needed
-      for (var i = 0; i < this.enemyCont.count('visible', true); i++) {
-        //check for nerds
-        if (this.enemyCont.list[i].name == "nerddown") {
-          this.enemyCont.list[i].play("nerd1down", true);
-          this.enemyCont.list[i].setVelocityY(90);
-        } else if (this.enemyCont.list[i].name == "nerdup") {
-          this.enemyCont.list[i].play("nerd1up", true);
-          this.enemyCont.list[i].setVelocityY(-90);
-        } //check for jasons
-
-
-        if (this.enemyCont.list[i].name == "jason") {
-          //have jason look at player general direction unless behind
-          if (this.player.y > this.enemyCont.list[i].y + 50) {
-            //face down
-            this.enemyCont.list[i].setFrame(1);
-          } else if (this.player.x > this.enemyCont.list[i].x) {
-            //face right to player
-            this.enemyCont.list[i].setFrame(7);
-          } else if (this.player.x < this.enemyCont.list[i].x) {
-            //face left to player
-            this.enemyCont.list[i].setFrame(4);
-          }
-        }
-      } //Set player movement on keypress
-
+      this.lm.updateEnemies(); //Set player movement on keypress
 
       if (this.keyboard.D.isDown === true) {
         this.player.setVelocityX(128);
