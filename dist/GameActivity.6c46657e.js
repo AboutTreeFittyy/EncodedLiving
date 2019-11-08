@@ -410,93 +410,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.MenuScene = MenuScene;
-},{"../CST":"src/CST.js"}],"src/CharacterSprite.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CharacterSprite = void 0;
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-/* File Name: CharacterSprite.js
- * Author: Mathew Boland
- * Last Updated: November 4, 2019
- * Description: A class to create and hold the value of a CharacterSprite object
- * with arcade physics.
- * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
-*/
-var CharacterSprite =
-/*#__PURE__*/
-function (_Phaser$Physics$Arcad) {
-  _inherits(CharacterSprite, _Phaser$Physics$Arcad);
-
-  function CharacterSprite(scene, x, y, texture, frame) {
-    var _this;
-
-    _classCallCheck(this, CharacterSprite);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(CharacterSprite).call(this, scene, x, y, texture, frame));
-    scene.sys.updateList.add(_assertThisInitialized(_this));
-    scene.sys.displayList.add(_assertThisInitialized(_this));
-
-    _this.setScale(2);
-
-    scene.physics.world.enableBody(_assertThisInitialized(_this));
-
-    _this.setImmovable(true);
-
-    _this.hp = 10;
-    _this.money = 0;
-    _this.npcPrev = '';
-    _this.score = 0;
-    return _this;
-  }
-
-  _createClass(CharacterSprite, [{
-    key: "collectItem",
-    value: function collectItem(player, item) {
-      item.setVisible(false); //this.physics.world.remove(item.body);
-
-      item.destroy(item.body);
-      player.money++;
-      player.scene.cmd1Text.text = player.scene.cmd1Text.text + "Player Money: " + player.money + "\n";
-    }
-  }, {
-    key: "npcSpeak",
-    value: function npcSpeak(player, npc) {
-      //Make sure that you can't just keep talking to someone 
-      if (npc.name == player.npcPrev) {
-        return;
-      }
-
-      player.npcPrev = npc.name;
-      player.scene.cmd2Text.text = player.scene.cmd2Text.text + npc.name + "\n";
-    }
-  }]);
-
-  return CharacterSprite;
-}(Phaser.Physics.Arcade.Sprite);
-
-exports.CharacterSprite = CharacterSprite;
-},{}],"src/EnemySprite.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js"}],"src/EnemySprite.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -583,6 +497,92 @@ function (_Phaser$Physics$Arcad) {
 }(Phaser.Physics.Arcade.Sprite);
 
 exports.EnemySprite = EnemySprite;
+},{}],"src/CharacterSprite.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CharacterSprite = void 0;
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+/* File Name: CharacterSprite.js
+ * Author: Mathew Boland
+ * Last Updated: November 4, 2019
+ * Description: A class to create and hold the value of a CharacterSprite object
+ * with arcade physics.
+ * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
+*/
+var CharacterSprite =
+/*#__PURE__*/
+function (_Phaser$Physics$Arcad) {
+  _inherits(CharacterSprite, _Phaser$Physics$Arcad);
+
+  function CharacterSprite(scene, x, y, texture, frame) {
+    var _this;
+
+    _classCallCheck(this, CharacterSprite);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CharacterSprite).call(this, scene, x, y, texture, frame));
+    scene.sys.updateList.add(_assertThisInitialized(_this));
+    scene.sys.displayList.add(_assertThisInitialized(_this));
+
+    _this.setScale(2);
+
+    scene.physics.world.enableBody(_assertThisInitialized(_this));
+
+    _this.setImmovable(true);
+
+    _this.hp = 10;
+    _this.money = 0;
+    _this.npcPrev = '';
+    _this.score = 0;
+    return _this;
+  }
+
+  _createClass(CharacterSprite, [{
+    key: "collectItem",
+    value: function collectItem(player, item) {
+      item.setVisible(false); //this.physics.world.remove(item.body);
+
+      item.destroy(item.body);
+      player.money++;
+      player.scene.cmd1Text.text = player.scene.cmd1Text.text + "Player Money: " + player.money + "\n";
+    }
+  }, {
+    key: "npcSpeak",
+    value: function npcSpeak(player, npc) {
+      //Make sure that you can't just keep talking to someone 
+      if (npc.name == player.npcPrev) {
+        return;
+      }
+
+      player.npcPrev = npc.name;
+      player.scene.cmd2Text.text = player.scene.cmd2Text.text + npc.name + "\n";
+    }
+  }]);
+
+  return CharacterSprite;
+}(Phaser.Physics.Arcade.Sprite);
+
+exports.CharacterSprite = CharacterSprite;
 },{}],"src/LevelManager.js":[function(require,module,exports) {
 "use strict";
 
@@ -594,6 +594,8 @@ exports.LevelManager = void 0;
 var _CST = require("./CST");
 
 var _EnemySprite = require("./EnemySprite");
+
+var _CharacterSprite = require("./CharacterSprite");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -609,13 +611,122 @@ function () {
 
     this.scene = scene;
     this.map = map;
-    this.addObjects();
+    this.setPlayer();
+    this.setObjects();
+    this.setCMDS();
+    this.setCameras();
+    this.setInputs();
   }
 
   _createClass(LevelManager, [{
-    key: "addObjects",
-    value: function addObjects() {
+    key: "setPlayer",
+    value: function setPlayer() {
+      //add game sprites              
+      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
+      this.scene.player.setCollideWorldBounds(true); //align the player hitbox and set its size
+
+      this.scene.player.setSize(32, 48);
+      this.scene.player.setOffset(16, 12); //the whip sprite takes any
+
+      this.scene.whip = new _CharacterSprite.CharacterSprite(this.scene, 400, 400, _CST.CST.SPRITE.WHIP, 0);
+      this.scene.whip.setVisible(false);
+      this.scene.whip.setScale(3);
+      this.scene.playerCont = this.scene.add.container(0, 0, [this.scene.player, this.scene.whip]).setDepth(1); //initialize player and whip to face down at start
+
+      this.scene.player.isFacing = "down";
+      this.scene.player.setPosition(this.scene.player.x, this.scene.player.y);
+      this.scene.whip.setPosition(this.scene.player.x, this.scene.player.y + 70);
+    }
+  }, {
+    key: "setCMDS",
+    value: function setCMDS() {
+      //create info cmd prompts on sides
+      this.scene.cmd1 = this.scene.add.image(-1000, -1000, _CST.CST.IMAGE.CMD).setDepth(1);
+      this.scene.cmd1.displayHeight = this.scene.game.renderer.height;
+      this.scene.cmd2 = this.scene.add.image(-1000, 1000, _CST.CST.IMAGE.CMD).setDepth(1);
+      this.scene.cmd2.displayHeight = this.scene.game.renderer.height; //now make their text fields
+
+      this.scene.cmd1Text = this.scene.add.text(this.scene.cmd1.x - this.scene.cmd1.width / 2, this.scene.cmd1.y - this.scene.cmd1.height / 2, 'C:/Users/Player/Stats>\n', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2);
+      this.scene.cmd1Text.setColor("green");
+      this.scene.cmd2Text = this.scene.add.text(this.scene.cmd2.x - this.scene.cmd2.width / 2, this.scene.cmd2.y - this.scene.cmd2.height / 2, 'C:/Users/Player/Conversations>\n', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2);
+      this.scene.cmd2Text.setColor("green"); //Create a counter for the lines entered so we can keep track of when they run out
+
+      this.scene.cmd1Lines = 1;
+      this.scene.cmd2Lines = 1;
+    }
+  }, {
+    key: "setInputs",
+    value: function setInputs() {
       var _this = this;
+
+      //set up keyboard controls
+      this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D"); //Set listener for p to pause game
+
+      this.scene.input.keyboard.on('keyup-P', function () {
+        _this.scene.scene.launch(_CST.CST.SCENES.PAUSE);
+
+        _this.scene.scene.pause();
+      });
+      this.scene.input.keyboard.on('keyup-Y', function () {
+        _this.scene.scene.launch(_CST.CST.SCENES.SHOP);
+
+        _this.scene.scene.pause();
+      }); //attack with whip input
+
+      this.scene.input.keyboard.on("keydown-F", function () {
+        switch (_this.scene.player.isFacing) {
+          case "left":
+            _this.scene.playerCont.list[0].play("playerwhipleft");
+
+            _this.scene.playerCont.list[1].play("whip_left");
+
+            break;
+
+          case "right":
+            _this.scene.playerCont.list[0].play("playerwhipright");
+
+            _this.scene.playerCont.list[1].play("whip_right");
+
+            break;
+
+          case "up":
+            _this.scene.playerCont.list[0].play("playerwhipup");
+
+            _this.scene.playerCont.list[1].play("whip_up");
+
+            break;
+
+          case "down":
+            _this.scene.playerCont.list[0].play("playerwhipdown");
+
+            _this.scene.playerCont.list[1].play("whip_down");
+
+            break;
+        }
+      });
+    }
+  }, {
+    key: "setCameras",
+    value: function setCameras() {
+      //have camera follow player around
+      this.scene.cameras.add(0, 0, this.scene.cmd1.displayWidth, this.scene.game.renderer.height, false, "cmd1");
+      var cam1 = this.scene.cameras.getCamera("cmd1");
+      cam1.centerOn(-1000, -1000); //have camera follow player around
+
+      this.scene.cameras.add(this.scene.game.renderer.width - this.scene.cmd2.displayWidth - 50, 0, this.scene.cmd2.displayWidth, this.scene.game.renderer.height, false, "cmd2");
+      var cam2 = this.scene.cameras.getCamera("cmd2");
+      cam2.centerOn(-1000, 1000);
+      this.scene.cameras.main.startFollow(this.scene.player);
+      this.scene.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+    }
+  }, {
+    key: "setObjects",
+    value: function setObjects() {
+      var _this2 = this;
 
       //get interactive objects from the map
       var itemSet = this.scene.physics.add.group();
@@ -690,41 +801,41 @@ function () {
         key: _CST.CST.SPRITE.NPCS,
         frame: 6
       }).map(function (sprite) {
-        sprite = new _EnemySprite.EnemySprite(_this.scene, sprite.x, sprite.y, _CST.CST.SPRITE.NERD1, 1, "nerddown", 5);
+        sprite = new _EnemySprite.EnemySprite(_this2.scene, sprite.x, sprite.y, _CST.CST.SPRITE.NERD1, 1, "nerddown", 5);
         sprite.body.setSize(22, 44);
         sprite.body.setOffset(16, 16);
 
-        _this.scene.enemySet.add(sprite);
+        _this2.scene.enemySet.add(sprite);
 
-        _this.scene.enemyCont.add(sprite);
+        _this2.scene.enemyCont.add(sprite);
 
         sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
 
-        _this.scene.physics.add.collider(_this.scene.player, sprite, sprite.enemyCollide, null, _this); //This triggers when they hit an npc
+        _this2.scene.physics.add.collider(_this2.scene.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
 
 
-        _this.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this);
+        _this2.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
       }); //using npcs 6 frame to have blank inserted as i make my own sprite after
 
       this.map.createFromObjects("enemies", 95, {
         key: _CST.CST.SPRITE.NPCS,
         frame: 6
       }).map(function (sprite) {
-        sprite = new _EnemySprite.EnemySprite(_this.scene, sprite.x, sprite.y, _CST.CST.SPRITE.JASON, 1, "jason", 5);
+        sprite = new _EnemySprite.EnemySprite(_this2.scene, sprite.x, sprite.y, _CST.CST.SPRITE.JASON, 1, "jason", 5);
         sprite.body.setSize(22, 44);
         sprite.setScale(1.5);
         sprite.body.setOffset(16, 16);
 
-        _this.scene.enemySet.add(sprite);
+        _this2.scene.enemySet.add(sprite);
 
-        _this.scene.enemyCont.add(sprite);
+        _this2.scene.enemyCont.add(sprite);
 
         sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
 
-        _this.scene.physics.add.collider(_this.scene.player, sprite, sprite.enemyCollide, null, _this); //This triggers when they hit an npc
+        _this2.scene.physics.add.collider(_this2.scene.player, sprite, sprite.enemyCollide, null, _this2); //This triggers when they hit an npc
 
 
-        _this.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this);
+        _this2.scene.physics.add.collider(npcSet, sprite, sprite.enemyCollide, null, _this2);
       });
     }
   }]);
@@ -733,7 +844,87 @@ function () {
 }();
 
 exports.LevelManager = LevelManager;
-},{"./CST":"src/CST.js","./EnemySprite":"src/EnemySprite.js"}],"src/scenes/FirstLevel.js":[function(require,module,exports) {
+},{"./CST":"src/CST.js","./EnemySprite":"src/EnemySprite.js","./CharacterSprite":"src/CharacterSprite.js"}],"src/AnimationManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AnimationManager = void 0;
+
+var _CST = require("./CST");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var AnimationManager =
+/*#__PURE__*/
+function () {
+  function AnimationManager(scene) {
+    _classCallCheck(this, AnimationManager);
+
+    this.scene = scene;
+  }
+
+  _createClass(AnimationManager, [{
+    key: "setAnimations",
+    value: function setAnimations() {
+      //Nerd variant 1 animations
+      this.createAnimation("nerd1left", 5, _CST.CST.SPRITE.NERD1, 5, 7, false);
+      this.createAnimation("nerd1right", 5, _CST.CST.SPRITE.NERD1, 9, 11, false);
+      this.createAnimation("nerd1down", 5, _CST.CST.SPRITE.NERD1, 1, 3, false);
+      this.createAnimation("nerd1up", 5, _CST.CST.SPRITE.NERD1, 13, 15, false); //My poorly made whip sprites       
+
+      this.createAnimation("whip_left", 5, _CST.CST.SPRITE.WHIPL, 0, 4, true);
+      this.createAnimation("whip_up", 5, _CST.CST.SPRITE.WHIPU, 0, 4, true);
+      this.createAnimation("whip_right", 5, _CST.CST.SPRITE.WHIPR, 0, 4, true);
+      this.createAnimation("whip_down", 5, _CST.CST.SPRITE.WHIPD, 0, 4, true); //Player whip animation
+
+      this.createAnimation("playerwhipleft", 5, _CST.CST.SPRITE.PLAYER, 169, 174, false);
+      this.createAnimation("playerwhipup", 5, _CST.CST.SPRITE.PLAYER, 156, 161, false);
+      this.createAnimation("playerwhipright", 5, _CST.CST.SPRITE.PLAYER, 195, 200, false);
+      this.createAnimation("playerwhipdown", 5, _CST.CST.SPRITE.PLAYER, 182, 187, false); //Player directional movements
+
+      this.createAnimation("left", 10, _CST.CST.SPRITE.PLAYER, 117, 125, false);
+      this.createAnimation("right", 10, _CST.CST.SPRITE.PLAYER, 143, 151, false);
+      this.createAnimation("up", 10, _CST.CST.SPRITE.PLAYER, 104, 112, false);
+      this.createAnimation("down", 10, _CST.CST.SPRITE.PLAYER, 130, 138, false);
+    }
+  }, {
+    key: "createAnimation",
+    value: function createAnimation(k, fr, cst, st, fin, hide) {
+      if (hide == true) {
+        this.scene.anims.create({
+          key: k,
+          frameRate: fr,
+          frames: this.scene.anims.generateFrameNumbers(cst, {
+            start: st,
+            end: fin
+          }),
+          showOnStart: true,
+          hideOnComplete: true
+        });
+      } else {
+        this.scene.anims.create({
+          key: k,
+          frameRate: fr,
+          frames: this.scene.anims.generateFrameNumbers(cst, {
+            start: st,
+            end: fin
+          })
+        });
+      }
+    }
+  }]);
+
+  return AnimationManager;
+}();
+
+exports.AnimationManager = AnimationManager;
+},{"./CST":"src/CST.js"}],"src/scenes/FirstLevel.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -743,11 +934,9 @@ exports.FirstLevel = void 0;
 
 var _CST = require("../CST");
 
-var _CharacterSprite = require("../CharacterSprite");
-
-var _EnemySprite = require("../EnemySprite");
-
 var _LevelManager = require("../LevelManager");
+
+var _AnimationManager = require("../AnimationManager");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -783,112 +972,24 @@ function (_Phaser$Scene) {
   _createClass(FirstLevel, [{
     key: "create",
     value: function create() {
-      var _this = this;
-
       //start up the theme for level, commenting out now cause its annoying 
 
       /*this.sound.play(CST.AUDIO.THEME1, {
       	loop: true
             })*/
-      //Set listener for p to pause game
-      this.input.keyboard.on('keyup-P', function () {
-        _this.scene.launch(_CST.CST.SCENES.PAUSE);
-
-        _this.scene.pause();
-      });
-      this.input.keyboard.on('keyup-Y', function () {
-        _this.scene.launch(_CST.CST.SCENES.SHOP);
-
-        _this.scene.pause();
-      }); //create info cmd prompts on sides
-
-      this.cmd1 = this.add.image(-1000, -1000, _CST.CST.IMAGE.CMD).setDepth(1);
-      this.cmd1.displayHeight = this.game.renderer.height;
-      this.cmd2 = this.add.image(-1000, 1000, _CST.CST.IMAGE.CMD).setDepth(1);
-      this.cmd2.displayHeight = this.game.renderer.height; //now make their text fields
-
-      this.cmd1Text = this.add.text(this.cmd1.x - this.cmd1.width / 2, this.cmd1.y - this.cmd1.height / 2, 'C:/Users/Player/Stats>\n', {
-        fontFamily: '"Roboto Condensed"'
-      }).setDepth(2);
-      this.cmd1Text.setColor("green");
-      this.cmd2Text = this.add.text(this.cmd2.x - this.cmd2.width / 2, this.cmd2.y - this.cmd2.height / 2, 'C:/Users/Player/Conversations>\n', {
-        fontFamily: '"Roboto Condensed"'
-      }).setDepth(2);
-      this.cmd2Text.setColor("green"); //Create a counter for the lines entered so we can keep track of when they run out
-
-      this.cmd2Lines = 1; //add game sprites              
-
-      this.player = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
-      this.player.setCollideWorldBounds(true); //align the player hitbox and set its size
-
-      this.player.setSize(32, 48);
-      this.player.setOffset(16, 12); //the whip sprite takes any
-
-      this.whip = new _CharacterSprite.CharacterSprite(this, 400, 400, _CST.CST.SPRITE.WHIP, 0);
-      this.whip.setVisible(false);
-      this.whip.setScale(3);
-      this.playerCont = this.add.container(0, 0, [this.player, this.whip]).setDepth(1); //initialize player and whip to face down at start
-
-      this.player.isFacing = "down";
-      this.player.setPosition(this.player.x, this.player.y);
-      this.whip.setPosition(this.player.x, this.player.y + 70);
-      this.input.keyboard.on("keydown-F", function () {
-        switch (_this.player.isFacing) {
-          case "left":
-            _this.playerCont.list[0].play("playerwhipleft");
-
-            _this.playerCont.list[1].play("whip_left");
-
-            break;
-
-          case "right":
-            _this.playerCont.list[0].play("playerwhipright");
-
-            _this.playerCont.list[1].play("whip_right");
-
-            break;
-
-          case "up":
-            _this.playerCont.list[0].play("playerwhipup");
-
-            _this.playerCont.list[1].play("whip_up");
-
-            break;
-
-          case "down":
-            _this.playerCont.list[0].play("playerwhipdown");
-
-            _this.playerCont.list[1].play("whip_down");
-
-            break;
-        }
-      }); //set up keyboard controls
-
-      this.keyboard = this.input.keyboard.addKeys("W, A, S, D"); //Set up tiled map
-
+      //Set up tiled map
       var mappy = this.add.tilemap("map1");
       var terrain = mappy.addTilesetImage("sheet1"); //layers
 
       mappy.createStaticLayer("bottom_layer", [terrain], 0, 0).setDepth(-1);
-      var topLayer = mappy.createStaticLayer("top_layer", [terrain], 0, 0); //map collisions
+      var topLayer = mappy.createStaticLayer("top_layer", [terrain], 0, 0); //Create the level using this scene and the map made above
+
+      this.lm = new _LevelManager.LevelManager(this, mappy); //map collisions
 
       this.physics.add.collider(this.player, topLayer);
       topLayer.setCollisionByProperty({
         collides: true
-      }); //Add and configure the game objects that are interactive (NPCs/items)
-      //this.addObjects(mappy);      
-
-      this.lm = new _LevelManager.LevelManager(this, mappy); //have camera follow player around
-
-      this.cameras.add(0, 0, this.cmd1.displayWidth, this.game.renderer.height, false, "cmd1");
-      var cam1 = this.cameras.getCamera("cmd1");
-      cam1.centerOn(-1000, -1000); //have camera follow player around
-
-      this.cameras.add(this.game.renderer.width - this.cmd2.displayWidth - 50, 0, this.cmd2.displayWidth, this.game.renderer.height, false, "cmd2");
-      var cam2 = this.cameras.getCamera("cmd2");
-      cam2.centerOn(-1000, 1000);
-      this.cameras.main.startFollow(this.player);
-      this.physics.world.setBounds(0, 0, mappy.widthInPixels, mappy.heightInPixels);
+      });
     }
   }, {
     key: "update",
@@ -973,146 +1074,9 @@ function (_Phaser$Scene) {
   }, {
     key: "preload",
     value: function preload() {
-      //Make nerd1 sprite
-      this.anims.create({
-        key: "nerd1left",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
-          start: 5,
-          end: 7
-        })
-      });
-      this.anims.create({
-        key: "nerd1right",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
-          start: 9,
-          end: 11
-        })
-      });
-      this.anims.create({
-        key: "nerd1down",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
-          start: 1,
-          end: 3
-        })
-      });
-      this.anims.create({
-        key: "nerd1up",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.NERD1, {
-          start: 13,
-          end: 15
-        })
-      }); //add in whip attack sprites
-
-      this.anims.create({
-        key: "playerwhipleft",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 169,
-          end: 174
-        })
-      });
-      this.anims.create({
-        key: "whip_left",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPL, {
-          start: 0,
-          end: 4
-        }),
-        showOnStart: true,
-        hideOnComplete: true
-      });
-      this.anims.create({
-        key: "playerwhipright",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 195,
-          end: 200
-        })
-      });
-      this.anims.create({
-        key: "whip_right",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPR, {
-          start: 0,
-          end: 4
-        }),
-        showOnStart: true,
-        hideOnComplete: true
-      }); //Player whip animation
-
-      this.anims.create({
-        key: "playerwhipup",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 156,
-          end: 161
-        })
-      });
-      this.anims.create({
-        key: "whip_up",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPU, {
-          start: 0,
-          end: 4
-        }),
-        showOnStart: true,
-        hideOnComplete: true
-      });
-      this.anims.create({
-        key: "playerwhipdown",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 182,
-          end: 187
-        })
-      });
-      this.anims.create({
-        key: "whip_down",
-        frameRate: 5,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.WHIPD, {
-          start: 0,
-          end: 4
-        }),
-        showOnStart: true,
-        hideOnComplete: true
-      }); //make player movements
-
-      this.anims.create({
-        key: "left",
-        frameRate: 10,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 117,
-          end: 125
-        })
-      });
-      this.anims.create({
-        key: "right",
-        frameRate: 10,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 143,
-          end: 151
-        })
-      });
-      this.anims.create({
-        key: "up",
-        frameRate: 10,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 104,
-          end: 112
-        })
-      });
-      this.anims.create({
-        key: "down",
-        frameRate: 10,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.PLAYER, {
-          start: 130,
-          end: 138
-        })
-      }); //load map assets
+      //Load all the levels animations through the animation manager
+      this.am = new _AnimationManager.AnimationManager(this);
+      this.am.setAnimations(); //load map assets
 
       this.load.image("sheet1", "./assets/image/sheet1.png");
       this.load.tilemapTiledJSON("map1", "./assets/maps/map1.json");
@@ -1123,7 +1087,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.FirstLevel = FirstLevel;
-},{"../CST":"src/CST.js","../CharacterSprite":"src/CharacterSprite.js","../EnemySprite":"src/EnemySprite.js","../LevelManager":"src/LevelManager.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../LevelManager":"src/LevelManager.js","../AnimationManager":"src/AnimationManager.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
