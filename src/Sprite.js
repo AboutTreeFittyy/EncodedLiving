@@ -1,14 +1,21 @@
 /* File Name: Sprite.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 8, 2019
  * Description: Class used to create and hold the value of a Sprite object
- * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
-export class Sprite extends Phaser.GameObjects.Sprite {
+export class Sprite extends Phaser.Physics.Arcade.Sprite {
     
-    constructor(scene, x, y, texture, frame) {
-        super(scene, x, y, texture, frame);
+    constructor(scene, x, y, texture, down, up, left, right, name) {
+        super(scene, x, y, texture, down);
         scene.sys.updateList.add(this);
-        scene.sys.displayList.add(this);
+        scene.sys.displayList.add(this);     
+        scene.physics.world.enableBody(this);
+        this.down = down;
+        this.up = up;
+        this.left = left;
+        this.right = right;
+        this.startX = x;
+        this.startY = y;
+        this.name = name;
     }
 }

@@ -167,7 +167,8 @@ var CST = {
     ITEM: "itemsall.png",
     NPCS: "npcs.png",
     NERD1: "nerd1.png",
-    JASON: "jason.png"
+    JASON: "jason.png",
+    NPC_LOT: "npc_lot.png"
   }
 };
 exports.CST = CST;
@@ -254,9 +255,9 @@ function (_Phaser$Scene) {
             frameHeight: 64,
             frameWidth: 45
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NPC_LOT) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
-            frameHeight: 72,
+            frameHeight: 64,
             frameWidth: 48
           });
         } else {
@@ -410,7 +411,62 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.MenuScene = MenuScene;
-},{"../CST":"src/CST.js"}],"src/EnemySprite.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js"}],"src/Sprite.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Sprite = void 0;
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+/* File Name: Sprite.js
+ * Author: Mathew Boland
+ * Last Updated: November 8, 2019
+ * Description: Class used to create and hold the value of a Sprite object
+*/
+var Sprite =
+/*#__PURE__*/
+function (_Phaser$Physics$Arcad) {
+  _inherits(Sprite, _Phaser$Physics$Arcad);
+
+  function Sprite(scene, x, y, texture, down, up, left, right, name) {
+    var _this;
+
+    _classCallCheck(this, Sprite);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Sprite).call(this, scene, x, y, texture, down));
+    scene.sys.updateList.add(_assertThisInitialized(_this));
+    scene.sys.displayList.add(_assertThisInitialized(_this));
+    scene.physics.world.enableBody(_assertThisInitialized(_this));
+    _this.down = down;
+    _this.up = up;
+    _this.left = left;
+    _this.right = right;
+    _this.startX = x;
+    _this.startY = y;
+    _this.name = name;
+    return _this;
+  }
+
+  return Sprite;
+}(Phaser.Physics.Arcade.Sprite);
+
+exports.Sprite = Sprite;
+},{}],"src/EnemySprite.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -559,9 +615,7 @@ function (_Phaser$Physics$Arcad) {
 
     _this.setScale(2);
 
-    scene.physics.world.enableBody(_assertThisInitialized(_this));
-
-    _this.setImmovable(true);
+    scene.physics.world.enableBody(_assertThisInitialized(_this)); //this.setImmovable(true);
 
     _this.hp = 10;
     _this.money = 0;
@@ -573,8 +627,7 @@ function (_Phaser$Physics$Arcad) {
   _createClass(CharacterSprite, [{
     key: "collectItem",
     value: function collectItem(player, item) {
-      item.setVisible(false); //this.physics.world.remove(item.body);
-
+      item.setVisible(false);
       item.destroy(item.body);
       player.money++;
       player.scene.cmd1Text.text = player.scene.cmd1Text.text + "Player Money: " + player.money + "\n";
@@ -582,7 +635,9 @@ function (_Phaser$Physics$Arcad) {
   }, {
     key: "npcSpeak",
     value: function npcSpeak(player, npc) {
-      //Make sure that you can't just keep talking to someone 
+      npc.setVelocityX(0);
+      npc.setVelocityY(0); //Make sure that you can't just keep talking to someone 
+
       if (npc.name == player.npcPrev) {
         return;
       }
@@ -605,6 +660,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.LevelManager = void 0;
 
 var _CST = require("./CST");
+
+var _Sprite = require("./Sprite");
 
 var _EnemySprite = require("./EnemySprite");
 
@@ -634,56 +691,116 @@ function () {
   _createClass(LevelManager, [{
     key: "updateEnemies",
     value: function updateEnemies() {
-      for (var i = 0; i < this.scene.enemyCont.count('visible', true); i++) {
-        switch (this.scene.enemyCont.list[i].name) {
-          case "nerd1down":
-            this.scene.enemyCont.list[i].play("nerd1down", true);
-            this.scene.enemyCont.list[i].setVelocityY(90);
+      //Scan through all the NPCs to update them
+      for (var i = 0; i < this.scene.npcCont.count('visible', true); i++) {
+        var anim = "nothing";
+
+        switch (this.scene.npcCont.list[i].name) {
+          case "Nicole":
+            //Have her follow the player around                                      
+            if (this.scene.player.y - 100 > this.scene.npcCont.list[i].y) {
+              //player below
+              this.scene.npcCont.list[i].setVelocityY(256);
+              anim = "nicoledown";
+            } else if (this.scene.player.y + 100 < this.scene.npcCont.list[i].y) {
+              //player above
+              this.scene.npcCont.list[i].setVelocityY(-256);
+              anim = "nicoleup";
+            } else {
+              this.scene.npcCont.list[i].setVelocityY(0);
+            }
+
+            if (this.scene.player.x - 100 > this.scene.npcCont.list[i].x) {
+              //player in front
+              this.scene.npcCont.list[i].setVelocityX(256);
+              anim = "nicoleright";
+            } else if (this.scene.player.x + 100 < this.scene.npcCont.list[i].x) {
+              //player behind
+              this.scene.npcCont.list[i].setVelocityX(-256);
+              anim = "nicoleleft";
+            } else {
+              this.scene.npcCont.list[i].setVelocityX(0);
+            }
+
+            if (anim != "nothing") {
+              this.scene.npcCont.list[i].play(anim, true);
+            }
+
             break;
 
-          case "nerd1up":
-            this.scene.enemyCont.list[i].play("nerd1up", true);
-            this.scene.enemyCont.list[i].setVelocityY(-90);
-            break;
+          case "Claire1":
+          case "Claire2":
+          case "Kyle":
+          case "Brad":
+          case "Prof":
+          case "Stevie":
+            //Now check if they've been pushed from their origin
+            if (this.scene.npcCont.list[i].startY - 50 > this.scene.npcCont.list[i].y) {
+              //npc below
+              this.scene.npcCont.list[i].setVelocityY(128);
+              anim = "down";
+            } else if (this.scene.npcCont.list[i].startY + 50 < this.scene.npcCont.list[i].y) {
+              //npc above
+              this.scene.npcCont.list[i].setVelocityY(-128);
+              anim = "up";
+            } else {
+              this.scene.npcCont.list[i].setVelocityY(0);
+            }
 
-          case "nerd1left":
-            this.scene.enemyCont.list[i].play("nerd1left", true);
-            this.scene.enemyCont.list[i].setVelocityX(-90);
-            break;
+            if (this.scene.npcCont.list[i].startX - 50 > this.scene.npcCont.list[i].x) {
+              //npc in front
+              this.scene.npcCont.list[i].setVelocityX(128);
+              anim = "right";
+            } else if (this.scene.npcCont.list[i].startX + 50 < this.scene.npcCont.list[i].x) {
+              //npc behind
+              this.scene.npcCont.list[i].setVelocityX(-128); //alert();
 
-          case "nerd1right":
-            this.scene.enemyCont.list[i].play("nerd1right", true);
-            this.scene.enemyCont.list[i].setVelocityX(90);
-            break;
+              anim = "left";
+            } else {
+              this.scene.npcCont.list[i].setVelocityX(0);
+            }
 
-          case "jason":
-            //have jason look at player general direction unless behind
-            if (this.scene.player.y > this.scene.enemyCont.list[i].y + 50) {
-              //face down
-              this.scene.enemyCont.list[i].setFrame(1);
-            } else if (this.scene.player.x > this.scene.enemyCont.list[i].x) {
-              //face right to player
-              this.scene.enemyCont.list[i].setFrame(7);
-            } else if (this.scene.player.x < this.scene.enemyCont.list[i].x) {
-              //face left to player
-              this.scene.enemyCont.list[i].setFrame(4);
+            if (anim != "nothing") {
+              this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
+            } else {
+              //have npc look at player general direction unless behind
+              if (this.scene.player.y > this.scene.npcCont.list[i].y + 50) {
+                //face down
+                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].down);
+              } else if (this.scene.player.y < this.scene.npcCont.list[i].y - 50) {
+                //face up
+                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].up);
+              } else if (this.scene.player.x > this.scene.npcCont.list[i].x) {
+                //face right to player
+                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].right);
+              } else if (this.scene.player.x < this.scene.npcCont.list[i].x) {
+                //face left to player
+                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].left);
+              }
             }
 
             break;
         }
+      } //Scan through all the enemy objects to update them
+
+
+      for (var _i = 0; _i < this.scene.enemyCont.count('visible', true); _i++) {
+        var _anim = "nothing";
+
+        switch (this.scene.enemyCont.list[_i].name) {}
       }
     }
   }, {
     key: "setPlayer",
     value: function setPlayer() {
       //add game sprites              
-      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 400, 400, _CST.CST.SPRITE.PLAYER, 130);
+      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 400, 3400, _CST.CST.SPRITE.PLAYER, 130);
       this.scene.player.setCollideWorldBounds(true); //align the player hitbox and set its size
 
       this.scene.player.setSize(32, 48);
       this.scene.player.setOffset(16, 12); //the whip sprite takes any
 
-      this.scene.whip = new _CharacterSprite.CharacterSprite(this.scene, 400, 400, _CST.CST.SPRITE.WHIP, 0);
+      this.scene.whip = new _CharacterSprite.CharacterSprite(this.scene, 400, 3600, _CST.CST.SPRITE.WHIP, 0);
       this.scene.whip.setVisible(false);
       this.scene.whip.setScale(3);
       this.scene.playerCont = this.scene.add.container(0, 0, [this.scene.player, this.scene.whip]).setDepth(1); //initialize player and whip to face down at start
@@ -730,6 +847,14 @@ function () {
         _this.scene.scene.launch(_CST.CST.SCENES.SHOP);
 
         _this.scene.scene.pause();
+      }); //Adjust zoom out
+
+      this.scene.input.keyboard.on('keyup-U', function () {
+        _this.scene.cameras.main.setZoom(0.5);
+      }); //Adjust zoom in
+
+      this.scene.input.keyboard.on('keyup-I', function () {
+        _this.scene.cameras.main.setZoom(1);
       }); //attack with whip input
 
       this.scene.input.keyboard.on("keydown-F", function () {
@@ -784,28 +909,32 @@ function () {
       //Make item physcis group
       this.itemSet = this.scene.physics.add.group(); //Make items from map
 
-      this.createItems(67, 2, "money"); //add the collider for all the items
+      this.createItems(459, 0, "dvd");
+      this.createItems(460, 1, "examsheet");
+      this.createItems(461, 2, "money");
+      this.createItems(462, 3, "energy"); //add the collider for all the items
 
       this.scene.physics.add.collider(this.scene.player, this.itemSet, this.scene.player.collectItem, null, this); //make group for npcs physics
 
-      this.npcSet = this.scene.physics.add.group(); //make npcs from map
+      this.scene.npcSet = this.scene.physics.add.group(); //make npcs from map
+      //add the collider for all the npcs
 
-      this.createNPCS(69, 0, "Nicole");
-      this.createNPCS(71, 2, "Hannah");
-      this.createNPCS(72, 3, "Claire");
-      this.createNPCS(73, 4, "Stevie"); //add the collider for all the npcs
-
-      this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this); //make enemies group and container to handle them with
+      this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
+      this.scene.npcCont = this.scene.add.container();
+      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+      this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
+      this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
+      this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof"); //make enemies group and container to handle them with*/
 
       this.scene.enemySet = this.scene.physics.add.group();
       this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
       //Make different enemies
 
-      this.createEnemies(80, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 2);
-      this.createEnemies(92, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 2);
-      this.createEnemies(88, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 2);
-      this.createEnemies(84, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 2);
-      this.createEnemies(95, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.JASON, 1, "jason", 5, 1.5);
+      /*this.createEnemies(80, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 2);
+      this.createEnemies(92, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2);
+      this.createEnemies(88, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2);
+      this.createEnemies(84, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2);
+      this.createEnemies(95, CST.SPRITE.NPCS, 6, CST.SPRITE.JASON, 1, "jason", 5, 1.5);*/
     }
   }, {
     key: "createItems",
@@ -825,23 +954,38 @@ function () {
         sprite.body.setOffset(0, 0);
       });
     }
+    /*createNPCS(key, frame, name){
+        this.map.createFromObjects("npcs", key, {key: CST.SPRITE.NPCS, frame: frame}).map((sprite)=>{            
+            //enable body for the items to interact with player collision
+            this.npcSet.add(sprite);
+            sprite.setScale(1.5);
+            sprite.name = name;
+            sprite.setSize(128,240);
+            sprite.body.setOffset(0,0);
+        });
+    }*/
+
   }, {
     key: "createNPCS",
-    value: function createNPCS(key, frame, name) {
+    value: function createNPCS(key, cst1, frame, cst2, down, up, left, right, name) {
       var _this3 = this;
 
       this.map.createFromObjects("npcs", key, {
-        key: _CST.CST.SPRITE.NPCS,
+        key: cst1,
         frame: frame
       }).map(function (sprite) {
-        //enable body for the items to interact with player collision
-        _this3.npcSet.add(sprite);
-
+        sprite = new _Sprite.Sprite(_this3.scene, sprite.x, sprite.y, cst2, down, up, left, right, name);
+        sprite.body.setSize(22, 44);
         sprite.setScale(1.5);
-        sprite.name = name;
-        sprite.setSize(128, 240);
-        sprite.body.setOffset(0, 0);
-        sprite.body.immovable = true;
+        sprite.body.setOffset(16, 16);
+
+        _this3.scene.npcSet.add(sprite);
+
+        _this3.scene.npcCont.add(sprite); //sprite.setCollideWorldBounds(true);
+        //This triggers when enemy hits player
+
+
+        _this3.scene.physics.add.collider(_this3.scene.player, sprite, sprite.enemyCollide, null, _this3);
       });
     }
   }, {
@@ -865,9 +1009,8 @@ function () {
         sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
 
         _this4.scene.physics.add.collider(_this4.scene.player, sprite, sprite.enemyCollide, null, _this4); //This triggers when they hit an npc
+        //this.scene.physics.add.collider(this.npcSet, sprite, sprite.enemyCollide, null, this);
 
-
-        _this4.scene.physics.add.collider(_this4.npcSet, sprite, sprite.enemyCollide, null, _this4);
       });
     }
   }]);
@@ -876,7 +1019,7 @@ function () {
 }();
 
 exports.LevelManager = LevelManager;
-},{"./CST":"src/CST.js","./EnemySprite":"src/EnemySprite.js","./CharacterSprite":"src/CharacterSprite.js"}],"src/AnimationManager.js":[function(require,module,exports) {
+},{"./CST":"src/CST.js","./Sprite":"src/Sprite.js","./EnemySprite":"src/EnemySprite.js","./CharacterSprite":"src/CharacterSprite.js"}],"src/AnimationManager.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -908,7 +1051,27 @@ function () {
       this.createAnimation("nerd1left", 15, _CST.CST.SPRITE.NERD1, 5, 7, false);
       this.createAnimation("nerd1right", 15, _CST.CST.SPRITE.NERD1, 9, 11, false);
       this.createAnimation("nerd1down", 15, _CST.CST.SPRITE.NERD1, 1, 3, false);
-      this.createAnimation("nerd1up", 15, _CST.CST.SPRITE.NERD1, 13, 15, false); //My poorly made whip sprites       
+      this.createAnimation("nerd1up", 15, _CST.CST.SPRITE.NERD1, 13, 15, false); //Nicole npc walking sprites
+
+      this.createAnimation("nicoledown", 10, _CST.CST.SPRITE.NPC_LOT, 6, 8, false);
+      this.createAnimation("nicoleleft", 10, _CST.CST.SPRITE.NPC_LOT, 18, 20, false);
+      this.createAnimation("nicoleright", 10, _CST.CST.SPRITE.NPC_LOT, 30, 32, false);
+      this.createAnimation("nicoleup", 10, _CST.CST.SPRITE.NPC_LOT, 42, 44, false); //Claire1 npc walking sprites
+
+      this.createAnimation("Claire1down", 10, _CST.CST.SPRITE.NPC_LOT, 48, 50, false);
+      this.createAnimation("Claire1left", 10, _CST.CST.SPRITE.NPC_LOT, 60, 62, false);
+      this.createAnimation("Claire1right", 10, _CST.CST.SPRITE.NPC_LOT, 72, 74, false);
+      this.createAnimation("Claire1up", 10, _CST.CST.SPRITE.NPC_LOT, 84, 86, false); //Claire2 npc walking sprites
+
+      this.createAnimation("Claire2down", 10, _CST.CST.SPRITE.NPC_LOT, 9, 11, false);
+      this.createAnimation("Claire2left", 10, _CST.CST.SPRITE.NPC_LOT, 21, 23, false);
+      this.createAnimation("Claire2right", 10, _CST.CST.SPRITE.NPC_LOT, 33, 35, false);
+      this.createAnimation("Claire2up", 10, _CST.CST.SPRITE.NPC_LOT, 45, 47, false); //Prof npc walking sprites
+
+      this.createAnimation("Profdown", 10, _CST.CST.SPRITE.NPC_LOT, 51, 53, false);
+      this.createAnimation("Profleft", 10, _CST.CST.SPRITE.NPC_LOT, 63, 65, false);
+      this.createAnimation("Profright", 10, _CST.CST.SPRITE.NPC_LOT, 75, 77, false);
+      this.createAnimation("Profup", 10, _CST.CST.SPRITE.NPC_LOT, 85, 87, false); //My poorly made whip sprites       
 
       this.createAnimation("whip_left", 15, _CST.CST.SPRITE.WHIPL, 0, 4, true);
       this.createAnimation("whip_up", 15, _CST.CST.SPRITE.WHIPU, 0, 4, true);
@@ -1010,11 +1173,13 @@ function (_Phaser$Scene) {
       	loop: true
             })*/
       //Set up tiled map
-      var mappy = this.add.tilemap("map1");
-      var terrain = mappy.addTilesetImage("sheet1"); //layers
+      var mappy = this.add.tilemap("FirstLevel");
+      var terrain1 = mappy.addTilesetImage("ground1");
+      var terrain2 = mappy.addTilesetImage("ground2");
+      var terrain3 = mappy.addTilesetImage("ground3"); //layers
 
-      mappy.createStaticLayer("bottom_layer", [terrain], 0, 0).setDepth(-1);
-      var topLayer = mappy.createStaticLayer("top_layer", [terrain], 0, 0); //Create the level using this scene and the map made above
+      mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
+      var topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2); //Create the level using this scene and the map made above
 
       this.lm = new _LevelManager.LevelManager(this, mappy); //map collisions
 
@@ -1030,19 +1195,19 @@ function (_Phaser$Scene) {
       this.lm.updateEnemies(); //Set player movement on keypress
 
       if (this.keyboard.D.isDown === true) {
-        this.player.setVelocityX(128);
+        this.player.setVelocityX(256);
       }
 
       if (this.keyboard.W.isDown === true) {
-        this.player.setVelocityY(-128);
+        this.player.setVelocityY(-256);
       }
 
       if (this.keyboard.S.isDown === true) {
-        this.player.setVelocityY(128);
+        this.player.setVelocityY(256);
       }
 
       if (this.keyboard.A.isDown === true) {
-        this.player.setVelocityX(-128);
+        this.player.setVelocityX(-256);
       }
 
       if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
@@ -1085,8 +1250,10 @@ function (_Phaser$Scene) {
       this.am = new _AnimationManager.AnimationManager(this);
       this.am.setAnimations(); //load map assets
 
-      this.load.image("sheet1", "./assets/image/sheet1.png");
-      this.load.tilemapTiledJSON("map1", "./assets/maps/map1.json");
+      this.load.image("ground1", "./assets/image/ground1.png");
+      this.load.image("ground2", "./assets/image/ground2.png");
+      this.load.image("ground3", "./assets/image/ground3.png");
+      this.load.tilemapTiledJSON("FirstLevel", "./assets/maps/FirstLevel.json");
     }
   }]);
 

@@ -13,7 +13,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         scene.sys.displayList.add(this);
         this.setScale(2);        
         scene.physics.world.enableBody(this);
-        this.setImmovable(true);
+        //this.setImmovable(true);
         this.hp = 10;
         this.money = 0;
         this.npcPrev = '';
@@ -22,13 +22,14 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 
     collectItem(player, item){
         item.setVisible(false);
-        //this.physics.world.remove(item.body);
         item.destroy(item.body);
         player.money++;
         player.scene.cmd1Text.text = player.scene.cmd1Text.text+"Player Money: "+player.money+"\n";
     }
 
     npcSpeak(player, npc){
+        npc.setVelocityX(0);
+        npc.setVelocityY(0);
         //Make sure that you can't just keep talking to someone 
         if(npc.name == player.npcPrev){
             return;

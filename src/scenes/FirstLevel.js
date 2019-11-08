@@ -23,11 +23,13 @@ export class FirstLevel extends Phaser.Scene{
 			loop: true
         })*/       
         //Set up tiled map
-        let mappy = this.add.tilemap("map1");
-        let terrain = mappy.addTilesetImage("sheet1");        
+        let mappy = this.add.tilemap("FirstLevel");
+        let terrain1 = mappy.addTilesetImage("ground1");
+        let terrain2 = mappy.addTilesetImage("ground2"); 
+        let terrain3 = mappy.addTilesetImage("ground3");         
         //layers
-        mappy.createStaticLayer("bottom_layer", [terrain], 0, 0).setDepth(-1);
-        let topLayer = mappy.createStaticLayer("top_layer", [terrain], 0, 0);
+        mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
+        let topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
         //Create the level using this scene and the map made above
         this.lm = new LevelManager(this, mappy); 
         //map collisions
@@ -40,16 +42,16 @@ export class FirstLevel extends Phaser.Scene{
         this.lm.updateEnemies();      
         //Set player movement on keypress
         if (this.keyboard.D.isDown === true) {
-            this.player.setVelocityX(128);
+            this.player.setVelocityX(256);
         }
         if (this.keyboard.W.isDown === true) {
-            this.player.setVelocityY(-128);
+            this.player.setVelocityY(-256);
         }
         if (this.keyboard.S.isDown === true) {
-            this.player.setVelocityY(128);
+            this.player.setVelocityY(256);
         }
         if (this.keyboard.A.isDown === true) {
-            this.player.setVelocityX(-128);
+            this.player.setVelocityX(-256);
         }
         if (this.keyboard.A.isUp && this.keyboard.D.isUp) { //not moving on X axis
             this.player.setVelocityX(0);      
@@ -82,7 +84,9 @@ export class FirstLevel extends Phaser.Scene{
         this.am = new AnimationManager(this);
         this.am.setAnimations();        
         //load map assets
-        this.load.image("sheet1", "./assets/image/sheet1.png");
-        this.load.tilemapTiledJSON("map1", "./assets/maps/map1.json");
+        this.load.image("ground1", "./assets/image/ground1.png");
+        this.load.image("ground2", "./assets/image/ground2.png");
+        this.load.image("ground3", "./assets/image/ground3.png");
+        this.load.tilemapTiledJSON("FirstLevel", "./assets/maps/FirstLevel.json");
     }
 }
