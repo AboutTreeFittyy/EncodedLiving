@@ -160,10 +160,12 @@ var CST = {
   SPRITE: {
     CAT: "cat.png",
     PLAYER: "player.png",
-    WHIPL: "whip_left.png",
+    WHIP: "whip.png",
+
+    /*WHIPL: "whip_left.png",
     WHIPR: "whip_right.png",
     WHIPU: "whip_up.png",
-    WHIPD: "whip_down.png",
+    WHIPD: "whip_down.png",*/
     ITEM: "itemsall.png",
     NPCS: "npcs.png",
     NICOLED: "nicolecreepy.png",
@@ -252,15 +254,15 @@ function (_Phaser$Scene) {
             frameHeight: 80,
             frameWidth: 44
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NICOLED || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD1 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD2 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NPC_LOT) {
-          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
-            frameHeight: 64,
-            frameWidth: 48
-          });
-        } else {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 32,
             frameWidth: 32
+          });
+        } else {
+          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+            frameHeight: 64,
+            frameWidth: 48
           });
         }
       }
@@ -1217,10 +1219,10 @@ function () {
       this.createAnimation("Profright", 10, _CST.CST.SPRITE.NPC_LOT, 75, 77, false);
       this.createAnimation("Profup", 10, _CST.CST.SPRITE.NPC_LOT, 85, 87, false); //My poorly made whip sprites       
 
-      this.createAnimation("whip_left", 15, _CST.CST.SPRITE.WHIPL, 0, 4, true);
-      this.createAnimation("whip_up", 15, _CST.CST.SPRITE.WHIPU, 0, 4, true);
-      this.createAnimation("whip_right", 15, _CST.CST.SPRITE.WHIPR, 0, 4, true);
-      this.createAnimation("whip_down", 15, _CST.CST.SPRITE.WHIPD, 0, 4, true); //Player whip animation
+      this.createAnimation("whip_left", 15, _CST.CST.SPRITE.WHIP, 17, 22, true);
+      this.createAnimation("whip_up", 15, _CST.CST.SPRITE.WHIP, 8, 11, true);
+      this.createAnimation("whip_right", 15, _CST.CST.SPRITE.WHIP, 12, 15, true);
+      this.createAnimation("whip_down", 15, _CST.CST.SPRITE.WHIP, 0, 4, true); //Player whip animation
 
       this.createAnimation("playerwhipleft", 15, _CST.CST.SPRITE.PLAYER, 169, 174, false);
       this.createAnimation("playerwhipup", 15, _CST.CST.SPRITE.PLAYER, 156, 161, false);

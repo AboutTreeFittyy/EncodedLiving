@@ -54,10 +54,10 @@ export class AnimationManager{
         this.createAnimation("Profright", 10, CST.SPRITE.NPC_LOT, 75, 77, false);
         this.createAnimation("Profup", 10, CST.SPRITE.NPC_LOT, 85, 87, false);
         //My poorly made whip sprites       
-        this.createAnimation("whip_left", 15, CST.SPRITE.WHIPL, 0, 4, true);
-        this.createAnimation("whip_up", 15, CST.SPRITE.WHIPU, 0, 4, true);        
-        this.createAnimation("whip_right", 15, CST.SPRITE.WHIPR, 0, 4, true);
-        this.createAnimation("whip_down", 15, CST.SPRITE.WHIPD, 0, 4, true);
+        this.createAnimation("whip_left", 15, CST.SPRITE.WHIP, 17, 22, true);
+        this.createAnimation("whip_up", 15, CST.SPRITE.WHIP, 8, 11, true);        
+        this.createAnimation("whip_right", 15, CST.SPRITE.WHIP, 12, 15, true);
+        this.createAnimation("whip_down", 15, CST.SPRITE.WHIP, 0, 4, true);
         //Player whip animation
         this.createAnimation("playerwhipleft", 15, CST.SPRITE.PLAYER, 169, 174, false);
         this.createAnimation("playerwhipup", 15, CST.SPRITE.PLAYER, 156, 161, false);
