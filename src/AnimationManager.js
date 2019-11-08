@@ -28,11 +28,16 @@ export class AnimationManager{
         this.createAnimation("jasonright", 10, CST.SPRITE.NPC_LOT, 27, 29, false);
         this.createAnimation("jasondown", 10, CST.SPRITE.NPC_LOT, 3, 5, false);
         this.createAnimation("jasonup", 10, CST.SPRITE.NPC_LOT, 39, 41, false);
+        //NicoleD npc walking animations
+        this.createAnimation("NicoleDleft", 15, CST.SPRITE.NICOLED, 5, 7, false);
+        this.createAnimation("NicoleDright", 15, CST.SPRITE.NICOLED, 9, 11, false);
+        this.createAnimation("NicoleDdown", 15, CST.SPRITE.NICOLED, 1, 3, false);
+        this.createAnimation("NicoleDup", 15, CST.SPRITE.NICOLED, 13, 15, false);
         //Nicole npc walking sprites
-        this.createAnimation("nicoledown", 10, CST.SPRITE.NPC_LOT, 6, 8, false);
-        this.createAnimation("nicoleleft", 10, CST.SPRITE.NPC_LOT, 18, 20, false);
-        this.createAnimation("nicoleright", 10, CST.SPRITE.NPC_LOT, 30, 32, false);
-        this.createAnimation("nicoleup", 10, CST.SPRITE.NPC_LOT, 42, 44, false);
+        this.createAnimation("Nicoledown", 10, CST.SPRITE.NPC_LOT, 6, 8, false);
+        this.createAnimation("Nicoleleft", 10, CST.SPRITE.NPC_LOT, 18, 20, false);
+        this.createAnimation("Nicoleright", 10, CST.SPRITE.NPC_LOT, 30, 32, false);
+        this.createAnimation("Nicoleup", 10, CST.SPRITE.NPC_LOT, 42, 44, false);
         //Claire1 npc walking sprites
         this.createAnimation("Claire1down", 10, CST.SPRITE.NPC_LOT, 48, 50, false);
         this.createAnimation("Claire1left", 10, CST.SPRITE.NPC_LOT, 60, 62, false);

@@ -47,7 +47,7 @@ export class LoadScene extends Phaser.Scene{
 					frameHeight: 80,
 					frameWidth: 44
 				});
-			}else if (CST.SPRITE[prop] == CST.SPRITE.NERD1 ||CST.SPRITE[prop] == CST.SPRITE.NERD2 || CST.SPRITE[prop] == CST.SPRITE.JASON || CST.SPRITE[prop] == CST.SPRITE.NPC_LOT){
+			}else if (CST.SPRITE[prop] == CST.SPRITE.NICOLED || CST.SPRITE[prop] == CST.SPRITE.NERD1 || CST.SPRITE[prop] == CST.SPRITE.NERD2 || CST.SPRITE[prop] == CST.SPRITE.JASON || CST.SPRITE[prop] == CST.SPRITE.NPC_LOT){
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
 					frameHeight: 64,
 					frameWidth: 48

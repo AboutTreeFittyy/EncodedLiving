@@ -205,6 +205,18 @@
                  "width":48,
                  "x":1142,
                  "y":3230
+                }, 
+                {
+                 "gid":591,
+                 "height":64,
+                 "id":38,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":470,
+                 "y":3520
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -332,7 +344,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":38,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2019.09.18",
@@ -3210,15 +3222,15 @@
          "tilewidth":48
         }, 
         {
-         "columns":3,
+         "columns":4,
          "firstgid":575,
          "image":"..\/sprite\/nerd2.png",
-         "imageheight":265,
-         "imagewidth":181,
+         "imageheight":256,
+         "imagewidth":192,
          "margin":0,
          "name":"nerd2",
          "spacing":0,
-         "tilecount":12,
+         "tilecount":16,
          "tileheight":64,
          "tiles":[
                 {
@@ -3327,6 +3339,164 @@
                          "name":"name",
                          "type":"string",
                          "value":"nerd2up"
+                        }]
+                }],
+         "tilewidth":48
+        }, 
+        {
+         "columns":4,
+         "firstgid":591,
+         "image":"..\/sprite\/nicolecreepy.png",
+         "imageheight":256,
+         "imagewidth":192,
+         "margin":0,
+         "name":"nicolecreepy",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":64,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"DeadNicole"
                         }]
                 }],
          "tilewidth":48

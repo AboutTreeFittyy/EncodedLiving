@@ -166,6 +166,7 @@ var CST = {
     WHIPD: "whip_down.png",
     ITEM: "itemsall.png",
     NPCS: "npcs.png",
+    NICOLED: "nicolecreepy.png",
     NERD1: "nerd1.png",
     NERD2: "nerd2.png",
     JASON: "jason.png",
@@ -251,7 +252,7 @@ function (_Phaser$Scene) {
             frameHeight: 80,
             frameWidth: 44
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD1 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD2 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NPC_LOT) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NICOLED || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD1 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NERD2 || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JASON || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NPC_LOT) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 64,
             frameWidth: 48
@@ -723,15 +724,16 @@ function () {
 
         switch (this.scene.npcCont.list[i].name) {
           case "Nicole":
+          case "NicoleD":
             //Have her follow the player around                                      
             if (this.scene.player.y - 100 > this.scene.npcCont.list[i].y) {
               //player below
               this.scene.npcCont.list[i].setVelocityY(256);
-              anim = "nicoledown";
+              anim = "down";
             } else if (this.scene.player.y + 100 < this.scene.npcCont.list[i].y) {
               //player above
               this.scene.npcCont.list[i].setVelocityY(-256);
-              anim = "nicoleup";
+              anim = "up";
             } else {
               this.scene.npcCont.list[i].setVelocityY(0);
             }
@@ -739,17 +741,17 @@ function () {
             if (this.scene.player.x - 100 > this.scene.npcCont.list[i].x) {
               //player in front
               this.scene.npcCont.list[i].setVelocityX(256);
-              anim = "nicoleright";
+              anim = "right";
             } else if (this.scene.player.x + 100 < this.scene.npcCont.list[i].x) {
               //player behind
               this.scene.npcCont.list[i].setVelocityX(-256);
-              anim = "nicoleleft";
+              anim = "left";
             } else {
               this.scene.npcCont.list[i].setVelocityX(0);
             }
 
             if (anim != "nothing") {
-              this.scene.npcCont.list[i].play(anim, true);
+              this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
             }
 
             break;
@@ -1052,8 +1054,9 @@ function () {
       //add the collider for all the npcs
 
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
-      this.scene.npcCont = this.scene.add.container();
-      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+      this.scene.npcCont = this.scene.add.container(); //this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+
+      this.createNPCS(591, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
       this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
       this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
       this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof"); //make enemies group and container to handle them with*/
@@ -1187,12 +1190,17 @@ function () {
       this.createAnimation("jasonleft", 10, _CST.CST.SPRITE.NPC_LOT, 15, 17, false);
       this.createAnimation("jasonright", 10, _CST.CST.SPRITE.NPC_LOT, 27, 29, false);
       this.createAnimation("jasondown", 10, _CST.CST.SPRITE.NPC_LOT, 3, 5, false);
-      this.createAnimation("jasonup", 10, _CST.CST.SPRITE.NPC_LOT, 39, 41, false); //Nicole npc walking sprites
+      this.createAnimation("jasonup", 10, _CST.CST.SPRITE.NPC_LOT, 39, 41, false); //NicoleD npc walking animations
 
-      this.createAnimation("nicoledown", 10, _CST.CST.SPRITE.NPC_LOT, 6, 8, false);
-      this.createAnimation("nicoleleft", 10, _CST.CST.SPRITE.NPC_LOT, 18, 20, false);
-      this.createAnimation("nicoleright", 10, _CST.CST.SPRITE.NPC_LOT, 30, 32, false);
-      this.createAnimation("nicoleup", 10, _CST.CST.SPRITE.NPC_LOT, 42, 44, false); //Claire1 npc walking sprites
+      this.createAnimation("NicoleDleft", 15, _CST.CST.SPRITE.NICOLED, 5, 7, false);
+      this.createAnimation("NicoleDright", 15, _CST.CST.SPRITE.NICOLED, 9, 11, false);
+      this.createAnimation("NicoleDdown", 15, _CST.CST.SPRITE.NICOLED, 1, 3, false);
+      this.createAnimation("NicoleDup", 15, _CST.CST.SPRITE.NICOLED, 13, 15, false); //Nicole npc walking sprites
+
+      this.createAnimation("Nicoledown", 10, _CST.CST.SPRITE.NPC_LOT, 6, 8, false);
+      this.createAnimation("Nicoleleft", 10, _CST.CST.SPRITE.NPC_LOT, 18, 20, false);
+      this.createAnimation("Nicoleright", 10, _CST.CST.SPRITE.NPC_LOT, 30, 32, false);
+      this.createAnimation("Nicoleup", 10, _CST.CST.SPRITE.NPC_LOT, 42, 44, false); //Claire1 npc walking sprites
 
       this.createAnimation("Claire1down", 10, _CST.CST.SPRITE.NPC_LOT, 48, 50, false);
       this.createAnimation("Claire1left", 10, _CST.CST.SPRITE.NPC_LOT, 60, 62, false);

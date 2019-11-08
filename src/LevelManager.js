@@ -26,31 +26,32 @@ export class LevelManager{
             let anim = "nothing";  
             switch(this.scene.npcCont.list[i].name){
                 case "Nicole":
+                case "NicoleD":
                     //Have her follow the player around                                      
                     if(this.scene.player.y - 100 > this.scene.npcCont.list[i].y){
                         //player below
                         this.scene.npcCont.list[i].setVelocityY(256);
-                        anim = "nicoledown";
+                        anim = "down";
                     }else if (this.scene.player.y + 100 < this.scene.npcCont.list[i].y){
                         //player above
                         this.scene.npcCont.list[i].setVelocityY(-256);
-                        anim = "nicoleup";
+                        anim = "up";
                     }else{
                         this.scene.npcCont.list[i].setVelocityY(0);
                     }
                     if(this.scene.player.x - 100 > this.scene.npcCont.list[i].x){
                         //player in front
                         this.scene.npcCont.list[i].setVelocityX(256);
-                        anim = "nicoleright";
+                        anim = "right";
                     }else if (this.scene.player.x + 100< this.scene.npcCont.list[i].x){
                         //player behind
                         this.scene.npcCont.list[i].setVelocityX(-256);
-                        anim = "nicoleleft";
+                        anim = "left";
                     }else{
                         this.scene.npcCont.list[i].setVelocityX(0);
                     }
                     if(anim != "nothing"){
-                        this.scene.npcCont.list[i].play(anim, true);
+                        this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
                     }
                     break;
                 case "Claire1":
@@ -289,7 +290,8 @@ export class LevelManager{
         this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
         
         this.scene.npcCont = this.scene.add.container();
-        this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+        //this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+        this.createNPCS(591, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
         this.createNPCS(512, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
         this.createNPCS(473, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
         this.createNPCS(515, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
