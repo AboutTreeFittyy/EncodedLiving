@@ -33,11 +33,8 @@ export const CST = {
 	SPRITE:{
 		CAT:"cat.png",
 		PLAYER: "player.png",
+		CHAD: "chadsprite.png",
 		WHIP: "whip.png",
-		/*WHIPL: "whip_left.png",
-		WHIPR: "whip_right.png",
-		WHIPU: "whip_up.png",
-		WHIPD: "whip_down.png",*/
 		ITEM: "itemsall.png",
 		NPCS: "npcs.png",
 		NICOLED: "nicolecreepy.png",

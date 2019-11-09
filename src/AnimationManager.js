@@ -13,6 +13,9 @@ export class AnimationManager{
     }
 
     setAnimations(){
+        //Chad sprites animation
+        this.createAnimation("chadleft", 10, CST.SPRITE.CHAD, 0, 3, false);
+        this.createAnimation("chadright", 10, CST.SPRITE.CHAD, 4, 7, false);
         //Nerd variant 1 animations
         this.createAnimation("nerd1left", 15, CST.SPRITE.NERD1, 5, 7, false);
         this.createAnimation("nerd1right", 15, CST.SPRITE.NERD1, 9, 11, false);

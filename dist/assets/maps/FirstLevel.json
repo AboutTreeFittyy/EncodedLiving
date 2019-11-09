@@ -63,18 +63,6 @@
          "name":"npcs",
          "objects":[
                 {
-                 "gid":470,
-                 "height":64,
-                 "id":94,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":48,
-                 "x":1050,
-                 "y":4000
-                }, 
-                {
                  "gid":515,
                  "height":64,
                  "id":95,
@@ -97,6 +85,18 @@
                  "width":48,
                  "x":4384,
                  "y":1520
+                }, 
+                {
+                 "gid":4707,
+                 "height":96,
+                 "id":97,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":937.69696969697,
+                 "y":3990.42424242424
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -188,7 +188,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":97,
+ "nextobjectid":99,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2019.09.18",
@@ -25008,6 +25008,200 @@
                         }]
                 }],
          "tilewidth":32
+        }, 
+        {
+         "columns":4,
+         "firstgid":4703,
+         "image":"..\/sprite\/chadsprite.png",
+         "imageheight":480,
+         "imagewidth":256,
+         "margin":0,
+         "name":"chad",
+         "spacing":0,
+         "tilecount":20,
+         "tileheight":96,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }, 
+                {
+                 "id":19,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"chad"
+                        }]
+                }],
+         "tilewidth":64
         }],
  "tilewidth":32,
  "type":"map",
