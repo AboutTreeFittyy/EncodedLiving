@@ -189,7 +189,7 @@ export class LevelManager{
 
     setPlayer(){
         //add game sprites              
-        this.scene.player = new CharacterSprite(this.scene, 400, 3400, CST.SPRITE.PLAYER, 130);
+        this.scene.player = new CharacterSprite(this.scene, 700, 4000, CST.SPRITE.PLAYER, 130);
         this.scene.player.setCollideWorldBounds(true);
         //align the player hitbox and set its size
         this.scene.player.setSize(32,48);
@@ -304,9 +304,9 @@ export class LevelManager{
         this.createEnemies(564, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2);
         this.createEnemies(568, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2);
         this.createEnemies(572, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2);
-        this.createEnemies(576, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 2);
-        this.createEnemies(579, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 2);
-        this.createEnemies(582, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 2);
+        this.createEnemies(577, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 2);
+        this.createEnemies(578, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 2);
+        this.createEnemies(581, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 2);
         this.createEnemies(585, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 2);
         this.createEnemies(467, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
         this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
@@ -344,10 +344,11 @@ export class LevelManager{
             this.scene.enemySet.add(sprite);
             this.scene.enemyCont.add(sprite);
             sprite.setCollideWorldBounds(true);
-            //This triggers when enemy hits player
+            //This triggers when enemy hits player, npc, furnishings or the toplayer/borders of the game
             this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
-            //This triggers when they hit an npc
             this.scene.physics.add.collider(this.scene.npcSet, sprite, sprite.enemyCollide, null, this);
+            this.scene.physics.add.collider(this.scene.furnishing, sprite, sprite.enemyCollide, null, this);
+            this.scene.physics.add.collider(this.scene.topLayer, sprite, sprite.enemyCollide, null, this);
         });
     }
 }

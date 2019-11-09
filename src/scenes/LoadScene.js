@@ -47,7 +47,7 @@ export class LoadScene extends Phaser.Scene{
 					frameHeight: 80,
 					frameWidth: 44
 				});
-			}else if(CST.SPRITE[prop] == CST.SPRITE.CAT || CST.SPRITE[prop] == CST.SPRITE.ITEM){
+			}else if(CST.SPRITE[prop] == CST.SPRITE.CAT || CST.SPRITE[prop] == CST.SPRITE.ITEM || CST.SPRITE[prop] == CST.SPRITE.WHIP){
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
 					frameHeight: 32,
 					frameWidth: 32

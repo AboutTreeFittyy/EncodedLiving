@@ -1,6 +1,6 @@
 /* File Name: FirstLevel.js
  * Author: Mathew Boland
- * Last Updated: November 7, 2019
+ * Last Updated: November 8, 2019
  * Description: This class is used to create the scene for the first level of the game.
  * With the help of other classes it creates the user interface, keybindings, map, saves 
  * progress and makes animations. 
@@ -26,15 +26,20 @@ export class FirstLevel extends Phaser.Scene{
         let mappy = this.add.tilemap("FirstLevel");
         let terrain1 = mappy.addTilesetImage("ground1");
         let terrain2 = mappy.addTilesetImage("ground2"); 
-        let terrain3 = mappy.addTilesetImage("ground3");         
+        let terrain3 = mappy.addTilesetImage("ground3");      
+        let holster = mappy.addTilesetImage("holster"); 
+        let lightwood = mappy.addTilesetImage("lightwood");    
         //layers
         mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
+        this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
         this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
         //Create the level using this scene and the map made above
         this.lm = new LevelManager(this, mappy); 
         //map collisions
         this.physics.add.collider(this.player, this.topLayer);
-        this.topLayer.setCollisionByProperty({collides:true});               
+        this.physics.add.collider(this.player, this.furnishing);
+        this.topLayer.setCollisionByProperty({collides:true});  
+        this.furnishing.setCollisionByProperty({collides:true});        
     }   
 
     update(){
@@ -42,16 +47,16 @@ export class FirstLevel extends Phaser.Scene{
         this.lm.updateEnemies();      
         //Set player movement on keypress
         if (this.keyboard.D.isDown === true) {
-            this.player.setVelocityX(256);
+            this.player.setVelocityX(512);
         }
         if (this.keyboard.W.isDown === true) {
-            this.player.setVelocityY(-256);
+            this.player.setVelocityY(-512);
         }
         if (this.keyboard.S.isDown === true) {
-            this.player.setVelocityY(256);
+            this.player.setVelocityY(512);
         }
         if (this.keyboard.A.isDown === true) {
-            this.player.setVelocityX(-256);
+            this.player.setVelocityX(-512);
         }
         if (this.keyboard.A.isUp && this.keyboard.D.isUp) { //not moving on X axis
             this.player.setVelocityX(0);      
@@ -87,6 +92,8 @@ export class FirstLevel extends Phaser.Scene{
         this.load.image("ground1", "./assets/image/ground1.png");
         this.load.image("ground2", "./assets/image/ground2.png");
         this.load.image("ground3", "./assets/image/ground3.png");
+        this.load.image("holster", "./assets/image/holster.png");
+        this.load.image("lightwood", "./assets/image/lightwood.png");
         this.load.tilemapTiledJSON("FirstLevel", "./assets/maps/FirstLevel.json");
     }
 }

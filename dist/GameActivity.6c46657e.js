@@ -254,7 +254,7 @@ function (_Phaser$Scene) {
             frameHeight: 80,
             frameWidth: 44
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIP) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 32,
             frameWidth: 32
@@ -930,7 +930,7 @@ function () {
     key: "setPlayer",
     value: function setPlayer() {
       //add game sprites              
-      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 400, 3400, _CST.CST.SPRITE.PLAYER, 130);
+      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 700, 4000, _CST.CST.SPRITE.PLAYER, 130);
       this.scene.player.setCollideWorldBounds(true); //align the player hitbox and set its size
 
       this.scene.player.setSize(32, 48);
@@ -1071,9 +1071,9 @@ function () {
       this.createEnemies(564, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 2);
       this.createEnemies(568, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 2);
       this.createEnemies(572, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 2);
-      this.createEnemies(576, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 2);
-      this.createEnemies(579, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 2);
-      this.createEnemies(582, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 2);
+      this.createEnemies(577, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 2);
+      this.createEnemies(578, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 2);
+      this.createEnemies(581, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 2);
       this.createEnemies(585, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 2);
       this.createEnemies(467, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
       this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
@@ -1136,12 +1136,15 @@ function () {
 
         _this4.scene.enemyCont.add(sprite);
 
-        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player
+        sprite.setCollideWorldBounds(true); //This triggers when enemy hits player, npc, furnishings or the toplayer/borders of the game
 
-        _this4.scene.physics.add.collider(_this4.scene.player, sprite, sprite.enemyCollide, null, _this4); //This triggers when they hit an npc
-
+        _this4.scene.physics.add.collider(_this4.scene.player, sprite, sprite.enemyCollide, null, _this4);
 
         _this4.scene.physics.add.collider(_this4.scene.npcSet, sprite, sprite.enemyCollide, null, _this4);
+
+        _this4.scene.physics.add.collider(_this4.scene.furnishing, sprite, sprite.enemyCollide, null, _this4);
+
+        _this4.scene.physics.add.collider(_this4.scene.topLayer, sprite, sprite.enemyCollide, null, _this4);
       });
     }
   }]);
@@ -1322,15 +1325,22 @@ function (_Phaser$Scene) {
       var mappy = this.add.tilemap("FirstLevel");
       var terrain1 = mappy.addTilesetImage("ground1");
       var terrain2 = mappy.addTilesetImage("ground2");
-      var terrain3 = mappy.addTilesetImage("ground3"); //layers
+      var terrain3 = mappy.addTilesetImage("ground3");
+      var holster = mappy.addTilesetImage("holster");
+      var lightwood = mappy.addTilesetImage("lightwood"); //layers
 
       mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
+      this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
       this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2); //Create the level using this scene and the map made above
 
       this.lm = new _LevelManager.LevelManager(this, mappy); //map collisions
 
       this.physics.add.collider(this.player, this.topLayer);
+      this.physics.add.collider(this.player, this.furnishing);
       this.topLayer.setCollisionByProperty({
+        collides: true
+      });
+      this.furnishing.setCollisionByProperty({
         collides: true
       });
     }
@@ -1341,19 +1351,19 @@ function (_Phaser$Scene) {
       this.lm.updateEnemies(); //Set player movement on keypress
 
       if (this.keyboard.D.isDown === true) {
-        this.player.setVelocityX(256);
+        this.player.setVelocityX(512);
       }
 
       if (this.keyboard.W.isDown === true) {
-        this.player.setVelocityY(-256);
+        this.player.setVelocityY(-512);
       }
 
       if (this.keyboard.S.isDown === true) {
-        this.player.setVelocityY(256);
+        this.player.setVelocityY(512);
       }
 
       if (this.keyboard.A.isDown === true) {
-        this.player.setVelocityX(-256);
+        this.player.setVelocityX(-512);
       }
 
       if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
@@ -1399,6 +1409,8 @@ function (_Phaser$Scene) {
       this.load.image("ground1", "./assets/image/ground1.png");
       this.load.image("ground2", "./assets/image/ground2.png");
       this.load.image("ground3", "./assets/image/ground3.png");
+      this.load.image("holster", "./assets/image/holster.png");
+      this.load.image("lightwood", "./assets/image/lightwood.png");
       this.load.tilemapTiledJSON("FirstLevel", "./assets/maps/FirstLevel.json");
     }
   }]);
@@ -1682,7 +1694,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56600" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61373" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
