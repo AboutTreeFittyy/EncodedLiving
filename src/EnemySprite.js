@@ -22,61 +22,42 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
     }
 
     enemyCollide(player, enemy){
-        //Check if it's enemy thats set
-        if(enemy.name == "nerd1up"){
-            enemy.setVelocityY(-90);
-            enemy.name = "nerd1down";
-        } else if(enemy.name == "nerd1down"){
-            enemy.setVelocityY(90);
-            enemy.name = "nerd1up";
-        } else if(enemy.name == "nerd1right"){
-            enemy.setVelocityX(90);
-            enemy.name = "nerd1left";
-        } else if(enemy.name == "nerd1left"){
-            enemy.setVelocityX(-90);
-            enemy.name = "nerd1right";
+        let curName;
+        //Save whichever is in use to a temp variable to test conditions with
+        if(player.name != ''){
+            curName = player;
+        }else{
+            curName = enemy;
+        }
+        //Based on the name from the collision decide what to do
+        switch(curName.name){
+            //For nerds just switch their current direction, slice their name so that it keeps the same variation number
+            case "nerd1up":
+            case "nerd2up":
+                curName.setVelocityY(-90);
+                curName.name = curName.name.slice(0, 5)+"down";
+            break;
+            case "nerd1down":
+            case "nerd2down":  
+                curName.setVelocityY(90);
+                curName.name = curName.name.slice(0, 5)+"up";
+            break;
+            case "nerd1right":
+            case "nerd2right":  
+                curName.setVelocityX(90);
+                curName.name = curName.name.slice(0, 5)+"left"; 
+            break;
+            case "nerd1left":
+            case "nerd2left":  
+                curName.setVelocityX(-90);
+                curName.name = curName.name.slice(0, 5)+"right";
+            break;
+        }
+        //Now store the temp variable back into the game object
+        if(player.name != ''){
+            player.name = curName.name;
+        }else{
+            enemy.name = curName.name;
         }  
-        //Check if it's player thats set
-        if(player.name == "nerd1up"){
-            player.setVelocityY(-90);
-            player.name = "nerd1down";
-        } else if(player.name == "nerd1down"){
-            player.setVelocityY(90);
-            player.name = "nerd1up";
-        } else if(player.name == "nerd1right"){
-            player.setVelocityX(90);
-            player.name = "nerd1left";
-        } else if(player.name == "nerd1left"){
-            player.setVelocityX(-90);
-            player.name = "nerd1right";
-        }    
-        //Check if it's enemy thats set
-        if(enemy.name == "nerd2up"){
-            enemy.setVelocityY(-90);
-            enemy.name = "nerd2down";
-        } else if(enemy.name == "nerd2down"){
-            enemy.setVelocityY(90);
-            enemy.name = "nerd2up";
-        } else if(enemy.name == "nerd2right"){
-            enemy.setVelocityX(90);
-            enemy.name = "nerd2left";
-        } else if(enemy.name == "nerd2left"){
-            enemy.setVelocityX(-90);
-            enemy.name = "nerd2right";
-        }  
-        //Check if it's player thats set
-        if(player.name == "nerd2up"){
-            player.setVelocityY(-90);
-            player.name = "nerd2down";
-        } else if(player.name == "nerd2down"){
-            player.setVelocityY(90);
-            player.name = "nerd2up";
-        } else if(player.name == "nerd2right"){
-            player.setVelocityX(90);
-            player.name = "nerd2left";
-        } else if(player.name == "nerd2left"){
-            player.setVelocityX(-90);
-            player.name = "nerd2right";
-        }   
     }
 }

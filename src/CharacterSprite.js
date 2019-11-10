@@ -26,15 +26,4 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         player.money++;
         player.scene.cmd1Text.text = player.scene.cmd1Text.text+"Player Money: "+player.money+"\n";
     }
-
-    npcSpeak(player, npc){
-        npc.setVelocityX(0);
-        npc.setVelocityY(0);
-        //Make sure that you can't just keep talking to someone 
-        if(npc.name == player.npcPrev){
-            return;
-        }
-        player.npcPrev = npc.name;
-        player.scene.cmd2Text.text = player.scene.cmd2Text.text+npc.name+"\n";
-    }
 }

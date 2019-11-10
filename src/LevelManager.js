@@ -251,7 +251,7 @@ export class LevelManager{
 
     setInputs(){
         //set up keyboard controls
-        this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D");
+        this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, R");
         //Set listener for p to pause game
         this.scene.input.keyboard.on('keyup-P', ()=>{
             this.scene.scene.launch(CST.SCENES.PAUSE);
@@ -318,9 +318,9 @@ export class LevelManager{
         this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
         
         this.scene.npcCont = this.scene.add.container();
-        //this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
-        this.createNPCS(591, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-        this.createNPCS(4707, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 2, 14, 6, 10, "chad");
+        this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+        //this.createNPCS(591, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+        //this.createNPCS(4707, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 2, 14, 6, 10, "chad");
         this.createNPCS(512, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
         this.createNPCS(473, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
         this.createNPCS(515, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
@@ -333,10 +333,10 @@ export class LevelManager{
         this.createEnemies(564, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2);
         this.createEnemies(568, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2);
         this.createEnemies(572, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2);
-        this.createEnemies(577, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 2);
-        this.createEnemies(578, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 2);
-        this.createEnemies(581, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 2);
-        this.createEnemies(585, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 2);
+        this.createEnemies(576, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 2);
+        this.createEnemies(588, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 2);
+        this.createEnemies(580, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 2);
+        this.createEnemies(584, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 2);
         this.createEnemies(467, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
         this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
@@ -360,7 +360,7 @@ export class LevelManager{
             this.scene.npcSet.add(sprite);
             this.scene.npcCont.add(sprite);
             //This triggers when enemy hits player
-            this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
+            this.scene.physics.add.collider(this.scene.player, sprite, sprite.npcSpeak, null, this);
         });
     }
 

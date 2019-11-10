@@ -139,7 +139,8 @@ var CST = {
     LOAD: "LOAD",
     MENU: "MENU",
     PAUSE: "PAUSE",
-    SHOP: "SHOP"
+    SHOP: "SHOP",
+    TALK: "TALK"
   },
   IMAGE: {
     ENCODEDLIVING: "encodedliving.png",
@@ -151,7 +152,8 @@ var CST = {
     CMD: "cmd.png",
     SHOP: "shop.png",
     FIDDY: "fiddy.png",
-    EXIT: "exit.png"
+    EXIT: "exit.png",
+    CONTINUE: "continue.png"
   },
   AUDIO: {
     THEME1: "level_1_theme.mp3",
@@ -421,9 +423,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Sprite = void 0;
 
+var _CST = require("./CST");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
@@ -435,11 +443,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-/* File Name: Sprite.js
- * Author: Mathew Boland
- * Last Updated: November 8, 2019
- * Description: Class used to create and hold the value of a Sprite object
-*/
 var Sprite =
 /*#__PURE__*/
 function (_Phaser$Physics$Arcad) {
@@ -464,11 +467,82 @@ function (_Phaser$Physics$Arcad) {
     return _this;
   }
 
+  _createClass(Sprite, [{
+    key: "npcSpeak",
+    value: function npcSpeak(player, npc) {
+      //If the r button is pressed then begin chat scene
+      if (player.scene.keyboard.R.isDown) {
+        this.scene.scene.launch(_CST.CST.SCENES.TALK, player, npc);
+        this.scene.scene.pause(); //player.scene.keyboard.R.isDown = false;
+        //player.scene.keyboard.R.isDown = true;
+
+        player.scene.keyboard.R.reset();
+        player.scene.keyboard.W.reset();
+        player.scene.keyboard.A.reset();
+        player.scene.keyboard.S.reset();
+        player.scene.keyboard.D.reset();
+      } //Make sure that you can't just keep talking to someone 
+
+      /*if(npc.name == player.npcPrev){
+          return;
+      }
+      player.npcPrev = npc.name;*/
+
+      /*
+      //Append new text to cmd2
+      switch(npc.name){
+      case "Nicole":
+      npc.addCMD2Text("C:/Users/Player/To_Self/Hey is that Nicole?", player);    
+      npc.addCMD2Text("C:/Users/Nicole/To_Player/Hey it's me! Thought I'd", player);
+      npc.addCMD2Text(" see you here. First day of programming school eh?", player);
+      break;
+      case "NicoleD":
+      npc.addCMD2Text("C:/Users/oliceN/To_Player/Hwy ddi sith paphen<1@?", player);
+      break;
+      case "Claire1":
+      npc.addCMD2Text("Hey, I'm Claire! What are you doing here?", player);
+      break;
+      case "Claire2":
+      npc.addCMD2Text("Oh hey again, I can't talk. I gotta go see Brad.", player);
+      break;
+      case "Kyle":
+      npc.addCMD2Text("How are you doing? I'm so pumped for school!", player);
+      break;
+      case "Chad":
+      npc.addCMD2Text("Hey bro! Wanna come to my party later?", player);
+      break;
+      case "Brad":
+      npc.addCMD2Text("Yo dude. Can you pick up some booze?", player);
+      break;
+      case "Vlad":
+      npc.addCMD2Text("Whoa! Are you actually looking at me!?", player);
+      break
+      case "Stevie":
+      npc.addCMD2Text("Look, I maybe short but I'm no Starbucks item!", player);
+      break;
+      }*/
+
+    }
+  }, {
+    key: "addCMD2Text",
+    value: function addCMD2Text(text, player) {
+      //If the command prompt has more than 34 lines, delete the first one before adding another
+      if (player.scene.cmd2Lines >= 34) {
+        player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/, "");
+      } else {
+        //Still room so don't remove anything, just increase counter for lines
+        player.scene.cmd2Lines++;
+      }
+
+      player.scene.cmd2Text.text = player.scene.cmd2Text.text + text + "\n";
+    }
+  }]);
+
   return Sprite;
 }(Phaser.Physics.Arcade.Sprite);
 
 exports.Sprite = Sprite;
-},{}],"src/EnemySprite.js":[function(require,module,exports) {
+},{"./CST":"src/CST.js"}],"src/EnemySprite.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -532,64 +606,47 @@ function (_Phaser$Physics$Arcad) {
   _createClass(EnemySprite, [{
     key: "enemyCollide",
     value: function enemyCollide(player, enemy) {
-      //Check if it's enemy thats set
-      if (enemy.name == "nerd1up") {
-        enemy.setVelocityY(-90);
-        enemy.name = "nerd1down";
-      } else if (enemy.name == "nerd1down") {
-        enemy.setVelocityY(90);
-        enemy.name = "nerd1up";
-      } else if (enemy.name == "nerd1right") {
-        enemy.setVelocityX(90);
-        enemy.name = "nerd1left";
-      } else if (enemy.name == "nerd1left") {
-        enemy.setVelocityX(-90);
-        enemy.name = "nerd1right";
-      } //Check if it's player thats set
+      var curName; //Save whichever is in use to a temp variable to test conditions with
+
+      if (player.name != '') {
+        curName = player;
+      } else {
+        curName = enemy;
+      } //Based on the name from the collision decide what to do
 
 
-      if (player.name == "nerd1up") {
-        player.setVelocityY(-90);
-        player.name = "nerd1down";
-      } else if (player.name == "nerd1down") {
-        player.setVelocityY(90);
-        player.name = "nerd1up";
-      } else if (player.name == "nerd1right") {
-        player.setVelocityX(90);
-        player.name = "nerd1left";
-      } else if (player.name == "nerd1left") {
-        player.setVelocityX(-90);
-        player.name = "nerd1right";
-      } //Check if it's enemy thats set
+      switch (curName.name) {
+        //For nerds just switch their current direction, slice their name so that it keeps the same variation number
+        case "nerd1up":
+        case "nerd2up":
+          curName.setVelocityY(-90);
+          curName.name = curName.name.slice(0, 5) + "down";
+          break;
+
+        case "nerd1down":
+        case "nerd2down":
+          curName.setVelocityY(90);
+          curName.name = curName.name.slice(0, 5) + "up";
+          break;
+
+        case "nerd1right":
+        case "nerd2right":
+          curName.setVelocityX(90);
+          curName.name = curName.name.slice(0, 5) + "left";
+          break;
+
+        case "nerd1left":
+        case "nerd2left":
+          curName.setVelocityX(-90);
+          curName.name = curName.name.slice(0, 5) + "right";
+          break;
+      } //Now store the temp variable back into the game object
 
 
-      if (enemy.name == "nerd2up") {
-        enemy.setVelocityY(-90);
-        enemy.name = "nerd2down";
-      } else if (enemy.name == "nerd2down") {
-        enemy.setVelocityY(90);
-        enemy.name = "nerd2up";
-      } else if (enemy.name == "nerd2right") {
-        enemy.setVelocityX(90);
-        enemy.name = "nerd2left";
-      } else if (enemy.name == "nerd2left") {
-        enemy.setVelocityX(-90);
-        enemy.name = "nerd2right";
-      } //Check if it's player thats set
-
-
-      if (player.name == "nerd2up") {
-        player.setVelocityY(-90);
-        player.name = "nerd2down";
-      } else if (player.name == "nerd2down") {
-        player.setVelocityY(90);
-        player.name = "nerd2up";
-      } else if (player.name == "nerd2right") {
-        player.setVelocityX(90);
-        player.name = "nerd2left";
-      } else if (player.name == "nerd2left") {
-        player.setVelocityX(-90);
-        player.name = "nerd2right";
+      if (player.name != '') {
+        player.name = curName.name;
+      } else {
+        enemy.name = curName.name;
       }
     }
   }]);
@@ -663,19 +720,6 @@ function (_Phaser$Physics$Arcad) {
       item.destroy(item.body);
       player.money++;
       player.scene.cmd1Text.text = player.scene.cmd1Text.text + "Player Money: " + player.money + "\n";
-    }
-  }, {
-    key: "npcSpeak",
-    value: function npcSpeak(player, npc) {
-      npc.setVelocityX(0);
-      npc.setVelocityY(0); //Make sure that you can't just keep talking to someone 
-
-      if (npc.name == player.npcPrev) {
-        return;
-      }
-
-      player.npcPrev = npc.name;
-      player.scene.cmd2Text.text = player.scene.cmd2Text.text + npc.name + "\n";
     }
   }]);
 
@@ -1007,7 +1051,7 @@ function () {
       var _this = this;
 
       //set up keyboard controls
-      this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D"); //Set listener for p to pause game
+      this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, R"); //Set listener for p to pause game
 
       this.scene.input.keyboard.on('keyup-P', function () {
         _this.scene.scene.launch(_CST.CST.SCENES.PAUSE);
@@ -1091,10 +1135,10 @@ function () {
       //add the collider for all the npcs
 
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
-      this.scene.npcCont = this.scene.add.container(); //this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+      this.scene.npcCont = this.scene.add.container();
+      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //this.createNPCS(591, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+      //this.createNPCS(4707, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 2, 14, 6, 10, "chad");
 
-      this.createNPCS(591, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-      this.createNPCS(4707, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 2, 14, 6, 10, "chad");
       this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
       this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
       this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof"); //make enemies group and container to handle them with*/
@@ -1107,10 +1151,10 @@ function () {
       this.createEnemies(564, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 2);
       this.createEnemies(568, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 2);
       this.createEnemies(572, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 2);
-      this.createEnemies(577, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 2);
-      this.createEnemies(578, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 2);
-      this.createEnemies(581, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 2);
-      this.createEnemies(585, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 2);
+      this.createEnemies(576, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 2);
+      this.createEnemies(588, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 2);
+      this.createEnemies(580, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 2);
+      this.createEnemies(584, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 2);
       this.createEnemies(467, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
       this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
@@ -1151,7 +1195,7 @@ function () {
         _this3.scene.npcCont.add(sprite); //This triggers when enemy hits player
 
 
-        _this3.scene.physics.add.collider(_this3.scene.player, sprite, sprite.enemyCollide, null, _this3);
+        _this3.scene.physics.add.collider(_this3.scene.player, sprite, sprite.npcSpeak, null, _this3);
       });
     }
   }, {
@@ -1666,6 +1710,98 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.ShopScene = ShopScene;
+},{"../CST":"src/CST.js"}],"src/scenes/TalkScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TalkScene = void 0;
+
+var _CST = require("../CST");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var TalkScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(TalkScene, _Phaser$Scene);
+
+  function TalkScene() {
+    _classCallCheck(this, TalkScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(TalkScene).call(this, {
+      key: _CST.CST.SCENES.TALK
+    }));
+  }
+
+  _createClass(TalkScene, [{
+    key: "create",
+    value: function create() {
+      var _this = this;
+
+      //add in assets
+      var contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.CONTINUE).setDepth(1);
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
+      hoverSprite.setScale(2);
+      hoverSprite.setVisible(false); //animate sprites
+
+      this.anims.create({
+        key: "walk",
+        frameRate: 4,
+        repeat: -1,
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
+          frames: [0, 1, 2, 3]
+        })
+      }); //make p resume game as well
+
+      this.input.keyboard.on('keyup-SPACE', function () {
+        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.stop();
+      }); //make buttons interactive
+
+      contin.setInteractive();
+      contin.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = contin.x - contin.width / 2 - 50;
+        hoverSprite.y = contin.y;
+      });
+      contin.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      contin.on("pointerup", function () {
+        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.stop();
+      });
+    }
+  }, {
+    key: "preload",
+    value: function preload() {}
+  }]);
+
+  return TalkScene;
+}(Phaser.Scene);
+
+exports.TalkScene = TalkScene;
 },{"../CST":"src/CST.js"}],"src/GameActivity.js":[function(require,module,exports) {
 "use strict";
 
@@ -1679,6 +1815,8 @@ var _PauseScene = require("./scenes/PauseScene");
 
 var _ShopScene = require("./scenes/ShopScene");
 
+var _TalkScene = require("./scenes/TalkScene");
+
 /* File Name: GameActivity.js
  * Author: Mathew Boland
  * Last Updated: September 30, 2019
@@ -1691,7 +1829,7 @@ var game = new Phaser.Game({
   width: 1600,
   height: 675,
   parent: 'my-canvas',
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene, _ShopScene.ShopScene],
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene, _ShopScene.ShopScene, _TalkScene.TalkScene],
   render: {
     pixelArt: true
   },
@@ -1705,7 +1843,7 @@ var game = new Phaser.Game({
     mode: Phaser.Scale.FIT
   }
 });
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js","./scenes/ShopScene":"src/scenes/ShopScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js","./scenes/ShopScene":"src/scenes/ShopScene.js","./scenes/TalkScene":"src/scenes/TalkScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -1733,7 +1871,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58276" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62815" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

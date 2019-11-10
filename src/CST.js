@@ -12,7 +12,8 @@ export const CST = {
 		LOAD: "LOAD",
 		MENU: "MENU",
 		PAUSE: "PAUSE",
-		SHOP: "SHOP"		
+		SHOP: "SHOP",
+		TALK: "TALK"		
 	},
 	IMAGE: {
 		ENCODEDLIVING:"encodedliving.png",
@@ -24,14 +25,15 @@ export const CST = {
 		CMD:"cmd.png",
 		SHOP: "shop.png",
 		FIDDY: "fiddy.png",
-		EXIT: "exit.png"
+		EXIT: "exit.png",
+		CONTINUE: "continue.png"
 	},
 	AUDIO:{
 		THEME1:"level_1_theme.mp3",
 		TITLE:"title_music.mp3"		
 	},
 	SPRITE:{
-		CAT:"cat.png",
+		CAT: "cat.png",
 		PLAYER: "player.png",
 		CHAD: "chadsprite.png",
 		WHIP: "whip.png",
