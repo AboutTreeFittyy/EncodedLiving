@@ -472,56 +472,18 @@ function (_Phaser$Physics$Arcad) {
     value: function npcSpeak(player, npc) {
       //If the r button is pressed then begin chat scene
       if (player.scene.keyboard.R.isDown) {
-        this.scene.scene.launch(_CST.CST.SCENES.TALK, player, npc);
-        this.scene.scene.pause(); //player.scene.keyboard.R.isDown = false;
-        //player.scene.keyboard.R.isDown = true;
+        this.scene.scene.launch(_CST.CST.SCENES.TALK, {
+          player: player,
+          npc: npc
+        });
+        this.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
 
         player.scene.keyboard.R.reset();
         player.scene.keyboard.W.reset();
         player.scene.keyboard.A.reset();
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
-      } //Make sure that you can't just keep talking to someone 
-
-      /*if(npc.name == player.npcPrev){
-          return;
       }
-      player.npcPrev = npc.name;*/
-
-      /*
-      //Append new text to cmd2
-      switch(npc.name){
-      case "Nicole":
-      npc.addCMD2Text("C:/Users/Player/To_Self/Hey is that Nicole?", player);    
-      npc.addCMD2Text("C:/Users/Nicole/To_Player/Hey it's me! Thought I'd", player);
-      npc.addCMD2Text(" see you here. First day of programming school eh?", player);
-      break;
-      case "NicoleD":
-      npc.addCMD2Text("C:/Users/oliceN/To_Player/Hwy ddi sith paphen<1@?", player);
-      break;
-      case "Claire1":
-      npc.addCMD2Text("Hey, I'm Claire! What are you doing here?", player);
-      break;
-      case "Claire2":
-      npc.addCMD2Text("Oh hey again, I can't talk. I gotta go see Brad.", player);
-      break;
-      case "Kyle":
-      npc.addCMD2Text("How are you doing? I'm so pumped for school!", player);
-      break;
-      case "Chad":
-      npc.addCMD2Text("Hey bro! Wanna come to my party later?", player);
-      break;
-      case "Brad":
-      npc.addCMD2Text("Yo dude. Can you pick up some booze?", player);
-      break;
-      case "Vlad":
-      npc.addCMD2Text("Whoa! Are you actually looking at me!?", player);
-      break
-      case "Stevie":
-      npc.addCMD2Text("Look, I maybe short but I'm no Starbucks item!", player);
-      break;
-      }*/
-
     }
   }, {
     key: "addCMD2Text",
@@ -1752,11 +1714,22 @@ function (_Phaser$Scene) {
   }
 
   _createClass(TalkScene, [{
+    key: "init",
+    value: function init(data) {
+      //Get data from FirstLevel scene to work with in this scene
+      this.npc = data.npc;
+      this.player = data.player;
+    }
+  }, {
     key: "create",
     value: function create() {
       var _this = this;
 
-      //add in assets
+      //Handle input for dialogue
+      this.chatsDone = 0; //The number of sections finished so far
+
+      this.selectDialogue(this.player, this.npc); //add in assets
+
       var contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.CONTINUE).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
       hoverSprite.setScale(2);
@@ -1769,12 +1742,10 @@ function (_Phaser$Scene) {
         frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
           frames: [0, 1, 2, 3]
         })
-      }); //make p resume game as well
+      }); //make space resume game as well
 
       this.input.keyboard.on('keyup-SPACE', function () {
-        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
-
-        _this.scene.stop();
+        _this.acceptInput();
       }); //make buttons interactive
 
       contin.setInteractive();
@@ -1788,14 +1759,87 @@ function (_Phaser$Scene) {
         hoverSprite.setVisible(false);
       });
       contin.on("pointerup", function () {
-        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
-
-        _this.scene.stop();
+        _this.acceptInput();
       });
     }
   }, {
-    key: "preload",
-    value: function preload() {}
+    key: "acceptInput",
+    value: function acceptInput() {
+      if (this.chatsDone >= this.chats.length) {
+        //Return to game, no more dialogue now
+        this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+        this.scene.stop();
+      } else {
+        //Add next dialogue to cmd2
+        this.addCMD2Text(this.chats[this.chatsDone], this.player);
+        this.chatsDone++;
+      }
+    }
+  }, {
+    key: "selectDialogue",
+    value: function selectDialogue(player, npc) {
+      //Append new text to chats array based on npc name for acceptInputs function to print
+      switch (npc.name) {
+        case "Nicole":
+          this.chats = ["C:/Users/Player/To_Self/Hey is that Nicole?", "C:/Users/Nicole/To_Player/Hey it's me! Thought I'd\n see you here. First day of programming school eh?"];
+          break;
+
+        case "NicoleD":
+          this.chats = ["C:/Users/oliceN/To_Player/Hwy ddi sith paphen<1@?"];
+          break;
+
+        case "Claire1":
+          this.chats = ["Hey, I'm Claire! What are you doing here?"];
+          break;
+
+        case "Claire2":
+          this.chats = ["Oh hey again, I can't talk. I gotta go see Brad."];
+          break;
+
+        case "Kyle":
+          this.chats = ["How are you doing? I'm so pumped for school!"];
+          break;
+
+        case "Chad":
+          this.chats = ["Hey bro! Wanna come to my party later?"];
+          break;
+
+        case "Brad":
+          this.chats = ["Yo dude. Can you pick up some booze?"];
+          break;
+
+        case "Vlad":
+          this.chats = ["Whoa! Are you actually looking at me!?"];
+          break;
+
+        case "Stevie":
+          this.chats = ["Look, I maybe short but I'm no Starbucks item!"];
+          break;
+
+        case "Prof":
+          this.chats = ["Hey I lost some... oh nevermind..."];
+          break;
+      } //Print first segment of speech
+
+
+      this.acceptInput();
+    }
+  }, {
+    key: "addCMD2Text",
+    value: function addCMD2Text(text, player) {
+      //If the command prompt has more than 34 lines, delete the first one before adding another
+      if (text.split(/\r\n|\r|\n/).length + player.scene.cmd2Lines >= 35) {
+        //Increment the number of lines tracker for each line of dialogue in the string
+        for (var i = 0; i < text.split(/\r\n|\r|\n/).length; i++) {
+          player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/, "");
+        }
+      } else {
+        //Still room so don't remove anything, just increase counter for lines
+        player.scene.cmd2Lines += text.split(/\r\n|\r|\n/).length;
+      }
+
+      player.scene.cmd2Text.text += text + "\n";
+    }
   }]);
 
   return TalkScene;
