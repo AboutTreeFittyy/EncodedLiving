@@ -54,40 +54,13 @@ export class LevelManager{
                         this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
                     }
                     break;
-                case "chad":
-                    //Have her follow the player around                                      
-                    if(this.scene.player.y - 100 > this.scene.npcCont.list[i].y){
-                        //player below
-                        this.scene.npcCont.list[i].setVelocityY(256);
-                        anim = "left";
-                    }else if (this.scene.player.y + 100 < this.scene.npcCont.list[i].y){
-                        //player above
-                        this.scene.npcCont.list[i].setVelocityY(-256);
-                        anim = "right";
-                    }else{
-                        this.scene.npcCont.list[i].setVelocityY(0);
-                    }
-                    if(this.scene.player.x - 100 > this.scene.npcCont.list[i].x){
-                        //player in front
-                        this.scene.npcCont.list[i].setVelocityX(256);
-                        anim = "right";
-                    }else if (this.scene.player.x + 100< this.scene.npcCont.list[i].x){
-                        //player behind
-                        this.scene.npcCont.list[i].setVelocityX(-256);
-                        anim = "left";
-                    }else{
-                        this.scene.npcCont.list[i].setVelocityX(0);
-                    }
-                    if(anim != "nothing"){
-                        this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
-                    }
-                    break;
+                case "Kyle":
                 case "Claire1":
                 case "Claire2":
-                case "Kyle":
                 case "Brad":
                 case "Prof":
-                case "Stevie":                    
+                case "Stevie": 
+                case "chad":                   
                     //Now check if they've been pushed from their origin
                     if(this.scene.npcCont.list[i].startY - 50 > this.scene.npcCont.list[i].y){
                         //npc below
@@ -388,10 +361,13 @@ export class LevelManager{
         this.scene.npcCont = this.scene.add.container();
         this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
         //this.createNPCS(591, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-        //this.createNPCS(4707, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 2, 14, 6, 10, "chad");
+        this.createNPCS(4704, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
         this.createNPCS(512, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
         this.createNPCS(473, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
         this.createNPCS(515, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
+        this.createNPCS(4741, CST.SPRITE.NPCS, 6, CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
+        this.createNPCS(4756, CST.SPRITE.NPCS, 6, CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
+        this.createNPCS(4792, CST.SPRITE.NPCS, 6, CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
         //make enemies group and container to handle them with*/
         this.scene.enemySet = this.scene.physics.add.group();
         this.scene.enemyCont = this.scene.add.container();
@@ -423,9 +399,8 @@ export class LevelManager{
     createNPCS(key, cst1, frame, cst2, down, up, left, right, name){
         this.map.createFromObjects("npcs", key, {key: cst1, frame: frame}).map((sprite)=>{
             sprite = new Sprite(this.scene, sprite.x, sprite.y, cst2, down, up, left, right, name);
-            sprite.body.setSize(22,44);
+            sprite.body.setSize(sprite.displayWidth/2,sprite.displayHeight/2);
             sprite.setScale(1.5);
-            sprite.body.setOffset(16,16);
             this.scene.npcSet.add(sprite);
             this.scene.npcCont.add(sprite);
             //This triggers when enemy hits player

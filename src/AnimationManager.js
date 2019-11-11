@@ -16,6 +16,8 @@ export class AnimationManager{
         //Chad sprites animation
         this.createAnimation("chadleft", 10, CST.SPRITE.CHAD, 0, 3, false);
         this.createAnimation("chadright", 10, CST.SPRITE.CHAD, 4, 7, false);
+        this.createAnimation("chaddown", 10, CST.SPRITE.CHAD, 0, 3, false);
+        this.createAnimation("chadup", 10, CST.SPRITE.CHAD, 4, 7, false);
         //Nerd variant 1 animations
         this.createAnimation("nerd1left", 15, CST.SPRITE.NERD1, 5, 7, false);
         this.createAnimation("nerd1right", 15, CST.SPRITE.NERD1, 9, 11, false);
@@ -56,11 +58,26 @@ export class AnimationManager{
         this.createAnimation("Claire2left", 10, CST.SPRITE.NPC_LOT, 21, 23, false);
         this.createAnimation("Claire2right", 10, CST.SPRITE.NPC_LOT, 33, 35, false);
         this.createAnimation("Claire2up", 10, CST.SPRITE.NPC_LOT, 45, 47, false);
+        //Kyle npc walking animations
+        this.createAnimation("Kyleleft", 15, CST.SPRITE.KYLE, 4, 7, false);
+        this.createAnimation("Kyleright", 15, CST.SPRITE.KYLE, 8, 11, false);
+        this.createAnimation("Kyledown", 15, CST.SPRITE.KYLE, 0, 3, false);
+        this.createAnimation("Kyleup", 15, CST.SPRITE.KYLE, 12, 15, false);
+        //Brad npc walking animations
+        this.createAnimation("Bradleft", 15, CST.SPRITE.BRAD, 4, 7, false);
+        this.createAnimation("Bradright", 15, CST.SPRITE.BRAD, 8, 11, false);
+        this.createAnimation("Braddown", 15, CST.SPRITE.BRAD, 0, 3, false);
+        this.createAnimation("Bradup", 15, CST.SPRITE.BRAD, 12, 15, false);
+        //Stevie npc walking animations
+        this.createAnimation("Stevieleft", 15, CST.SPRITE.STEVIE, 9, 17, false);
+        this.createAnimation("Stevieright", 15, CST.SPRITE.STEVIE, 28, 36, false);
+        this.createAnimation("Stevieup", 15, CST.SPRITE.STEVIE, 0, 8, false);
+        this.createAnimation("Steviedown", 15, CST.SPRITE.STEVIE, 18, 26, false);
         //Prof npc walking sprites
         this.createAnimation("Profdown", 10, CST.SPRITE.NPC_LOT, 51, 53, false);
         this.createAnimation("Profleft", 10, CST.SPRITE.NPC_LOT, 63, 65, false);
         this.createAnimation("Profright", 10, CST.SPRITE.NPC_LOT, 75, 77, false);
-        this.createAnimation("Profup", 10, CST.SPRITE.NPC_LOT, 85, 87, false);
+        this.createAnimation("Profup", 10, CST.SPRITE.NPC_LOT, 87, 89, false);
         //My poorly made whip sprites       
         this.createAnimation("whip_left", 15, CST.SPRITE.WHIP, 17, 22, true);
         this.createAnimation("whip_up", 15, CST.SPRITE.WHIP, 8, 11, true);        

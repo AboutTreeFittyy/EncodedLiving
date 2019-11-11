@@ -167,6 +167,7 @@ var CST = {
     CHAD: "chadsprite.png",
     KYLE: "kyle.png",
     BRAD: "brad.png",
+    STEVIE: "stevie.png",
     NICOLED: "nicolecreepy.png",
     ITEM: "itemsall.png",
     NPCS: "npcs.png",
@@ -265,7 +266,12 @@ function (_Phaser$Scene) {
             frameHeight: 32,
             frameWidth: 32
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.KYLE) {
+          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+            frameHeight: 48,
+            frameWidth: 32
+          });
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BRAD) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 80,
             frameWidth: 48
@@ -805,44 +811,13 @@ function () {
 
             break;
 
-          case "chad":
-            //Have her follow the player around                                      
-            if (this.scene.player.y - 100 > this.scene.npcCont.list[i].y) {
-              //player below
-              this.scene.npcCont.list[i].setVelocityY(256);
-              anim = "left";
-            } else if (this.scene.player.y + 100 < this.scene.npcCont.list[i].y) {
-              //player above
-              this.scene.npcCont.list[i].setVelocityY(-256);
-              anim = "right";
-            } else {
-              this.scene.npcCont.list[i].setVelocityY(0);
-            }
-
-            if (this.scene.player.x - 100 > this.scene.npcCont.list[i].x) {
-              //player in front
-              this.scene.npcCont.list[i].setVelocityX(256);
-              anim = "right";
-            } else if (this.scene.player.x + 100 < this.scene.npcCont.list[i].x) {
-              //player behind
-              this.scene.npcCont.list[i].setVelocityX(-256);
-              anim = "left";
-            } else {
-              this.scene.npcCont.list[i].setVelocityX(0);
-            }
-
-            if (anim != "nothing") {
-              this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
-            }
-
-            break;
-
+          case "Kyle":
           case "Claire1":
           case "Claire2":
-          case "Kyle":
           case "Brad":
           case "Prof":
           case "Stevie":
+          case "chad":
             //Now check if they've been pushed from their origin
             if (this.scene.npcCont.list[i].startY - 50 > this.scene.npcCont.list[i].y) {
               //npc below
@@ -1238,11 +1213,14 @@ function () {
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
       this.scene.npcCont = this.scene.add.container();
       this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //this.createNPCS(591, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-      //this.createNPCS(4707, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 2, 14, 6, 10, "chad");
 
+      this.createNPCS(4704, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
       this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
       this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
-      this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof"); //make enemies group and container to handle them with*/
+      this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
+      this.createNPCS(4741, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
+      this.createNPCS(4756, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
+      this.createNPCS(4792, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie"); //make enemies group and container to handle them with*/
 
       this.scene.enemySet = this.scene.physics.add.group();
       this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
@@ -1288,9 +1266,8 @@ function () {
         frame: frame
       }).map(function (sprite) {
         sprite = new _Sprite.Sprite(_this3.scene, sprite.x, sprite.y, cst2, down, up, left, right, name);
-        sprite.body.setSize(22, 44);
+        sprite.body.setSize(sprite.displayWidth / 2, sprite.displayHeight / 2);
         sprite.setScale(1.5);
-        sprite.body.setOffset(16, 16);
 
         _this3.scene.npcSet.add(sprite);
 
@@ -1365,7 +1342,9 @@ function () {
     value: function setAnimations() {
       //Chad sprites animation
       this.createAnimation("chadleft", 10, _CST.CST.SPRITE.CHAD, 0, 3, false);
-      this.createAnimation("chadright", 10, _CST.CST.SPRITE.CHAD, 4, 7, false); //Nerd variant 1 animations
+      this.createAnimation("chadright", 10, _CST.CST.SPRITE.CHAD, 4, 7, false);
+      this.createAnimation("chaddown", 10, _CST.CST.SPRITE.CHAD, 0, 3, false);
+      this.createAnimation("chadup", 10, _CST.CST.SPRITE.CHAD, 4, 7, false); //Nerd variant 1 animations
 
       this.createAnimation("nerd1left", 15, _CST.CST.SPRITE.NERD1, 5, 7, false);
       this.createAnimation("nerd1right", 15, _CST.CST.SPRITE.NERD1, 9, 11, false);
@@ -1405,12 +1384,27 @@ function () {
       this.createAnimation("Claire2down", 10, _CST.CST.SPRITE.NPC_LOT, 9, 11, false);
       this.createAnimation("Claire2left", 10, _CST.CST.SPRITE.NPC_LOT, 21, 23, false);
       this.createAnimation("Claire2right", 10, _CST.CST.SPRITE.NPC_LOT, 33, 35, false);
-      this.createAnimation("Claire2up", 10, _CST.CST.SPRITE.NPC_LOT, 45, 47, false); //Prof npc walking sprites
+      this.createAnimation("Claire2up", 10, _CST.CST.SPRITE.NPC_LOT, 45, 47, false); //Kyle npc walking animations
+
+      this.createAnimation("Kyleleft", 15, _CST.CST.SPRITE.KYLE, 4, 7, false);
+      this.createAnimation("Kyleright", 15, _CST.CST.SPRITE.KYLE, 8, 11, false);
+      this.createAnimation("Kyledown", 15, _CST.CST.SPRITE.KYLE, 0, 3, false);
+      this.createAnimation("Kyleup", 15, _CST.CST.SPRITE.KYLE, 12, 15, false); //Brad npc walking animations
+
+      this.createAnimation("Bradleft", 15, _CST.CST.SPRITE.BRAD, 4, 7, false);
+      this.createAnimation("Bradright", 15, _CST.CST.SPRITE.BRAD, 8, 11, false);
+      this.createAnimation("Braddown", 15, _CST.CST.SPRITE.BRAD, 0, 3, false);
+      this.createAnimation("Bradup", 15, _CST.CST.SPRITE.BRAD, 12, 15, false); //Stevie npc walking animations
+
+      this.createAnimation("Stevieleft", 15, _CST.CST.SPRITE.STEVIE, 9, 17, false);
+      this.createAnimation("Stevieright", 15, _CST.CST.SPRITE.STEVIE, 28, 36, false);
+      this.createAnimation("Stevieup", 15, _CST.CST.SPRITE.STEVIE, 0, 8, false);
+      this.createAnimation("Steviedown", 15, _CST.CST.SPRITE.STEVIE, 18, 26, false); //Prof npc walking sprites
 
       this.createAnimation("Profdown", 10, _CST.CST.SPRITE.NPC_LOT, 51, 53, false);
       this.createAnimation("Profleft", 10, _CST.CST.SPRITE.NPC_LOT, 63, 65, false);
       this.createAnimation("Profright", 10, _CST.CST.SPRITE.NPC_LOT, 75, 77, false);
-      this.createAnimation("Profup", 10, _CST.CST.SPRITE.NPC_LOT, 85, 87, false); //My poorly made whip sprites       
+      this.createAnimation("Profup", 10, _CST.CST.SPRITE.NPC_LOT, 87, 89, false); //My poorly made whip sprites       
 
       this.createAnimation("whip_left", 15, _CST.CST.SPRITE.WHIP, 17, 22, true);
       this.createAnimation("whip_up", 15, _CST.CST.SPRITE.WHIP, 8, 11, true);

@@ -40,6 +40,7 @@ export const CST = {
 		CHAD: "chadsprite.png",
 		KYLE: "kyle.png",
 		BRAD: "brad.png",
+		STEVIE: "stevie.png",
 		NICOLED: "nicolecreepy.png",
 		ITEM: "itemsall.png",
 		NPCS: "npcs.png",		
