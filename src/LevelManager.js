@@ -78,24 +78,25 @@ export class LevelManager{
                         break;
                 case "jason":
                     //Now check if they've been pushed from their origin
-                    this.watchPlayer(go, 4, 40, 28, 16);                    
-                    //check if jason can project another json
-                    if(go.jsons > 0){
+                    this.watchPlayer(go, 4, 40, 28, 16);        
+                    //get the difference of the player and jason coordinates
+                    let x = this.scene.player.x - go.x;
+                    let y = this.scene.player.y - go.y;            
+                    //check if jason can project another json or if he's close enough to
+                    if(go.jsons > 0 && Math.abs(x) < 250 && Math.abs(y) < 250){
+                        go.playJSONS();
                         go.jsons--;
                         //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
-                        let json = new EnemySprite(this.scene, go.x, go.y, CST.SPRITE.BALL, 0, 1).setDepth(5);
+                        let json = new EnemySprite(this.scene, go.x, go.y, CST.SPRITE.JSON, 0, 1).setDepth(5);
                         this.scene.physics.add.collider(this.scene.player, json, json.jsonHitPlayer, null, this.scene);
                         this.scene.physics.add.collider(this.scene.topLayer, json, json.jsonHitWall, null, this.scene);
                         //pace the shots randomly
-                        let randTime = this.randomNum(1000, 2000);
+                        let randTime = this.randomNum(1000, 3000);
                         this.scene.time.delayedCall(randTime, json.jsonTimeOut, [json, go], this.scene);
-                        json.setOffset(8,6);
-                        //get the difference of the player and jason coordinates
-                        let x = this.scene.player.x - go.x;
-                        let y = this.scene.player.y - go.y;
+                        json.setScale(.5);                       
                         //get random speeds
-                        let randX = this.randomNum(64, 512);
-                        let randY = this.randomNum(64, 512);
+                        let randX = this.randomNum(1, 256);
+                        let randY = this.randomNum(1, 256);
                         //Aim for the player general area using their coordinates as reference for scatter shot
                         if(x > 0 && y > 0){
                             //to the right & below

@@ -157,7 +157,8 @@ var CST = {
   },
   AUDIO: {
     THEME1: "level_1_theme.mp3",
-    TITLE: "title_music.mp3"
+    TITLE: "title_music.mp3",
+    JSON: "json.mp3"
   },
   SPRITE: {
     PLAYER: "player.png",
@@ -173,7 +174,7 @@ var CST = {
     NPCS: "npcs.png",
     NERD1: "nerd1.png",
     NERD2: "nerd2.png",
-    JASON: "jason.png",
+    JSON: "json.png",
     FAT: "fat.png",
     NERDGIRL: "nerdgirl.png"
   }
@@ -249,9 +250,7 @@ function (_Phaser$Scene) {
             frameHeight: 64,
             frameWidth: 64
           });
-        }
-
-        if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CHAD) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CHAD) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 96,
             frameWidth: 64
@@ -270,6 +269,11 @@ function (_Phaser$Scene) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 48,
             frameWidth: 32
+          });
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.JSON) {
+          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+            frameHeight: 48,
+            frameWidth: 160
           });
         } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BRAD) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
@@ -506,6 +510,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EnemySprite = void 0;
 
+var _CST = require("./CST");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -524,13 +530,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-/* File Name: EnemySprite.js
- * Author: Mathew Boland
- * Last Updated: November 11, 2019
- * Description: A class to create and hold the value of a CharacterSprite object
- * with arcade physics.
- * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
-*/
 var EnemySprite =
 /*#__PURE__*/
 function (_Phaser$Physics$Arcad) {
@@ -553,6 +552,7 @@ function (_Phaser$Physics$Arcad) {
 
     _this.hp = hp;
     _this.jsons = 5;
+    _this.playJSON = false;
     _this.name = name;
     _this.startX = x;
     _this.startY = y;
@@ -560,6 +560,26 @@ function (_Phaser$Physics$Arcad) {
   }
 
   _createClass(EnemySprite, [{
+    key: "playJSONS",
+    value: function playJSONS() {
+      var _this2 = this;
+
+      if (this.playJSON == false) {
+        //No JSON sounds so play em
+        this.sound = this.scene.sound.add(_CST.CST.AUDIO.JSON, {
+          loop: true
+        });
+        this.playJSON = true;
+        this.scene.sound.play(_CST.CST.AUDIO.JSON); //destroy the sound so it stops playing if the enemy dies
+
+        this.sound.on('looped', function () {
+          _this2.sound.destroy();
+
+          _this2.playJSON = false;
+        });
+      }
+    }
+  }, {
     key: "ballHit",
     value: function ballHit(ball) {
       this.hp--;
@@ -574,9 +594,7 @@ function (_Phaser$Physics$Arcad) {
       //adjust inventory and enemy stats on hit from ball
       player.hp--;
 
-      if (player.hp == 0) {
-        //player.destroy();
-        console.log("OOF");
+      if (player.hp == 0) {//player.destroy();
       }
 
       json.destroy();
@@ -651,7 +669,7 @@ function (_Phaser$Physics$Arcad) {
 }(Phaser.Physics.Arcade.Sprite);
 
 exports.EnemySprite = EnemySprite;
-},{}],"src/CharacterSprite.js":[function(require,module,exports) {
+},{"./CST":"src/CST.js"}],"src/CharacterSprite.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -873,24 +891,25 @@ function () {
 
           case "jason":
             //Now check if they've been pushed from their origin
-            this.watchPlayer(go, 4, 40, 28, 16); //check if jason can project another json
+            this.watchPlayer(go, 4, 40, 28, 16); //get the difference of the player and jason coordinates
 
-            if (go.jsons > 0) {
+            var x = this.scene.player.x - go.x;
+            var y = this.scene.player.y - go.y; //check if jason can project another json or if he's close enough to
+
+            if (go.jsons > 0 && Math.abs(x) < 250 && Math.abs(y) < 250) {
+              go.playJSONS();
               go.jsons--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
 
-              var json = new _EnemySprite.EnemySprite(this.scene, go.x, go.y, _CST.CST.SPRITE.BALL, 0, 1).setDepth(5);
+              var json = new _EnemySprite.EnemySprite(this.scene, go.x, go.y, _CST.CST.SPRITE.JSON, 0, 1).setDepth(5);
               this.scene.physics.add.collider(this.scene.player, json, json.jsonHitPlayer, null, this.scene);
               this.scene.physics.add.collider(this.scene.topLayer, json, json.jsonHitWall, null, this.scene); //pace the shots randomly
 
-              var randTime = this.randomNum(1000, 2000);
+              var randTime = this.randomNum(1000, 3000);
               this.scene.time.delayedCall(randTime, json.jsonTimeOut, [json, go], this.scene);
-              json.setOffset(8, 6); //get the difference of the player and jason coordinates
+              json.setScale(.5); //get random speeds
 
-              var x = this.scene.player.x - go.x;
-              var y = this.scene.player.y - go.y; //get random speeds
-
-              var randX = this.randomNum(64, 512);
-              var randY = this.randomNum(64, 512); //Aim for the player general area using their coordinates as reference for scatter shot
+              var randX = this.randomNum(1, 256);
+              var randY = this.randomNum(1, 256); //Aim for the player general area using their coordinates as reference for scatter shot
 
               if (x > 0 && y > 0) {
                 //to the right & below

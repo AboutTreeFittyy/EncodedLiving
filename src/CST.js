@@ -30,7 +30,8 @@ export const CST = {
 	},
 	AUDIO:{
 		THEME1:"level_1_theme.mp3",
-		TITLE:"title_music.mp3"		
+		TITLE:"title_music.mp3",
+		JSON:"json.mp3"		
 	},
 	SPRITE:{
 		PLAYER: "player.png",
@@ -45,8 +46,8 @@ export const CST = {
 		ITEM: "itemsall.png",
 		NPCS: "npcs.png",		
 		NERD1: "nerd1.png",
-		NERD2: "nerd2.png",
-		JASON: "jason.png",		
+		NERD2: "nerd2.png",	
+		JSON: "json.png",	
 		FAT: "fat.png",		
 		NERDGIRL: "nerdgirl.png"		
 	}

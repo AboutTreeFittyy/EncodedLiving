@@ -5,6 +5,7 @@
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
+import {CST} from "./CST";
 export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
     
     constructor(scene, x, y, texture, frame, name, hp) {
@@ -16,9 +17,27 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable(true);
         this.hp = hp;
         this.jsons = 5;
+        this.playJSON = false;
         this.name = name;
         this.startX = x;
         this.startY = y;
+    }
+
+    playJSONS(){
+        if(this.playJSON == false){
+            //No JSON sounds so play em
+            this.sound = this.scene.sound.add(CST.AUDIO.JSON, {
+                loop: true
+            })
+            this.playJSON = true;
+            this.scene.sound.play(CST.AUDIO.JSON);
+            //destroy the sound so it stops playing if the enemy dies
+            this.sound.on('looped', ()=>{
+                this.sound.destroy();
+                this.playJSON = false;
+            })
+        }
+        
     }
 
     ballHit(ball){
@@ -33,7 +52,6 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         player.hp--;
         if(player.hp == 0){
             //player.destroy();
-            console.log("OOF");
         }
         json.destroy();
     }
