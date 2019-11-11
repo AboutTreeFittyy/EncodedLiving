@@ -22,11 +22,11 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
 
     npcSpeak(player, npc){
         //If the r button is pressed then begin chat scene
-        if (player.scene.keyboard.R.isDown) {
+        if (player.scene.keyboard.E.isDown) {
             this.scene.scene.launch(CST.SCENES.TALK, {player, npc});
             this.scene.scene.pause();
             //Reset buttons so they don't get stuck when resuming
-            player.scene.keyboard.R.reset();
+            player.scene.keyboard.E.reset();
             player.scene.keyboard.W.reset();
             player.scene.keyboard.A.reset();
             player.scene.keyboard.S.reset();

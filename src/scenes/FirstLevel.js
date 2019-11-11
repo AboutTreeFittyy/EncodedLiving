@@ -1,6 +1,6 @@
 /* File Name: FirstLevel.js
  * Author: Mathew Boland
- * Last Updated: November 8, 2019
+ * Last Updated: November 11, 2019
  * Description: This class is used to create the scene for the first level of the game.
  * With the help of other classes it creates the user interface, keybindings, map, saves 
  * progress and makes animations. 

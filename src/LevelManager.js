@@ -84,10 +84,9 @@ export class LevelManager{
                     let y = this.scene.player.y - go.y;            
                     //check if jason can project another json or if he's close enough to
                     if(go.jsons > 0 && Math.abs(x) < 250 && Math.abs(y) < 250){
-                        go.playJSONS();
                         go.jsons--;
                         //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
-                        let json = new EnemySprite(this.scene, go.x, go.y, CST.SPRITE.JSON, 0, 1).setDepth(5);
+                        let json = new EnemySprite(this.scene, go.x, go.y, CST.SPRITE.JSON, 0, 1, 1, 1).setDepth(5);
                         this.scene.physics.add.collider(this.scene.player, json, json.jsonHitPlayer, null, this.scene);
                         this.scene.physics.add.collider(this.scene.topLayer, json, json.jsonHitWall, null, this.scene);
                         //pace the shots randomly
@@ -226,9 +225,10 @@ export class LevelManager{
         this.scene.cmd2 = this.scene.add.image(-1000, 1000, CST.IMAGE.CMD).setDepth(1);
         this.scene.cmd2.displayHeight = this.scene.game.renderer.height;
         //now make their text fields
-        this.scene.cmd1Text = this.scene.add.text(this.scene.cmd1.x - (this.scene.cmd1.width/2), this.scene.cmd1.y - (this.scene.cmd1.height/2), 'C:/Users/Player/Stats>\n', { fontFamily: '"Roboto Condensed"' }).setDepth(2);
+        this.scene.cmd1Text = this.scene.add.text(this.scene.cmd1.x - (this.scene.cmd1.width/2), this.scene.cmd1.y - (this.scene.cmd1.height/2), '', { fontFamily: '"Roboto Condensed"' }).setDepth(7);
+        this.scene.player.displayInventory();
         this.scene.cmd1Text.setColor("green");
-        this.scene.cmd2Text = this.scene.add.text(this.scene.cmd2.x - (this.scene.cmd2.width/2), this.scene.cmd2.y - (this.scene.cmd2.height/2), 'C:/Users/Player/Conversations>\n', { fontFamily: '"Roboto Condensed"' }).setDepth(2);
+        this.scene.cmd2Text = this.scene.add.text(this.scene.cmd2.x - (this.scene.cmd2.width/2), this.scene.cmd2.y - (this.scene.cmd2.height/2), 'C:/Users/Player/Conversations>\n', { fontFamily: '"Roboto Condensed"' }).setDepth(7);
         this.scene.cmd2Text.setColor("green");
         //Create a counter for the lines entered so we can keep track of when they run out
         this.scene.cmd1Lines = 1;
@@ -237,7 +237,7 @@ export class LevelManager{
 
     setInputs(){
         //set up keyboard controls
-        this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, R");
+        this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, E");
         //Set listener for p to pause game
         this.scene.input.keyboard.on('keyup-P', ()=>{
             this.scene.scene.launch(CST.SCENES.PAUSE);
@@ -369,16 +369,16 @@ export class LevelManager{
         this.scene.enemyCont = this.scene.add.container();
         //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
         //Make different enemies
-        this.createEnemies(560, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 2);
-        this.createEnemies(564, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 2);
-        this.createEnemies(568, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 2);
-        this.createEnemies(572, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 2);
-        this.createEnemies(576, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 2);
-        this.createEnemies(588, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 2);
-        this.createEnemies(580, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 2);
-        this.createEnemies(584, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 2);
-        this.createEnemies(467, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
-        this.createEnemies(4724, CST.SPRITE.NPCS, 6, CST.SPRITE.NERDGIRL, 2, "nerdgirl", 1500, 1.5);
+        this.createEnemies(560, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 1, 2);
+        this.createEnemies(564, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 1, 2);
+        this.createEnemies(568, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 1, 2);
+        this.createEnemies(572, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 1, 2);
+        this.createEnemies(576, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 1, 2);
+        this.createEnemies(588, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 1, 2);
+        this.createEnemies(580, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 1, 2);
+        this.createEnemies(584, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 1, 2);
+        this.createEnemies(467, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
+        this.createEnemies(4724, CST.SPRITE.NPCS, 6, CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
         this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
 
@@ -405,9 +405,9 @@ export class LevelManager{
         });
     }
 
-    createEnemies(key, cst1, frame, cst2, st, name, hp, size){
+    createEnemies(key, cst1, frame, cst2, st, name, rep, dmg, size){
         this.map.createFromObjects("enemies", key, {key: cst1, frame: frame}).map((sprite)=>{
-            sprite = new EnemySprite(this.scene, sprite.x, sprite.y, cst2, st, name, hp);
+            sprite = new EnemySprite(this.scene, sprite.x, sprite.y, cst2, st, name, rep, dmg);
             sprite.body.setSize(22,44);
             sprite.setScale(size);
             sprite.body.setOffset(16,16);

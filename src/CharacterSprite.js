@@ -1,6 +1,6 @@
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: November 10, 2019
+ * Last Updated: November 11, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -14,28 +14,77 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.setScale(2);        
         scene.physics.world.enableBody(this);
         this.setCollideWorldBounds(true);
-        this.balls = 3;
-        this.maxBalls = 3;
-        this.hp = 10;
+        //PingPong weapon stats
+        this.balls = 3; // Current number of balls available
+        this.maxBalls = 3; //Max player can have
+        //Player stats
+        this.rep = 10; //DVDs increase this as player health
+        this.repMax = 10;
+        this.knowledgeNeeded = 10; ////Exam sheets increase this as player level
+        this.knowledgeProgress = 0;
+        this.knowledgeLevel = 0;
+        this.will = 10; //Energy Drinks increase this as the players stamina
+        this.willMax = 10;
         this.money = 0;
-        this.npcPrev = '';
-        this.score = 0;
     }
 
     collectItem(player, item){
-        //destroy the item and then add it to the inventory stats
+        //Find out which item was grabbed
+        switch(item.name){
+            case "dvd": //Got DVD
+            if(player.rep < player.repMax){
+                player.rep++;
+            }
+            break;
+            case "examsheet": //Got Exam Sheet
+            //Increase xp and then if its full, level up player
+            player.knowledgeProgress++
+            if(player.knowledgeProgress == player.knowledgeNeeded){
+                //Level up player
+                player.knowledgeLevel++;
+                //Increment stats by 5 times the player level
+                player.willMax = player.willMax + player.knowledgeLevel * 5;
+                player.repMax = player.repMax + player.knowledgeLevel * 5;
+                //Fill stats to new max at start of new knowledge level
+                player.will = player.willMax;
+                player.rep = player.repMax;
+                //Reset knowledge progress and double the needed progress to the next level
+                player.knowledgeProgress = 0;
+                player.knowledgeNeeded = player.knowledgeNeeded * 2;
+            }
+            break;
+            case "money": //Got Money
+            player.money++;
+            break;
+            case "energy": //Got Energy Drink
+            if(player.will < player.willMax){
+                player.will++;
+            }
+            break;
+        }
+        player.displayInventory();
+        //Picked up so destroy it
         item.setVisible(false);
-        item.destroy(item.body);
-        player.money++;
-        player.scene.cmd1Text.text = player.scene.cmd1Text.text+"Player Money: "+player.money+"\n";
+        item.destroy(item.body);        
+    }
+
+    displayInventory(){
+        let invBuffer = '';
+        invBuffer = "C:/Users/Player/Stats/";
+        invBuffer += "\n\n    <LEVEL>                   "+this.knowledgeLevel;
+        invBuffer += "\n\n    <KNOWLEDGE>      "+this.knowledgeProgress+" / "+this.knowledgeNeeded;
+        invBuffer += "\n\n    <WILLPOWER>      "+this.will+" / "+this.willMax;
+        invBuffer += "\n\n    <REPUTATION>     "+this.rep+" / "+this.repMax;
+        invBuffer += "\n\n    <MONEY>                $"+this.money+".00";
+        this.scene.cmd1Text.text = invBuffer;
     }
 
     whipHitEnemy(whip, enemy){
         //check if already got hit this animation
         if(!whip.state){
             //adjust enemy stats on hit from whip
-            enemy.hp--;
-            if(enemy.hp == 0){
+            enemy.rep--;
+            if(enemy.rep == 0){
                 enemy.destroy();
             }
             whip.setState(1); //indicate a hit already occured
@@ -45,8 +94,8 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     ballHitEnemy(ball, enemy){
         //adjust inventory and enemy stats on hit from ball
         enemy.scene.player.balls++;
-        enemy.hp--;
-        if(enemy.hp == 0){
+        enemy.rep--;
+        if(enemy.rep == 0){
             enemy.destroy();
         }
         ball.destroy();

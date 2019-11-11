@@ -8,49 +8,36 @@
 import {CST} from "./CST";
 export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
     
-    constructor(scene, x, y, texture, frame, name, hp) {
+    constructor(scene, x, y, texture, frame, name, rep, dmg) {
         super(scene, x, y, texture, frame);
         scene.sys.updateList.add(this);
         scene.sys.displayList.add(this);
         this.setScale(2);        
         scene.physics.world.enableBody(this);
         this.setImmovable(true);
-        this.hp = hp;
+        this.dmg = dmg;
+        this.rep = rep;
         this.jsons = 5;
-        this.playJSON = false;
         this.name = name;
         this.startX = x;
         this.startY = y;
     }
 
-    playJSONS(){
-        if(this.playJSON == false){
-            //No JSON sounds so play em
-            this.sound = this.scene.sound.add(CST.AUDIO.JSON, {
-                loop: true
-            })
-            this.playJSON = true;
-            this.scene.sound.play(CST.AUDIO.JSON);
-            //destroy the sound so it stops playing if the enemy dies
-            this.sound.on('looped', ()=>{
-                this.sound.destroy();
-                this.playJSON = false;
-            })
-        }
-        
-    }
-
     ballHit(ball){
-        this.hp--;
-        if(this.hp <= 0){
+        this.rep--;
+        if(this.rep <= 0){
             this.destory();
         }
     }
 
     jsonHitPlayer(player, json){
-        //adjust inventory and enemy stats on hit from ball
-        player.hp--;
-        if(player.hp == 0){
+        //adjust inventory and player stats on hit from json
+        player.rep -= json.dmg;
+        json.scene.sound.play(CST.AUDIO.JSON, {
+            loop: false
+        })
+        player.displayInventory();
+        if(player.rep <= 0){
             //player.destroy();
         }
         json.destroy();
@@ -79,6 +66,12 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
             curName = player;
         }else{
             curName = enemy;
+            //adjust inventory and player stats on hit from json
+            player.rep -= curName.dmg;
+            player.displayInventory();
+            if(player.rep <= 0){
+                //player.destroy();
+            }
         }
         //Based on the name from the collision decide what to do
         switch(curName.name){

@@ -482,14 +482,14 @@ function (_Phaser$Physics$Arcad) {
     key: "npcSpeak",
     value: function npcSpeak(player, npc) {
       //If the r button is pressed then begin chat scene
-      if (player.scene.keyboard.R.isDown) {
+      if (player.scene.keyboard.E.isDown) {
         this.scene.scene.launch(_CST.CST.SCENES.TALK, {
           player: player,
           npc: npc
         });
         this.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
 
-        player.scene.keyboard.R.reset();
+        player.scene.keyboard.E.reset();
         player.scene.keyboard.W.reset();
         player.scene.keyboard.A.reset();
         player.scene.keyboard.S.reset();
@@ -535,7 +535,7 @@ var EnemySprite =
 function (_Phaser$Physics$Arcad) {
   _inherits(EnemySprite, _Phaser$Physics$Arcad);
 
-  function EnemySprite(scene, x, y, texture, frame, name, hp) {
+  function EnemySprite(scene, x, y, texture, frame, name, rep, dmg) {
     var _this;
 
     _classCallCheck(this, EnemySprite);
@@ -550,9 +550,9 @@ function (_Phaser$Physics$Arcad) {
 
     _this.setImmovable(true);
 
-    _this.hp = hp;
+    _this.dmg = dmg;
+    _this.rep = rep;
     _this.jsons = 5;
-    _this.playJSON = false;
     _this.name = name;
     _this.startX = x;
     _this.startY = y;
@@ -560,41 +560,25 @@ function (_Phaser$Physics$Arcad) {
   }
 
   _createClass(EnemySprite, [{
-    key: "playJSONS",
-    value: function playJSONS() {
-      var _this2 = this;
-
-      if (this.playJSON == false) {
-        //No JSON sounds so play em
-        this.sound = this.scene.sound.add(_CST.CST.AUDIO.JSON, {
-          loop: true
-        });
-        this.playJSON = true;
-        this.scene.sound.play(_CST.CST.AUDIO.JSON); //destroy the sound so it stops playing if the enemy dies
-
-        this.sound.on('looped', function () {
-          _this2.sound.destroy();
-
-          _this2.playJSON = false;
-        });
-      }
-    }
-  }, {
     key: "ballHit",
     value: function ballHit(ball) {
-      this.hp--;
+      this.rep--;
 
-      if (this.hp <= 0) {
+      if (this.rep <= 0) {
         this.destory();
       }
     }
   }, {
     key: "jsonHitPlayer",
     value: function jsonHitPlayer(player, json) {
-      //adjust inventory and enemy stats on hit from ball
-      player.hp--;
+      //adjust inventory and player stats on hit from json
+      player.rep -= json.dmg;
+      json.scene.sound.play(_CST.CST.AUDIO.JSON, {
+        loop: false
+      });
+      player.displayInventory();
 
-      if (player.hp == 0) {//player.destroy();
+      if (player.rep <= 0) {//player.destroy();
       }
 
       json.destroy();
@@ -625,7 +609,13 @@ function (_Phaser$Physics$Arcad) {
       if (player.name != '') {
         curName = player;
       } else {
-        curName = enemy;
+        curName = enemy; //adjust inventory and player stats on hit from json
+
+        player.rep -= curName.dmg;
+        player.displayInventory();
+
+        if (player.rep <= 0) {//player.destroy();
+        }
       } //Based on the name from the collision decide what to do
 
 
@@ -697,7 +687,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: November 10, 2019
+ * Last Updated: November 11, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -720,25 +710,92 @@ function (_Phaser$Physics$Arcad) {
 
     scene.physics.world.enableBody(_assertThisInitialized(_this));
 
-    _this.setCollideWorldBounds(true);
+    _this.setCollideWorldBounds(true); //PingPong weapon stats
 
-    _this.balls = 3;
-    _this.maxBalls = 3;
-    _this.hp = 10;
+
+    _this.balls = 3; // Current number of balls available
+
+    _this.maxBalls = 3; //Max player can have
+    //Player stats
+
+    _this.rep = 10; //DVDs increase this as player health
+
+    _this.repMax = 10;
+    _this.knowledgeNeeded = 10; ////Exam sheets increase this as player level
+
+    _this.knowledgeProgress = 0;
+    _this.knowledgeLevel = 0;
+    _this.will = 10; //Energy Drinks increase this as the players stamina
+
+    _this.willMax = 10;
     _this.money = 0;
-    _this.npcPrev = '';
-    _this.score = 0;
     return _this;
   }
 
   _createClass(CharacterSprite, [{
     key: "collectItem",
     value: function collectItem(player, item) {
-      //destroy the item and then add it to the inventory stats
+      //Find out which item was grabbed
+      switch (item.name) {
+        case "dvd":
+          //Got DVD
+          if (player.rep < player.repMax) {
+            player.rep++;
+          }
+
+          break;
+
+        case "examsheet":
+          //Got Exam Sheet
+          //Increase xp and then if its full, level up player
+          player.knowledgeProgress++;
+
+          if (player.knowledgeProgress == player.knowledgeNeeded) {
+            //Level up player
+            player.knowledgeLevel++; //Increment stats by 5 times the player level
+
+            player.willMax = player.willMax + player.knowledgeLevel * 5;
+            player.repMax = player.repMax + player.knowledgeLevel * 5; //Fill stats to new max at start of new knowledge level
+
+            player.will = player.willMax;
+            player.rep = player.repMax; //Reset knowledge progress and double the needed progress to the next level
+
+            player.knowledgeProgress = 0;
+            player.knowledgeNeeded = player.knowledgeNeeded * 2;
+          }
+
+          break;
+
+        case "money":
+          //Got Money
+          player.money++;
+          break;
+
+        case "energy":
+          //Got Energy Drink
+          if (player.will < player.willMax) {
+            player.will++;
+          }
+
+          break;
+      }
+
+      player.displayInventory(); //Picked up so destroy it
+
       item.setVisible(false);
       item.destroy(item.body);
-      player.money++;
-      player.scene.cmd1Text.text = player.scene.cmd1Text.text + "Player Money: " + player.money + "\n";
+    }
+  }, {
+    key: "displayInventory",
+    value: function displayInventory() {
+      var invBuffer = '';
+      invBuffer = "C:/Users/Player/Stats/";
+      invBuffer += "\n\n    <LEVEL>                   " + this.knowledgeLevel;
+      invBuffer += "\n\n    <KNOWLEDGE>      " + this.knowledgeProgress + " / " + this.knowledgeNeeded;
+      invBuffer += "\n\n    <WILLPOWER>      " + this.will + " / " + this.willMax;
+      invBuffer += "\n\n    <REPUTATION>     " + this.rep + " / " + this.repMax;
+      invBuffer += "\n\n    <MONEY>                $" + this.money + ".00";
+      this.scene.cmd1Text.text = invBuffer;
     }
   }, {
     key: "whipHitEnemy",
@@ -746,9 +803,9 @@ function (_Phaser$Physics$Arcad) {
       //check if already got hit this animation
       if (!whip.state) {
         //adjust enemy stats on hit from whip
-        enemy.hp--;
+        enemy.rep--;
 
-        if (enemy.hp == 0) {
+        if (enemy.rep == 0) {
           enemy.destroy();
         }
 
@@ -760,9 +817,9 @@ function (_Phaser$Physics$Arcad) {
     value: function ballHitEnemy(ball, enemy) {
       //adjust inventory and enemy stats on hit from ball
       enemy.scene.player.balls++;
-      enemy.hp--;
+      enemy.rep--;
 
-      if (enemy.hp == 0) {
+      if (enemy.rep == 0) {
         enemy.destroy();
       }
 
@@ -897,10 +954,9 @@ function () {
             var y = this.scene.player.y - go.y; //check if jason can project another json or if he's close enough to
 
             if (go.jsons > 0 && Math.abs(x) < 250 && Math.abs(y) < 250) {
-              go.playJSONS();
               go.jsons--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
 
-              var json = new _EnemySprite.EnemySprite(this.scene, go.x, go.y, _CST.CST.SPRITE.JSON, 0, 1).setDepth(5);
+              var json = new _EnemySprite.EnemySprite(this.scene, go.x, go.y, _CST.CST.SPRITE.JSON, 0, 1, 1, 1).setDepth(5);
               this.scene.physics.add.collider(this.scene.player, json, json.jsonHitPlayer, null, this.scene);
               this.scene.physics.add.collider(this.scene.topLayer, json, json.jsonHitWall, null, this.scene); //pace the shots randomly
 
@@ -1051,13 +1107,14 @@ function () {
       this.scene.cmd2 = this.scene.add.image(-1000, 1000, _CST.CST.IMAGE.CMD).setDepth(1);
       this.scene.cmd2.displayHeight = this.scene.game.renderer.height; //now make their text fields
 
-      this.scene.cmd1Text = this.scene.add.text(this.scene.cmd1.x - this.scene.cmd1.width / 2, this.scene.cmd1.y - this.scene.cmd1.height / 2, 'C:/Users/Player/Stats>\n', {
+      this.scene.cmd1Text = this.scene.add.text(this.scene.cmd1.x - this.scene.cmd1.width / 2, this.scene.cmd1.y - this.scene.cmd1.height / 2, '', {
         fontFamily: '"Roboto Condensed"'
-      }).setDepth(2);
+      }).setDepth(7);
+      this.scene.player.displayInventory();
       this.scene.cmd1Text.setColor("green");
       this.scene.cmd2Text = this.scene.add.text(this.scene.cmd2.x - this.scene.cmd2.width / 2, this.scene.cmd2.y - this.scene.cmd2.height / 2, 'C:/Users/Player/Conversations>\n', {
         fontFamily: '"Roboto Condensed"'
-      }).setDepth(2);
+      }).setDepth(7);
       this.scene.cmd2Text.setColor("green"); //Create a counter for the lines entered so we can keep track of when they run out
 
       this.scene.cmd1Lines = 1;
@@ -1069,7 +1126,7 @@ function () {
       var _this = this;
 
       //set up keyboard controls
-      this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, R"); //Set listener for p to pause game
+      this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, E"); //Set listener for p to pause game
 
       this.scene.input.keyboard.on('keyup-P', function () {
         _this.scene.scene.launch(_CST.CST.SCENES.PAUSE);
@@ -1244,16 +1301,16 @@ function () {
       this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
       //Make different enemies
 
-      this.createEnemies(560, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 2);
-      this.createEnemies(564, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 2);
-      this.createEnemies(568, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 2);
-      this.createEnemies(572, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 2);
-      this.createEnemies(576, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 2);
-      this.createEnemies(588, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 2);
-      this.createEnemies(580, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 2);
-      this.createEnemies(584, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 2);
-      this.createEnemies(467, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
-      this.createEnemies(4724, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 1500, 1.5);
+      this.createEnemies(560, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 1, 2);
+      this.createEnemies(564, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 1, 2);
+      this.createEnemies(568, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 1, 2);
+      this.createEnemies(572, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 1, 2);
+      this.createEnemies(576, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 1, 2);
+      this.createEnemies(588, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 1, 2);
+      this.createEnemies(580, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 1, 2);
+      this.createEnemies(584, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 1, 2);
+      this.createEnemies(467, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
+      this.createEnemies(4724, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
       this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
   }, {
@@ -1298,14 +1355,14 @@ function () {
     }
   }, {
     key: "createEnemies",
-    value: function createEnemies(key, cst1, frame, cst2, st, name, hp, size) {
+    value: function createEnemies(key, cst1, frame, cst2, st, name, rep, dmg, size) {
       var _this4 = this;
 
       this.map.createFromObjects("enemies", key, {
         key: cst1,
         frame: frame
       }).map(function (sprite) {
-        sprite = new _EnemySprite.EnemySprite(_this4.scene, sprite.x, sprite.y, cst2, st, name, hp);
+        sprite = new _EnemySprite.EnemySprite(_this4.scene, sprite.x, sprite.y, cst2, st, name, rep, dmg);
         sprite.body.setSize(22, 44);
         sprite.setScale(size);
         sprite.body.setOffset(16, 16);
@@ -2044,7 +2101,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65469" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56991" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
