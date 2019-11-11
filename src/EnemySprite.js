@@ -21,6 +21,13 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         this.collideName = '';
     }
 
+    ballHit(ball){
+        this.hp--;
+        if(this.hp <= 0){
+            this.destory();
+        }
+    }
+
     enemyCollide(player, enemy){
         let curName;
         //Save whichever is in use to a temp variable to test conditions with

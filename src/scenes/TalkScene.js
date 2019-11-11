@@ -22,21 +22,10 @@ export class TalkScene extends Phaser.Scene{
 		//Handle input for dialogue
 		this.chatsDone = 0; //The number of sections finished so far
 		this.selectDialogue(this.player, this.npc);
-
 		//add in assets
         let contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.CONTINUE).setDepth(1);
-		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.CAT);
-		hoverSprite.setScale(2);
+		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
 		hoverSprite.setVisible(false);
-		//animate sprites
-		this.anims.create({
-			key: "walk",
-			frameRate: 4,
-			repeat: -1,
-			frames: this.anims.generateFrameNumbers(CST.SPRITE.CAT,{
-				frames: [0,1,2,3]
-			})
-		})
         //make space resume game as well
         this.input.keyboard.on('keyup-SPACE', ()=>{
 			this.acceptInput();

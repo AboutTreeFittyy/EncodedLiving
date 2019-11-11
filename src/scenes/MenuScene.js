@@ -1,6 +1,6 @@
 /* File Name: MenuScene.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 10, 2019
  * Description: This class creates the menu scene for the game. Using the sprites,
  * audio and images loaded in LoadScene. It displays them and controls the players
  * selection to move to other scenes.
@@ -21,16 +21,16 @@ export class MenuScene extends Phaser.Scene{
 		let startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.STARTNEWGAME).setDepth(1);
 		let loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 +100, CST.IMAGE.LOADGAME).setDepth(1);
 		//create sprites
-		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.CAT);
-		hoverSprite.setScale(2);
+		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
 		hoverSprite.setVisible(false);
 		//animate sprites
 		this.anims.create({
 			key: "walk",
-			frameRate: 4,
+			frameRate: 5,
 			repeat: -1,
-			frames: this.anims.generateFrameNumbers(CST.SPRITE.CAT,{
-				frames: [0,1,2,3]
+			frames: this.anims.generateFrameNumbers(CST.SPRITE.FAT, {
+				start: 0,
+				end: 11
 			})
 		})
 		//create sounds for menu... commented out for the time being as its annoying
@@ -67,11 +67,5 @@ export class MenuScene extends Phaser.Scene{
 			this.sound.pauseAll();
 			this.scene.start(CST.SCENES.FIRSTLEVEL);
 		})
-	}
-	init(){
-		
-	}
-	preload(){
-		
 	}
 }

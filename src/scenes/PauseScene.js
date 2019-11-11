@@ -18,18 +18,8 @@ export class PauseScene extends Phaser.Scene{
 		let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
 		title.setY(title.height/2);
         let resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.RESUME).setDepth(1);
-		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.CAT);
-		hoverSprite.setScale(2);
+		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
 		hoverSprite.setVisible(false);
-		//animate sprites
-		this.anims.create({
-			key: "walk",
-			frameRate: 4,
-			repeat: -1,
-			frames: this.anims.generateFrameNumbers(CST.SPRITE.CAT,{
-				frames: [0,1,2,3]
-			})
-		})
 		//create sounds for menu and pause!
 		/*this.sound.play(CST.AUDIO.TITLE, {
 			loop: true

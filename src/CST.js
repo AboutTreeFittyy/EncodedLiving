@@ -33,16 +33,20 @@ export const CST = {
 		TITLE:"title_music.mp3"		
 	},
 	SPRITE:{
-		CAT: "cat.png",
 		PLAYER: "player.png",
-		CHAD: "chadsprite.png",
 		WHIP: "whip.png",
-		ITEM: "itemsall.png",
-		NPCS: "npcs.png",
+		BALL: "pingpong.png",
+		NPC_LOT: "npc_lot.png",
+		CHAD: "chadsprite.png",
+		KYLE: "kyle.png",
+		BRAD: "brad.png",
 		NICOLED: "nicolecreepy.png",
+		ITEM: "itemsall.png",
+		NPCS: "npcs.png",		
 		NERD1: "nerd1.png",
 		NERD2: "nerd2.png",
-		JASON: "jason.png",
-		NPC_LOT: "npc_lot.png"
+		JASON: "jason.png",		
+		FAT: "fat.png",		
+		NERDGIRL: "nerdgirl.png"		
 	}
 }

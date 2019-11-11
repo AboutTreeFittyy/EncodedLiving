@@ -216,6 +216,18 @@
                  "width":48,
                  "x":963.878787878788,
                  "y":4474.42424242424
+                }, 
+                {
+                 "gid":4724,
+                 "height":64,
+                 "id":113,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":1098,
+                 "y":4282
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -224,7 +236,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":113,
+ "nextobjectid":114,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2019.09.18",
@@ -25238,6 +25250,164 @@
                         }]
                 }],
          "tilewidth":64
+        }, 
+        {
+         "columns":4,
+         "firstgid":4723,
+         "image":"..\/sprite\/nerdgirl.png",
+         "imageheight":256,
+         "imagewidth":192,
+         "margin":0,
+         "name":"nerdgirl",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":64,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"nerdgirl"
+                        }]
+                }],
+         "tilewidth":48
         }],
  "tilewidth":32,
  "type":"map",

@@ -26,6 +26,11 @@ export class AnimationManager{
         this.createAnimation("nerd2right", 15, CST.SPRITE.NERD2, 9, 11, false);
         this.createAnimation("nerd2down", 15, CST.SPRITE.NERD2, 1, 3, false);
         this.createAnimation("nerd2up", 15, CST.SPRITE.NERD2, 13, 15, false);
+        //NerdGirl animations
+        this.createAnimation("nerdgirlleft", 15, CST.SPRITE.NERDGIRL, 5, 7, false);
+        this.createAnimation("nerdgirlright", 15, CST.SPRITE.NERDGIRL, 9, 11, false);
+        this.createAnimation("nerdgirldown", 15, CST.SPRITE.NERDGIRL, 1, 3, false);
+        this.createAnimation("nerdgirlup", 15, CST.SPRITE.NERDGIRL, 13, 15, false);
         //Jason enemy animations
         this.createAnimation("jasonleft", 10, CST.SPRITE.NPC_LOT, 15, 17, false);
         this.createAnimation("jasonright", 10, CST.SPRITE.NPC_LOT, 27, 29, false);
@@ -61,11 +66,11 @@ export class AnimationManager{
         this.createAnimation("whip_up", 15, CST.SPRITE.WHIP, 8, 11, true);        
         this.createAnimation("whip_right", 15, CST.SPRITE.WHIP, 12, 15, true);
         this.createAnimation("whip_down", 15, CST.SPRITE.WHIP, 0, 4, true);
-        //Player whip animation
-        this.createAnimation("playerwhipleft", 15, CST.SPRITE.PLAYER, 169, 174, false);
-        this.createAnimation("playerwhipup", 15, CST.SPRITE.PLAYER, 156, 161, false);
-        this.createAnimation("playerwhipright", 15, CST.SPRITE.PLAYER, 195, 200, false);
-        this.createAnimation("playerwhipdown", 15, CST.SPRITE.PLAYER, 182, 187, false);        
+        //Player attacking animation
+        this.createAnimation("attackleft", 15, CST.SPRITE.PLAYER, 169, 174, false);
+        this.createAnimation("attackup", 15, CST.SPRITE.PLAYER, 156, 161, false);
+        this.createAnimation("attackright", 15, CST.SPRITE.PLAYER, 195, 200, false);
+        this.createAnimation("attackdown", 15, CST.SPRITE.PLAYER, 182, 187, false);     
         //Player directional movements
         this.createAnimation("left", 10, CST.SPRITE.PLAYER, 117, 125, false);
         this.createAnimation("right", 10, CST.SPRITE.PLAYER, 143, 151, false);

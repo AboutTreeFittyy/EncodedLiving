@@ -38,6 +38,8 @@ export class FirstLevel extends Phaser.Scene{
         //map collisions
         this.physics.add.collider(this.player, this.topLayer);
         this.physics.add.collider(this.player, this.furnishing);
+        //add whip colliders for enemies
+        this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this);
         this.topLayer.setCollisionByProperty({collides:true});  
         this.furnishing.setCollisionByProperty({collides:true});        
     }   
@@ -45,42 +47,41 @@ export class FirstLevel extends Phaser.Scene{
     update(){
         //Play enemy animations and move them as needed
         this.lm.updateEnemies();      
-        //Set player movement on keypress
-        if (this.keyboard.D.isDown === true) {
-            this.player.setVelocityX(512);
-        }
-        if (this.keyboard.W.isDown === true) {
-            this.player.setVelocityY(-512);
-        }
-        if (this.keyboard.S.isDown === true) {
-            this.player.setVelocityY(512);
-        }
-        if (this.keyboard.A.isDown === true) {
-            this.player.setVelocityX(-512);
-        }
-        if (this.keyboard.A.isUp && this.keyboard.D.isUp) { //not moving on X axis
-            this.player.setVelocityX(0);      
-        }
-        if (this.keyboard.W.isUp && this.keyboard.S.isUp) { //not pressing y movement
-            this.player.setVelocityY(0);
-        }        
-        //set animations for player
-        if (this.player.body.velocity.x > 0) { //moving right
-            this.whip.setPosition(this.player.x+70,this.player.y);
-            this.player.play("right", true);
-            this.player.isFacing = "right";
-        } else if (this.player.body.velocity.x < 0) { //moving left
-            this.whip.setPosition(this.player.x-70,this.player.y+20);
-            this.player.play("left", true);
-            this.player.isFacing = "left";
-        } else if (this.player.body.velocity.y < 0) { //moving up
-            this.whip.setPosition(this.player.x,this.player.y-70);
-            this.player.play("up", true);
-            this.player.isFacing = "up";
-        } else if (this.player.body.velocity.y > 0) { //moving down
-            this.whip.setPosition(this.player.x,this.player.y+70);
-            this.player.play("down", true);
-            this.player.isFacing = "down";
+        //Make sure the player isnt attacking before moving him
+        if(!this.player.state){
+            //Set player movement on keypress
+            if (this.keyboard.D.isDown === true) {
+                this.player.setVelocityX(512);
+            }
+            if (this.keyboard.W.isDown === true) {
+                this.player.setVelocityY(-512);
+            }
+            if (this.keyboard.S.isDown === true) {
+                this.player.setVelocityY(512);
+            }
+            if (this.keyboard.A.isDown === true) {
+                this.player.setVelocityX(-512);
+            }
+            if (this.keyboard.A.isUp && this.keyboard.D.isUp) { //not moving on X axis
+                this.player.setVelocityX(0);      
+            }
+            if (this.keyboard.W.isUp && this.keyboard.S.isUp) { //not pressing y movement
+                this.player.setVelocityY(0);
+            }        
+            //set animations for player
+            if (this.player.body.velocity.x > 0) { //moving right
+                this.player.play("right", true);
+                this.player.isFacing = "right";
+            } else if (this.player.body.velocity.x < 0) { //moving left
+                this.player.play("left", true);
+                this.player.isFacing = "left";
+            } else if (this.player.body.velocity.y < 0) { //moving up
+                this.player.play("up", true);
+                this.player.isFacing = "up";
+            } else if (this.player.body.velocity.y > 0) { //moving down
+                this.player.play("down", true);
+                this.player.isFacing = "down";
+            }
         }
     }
 

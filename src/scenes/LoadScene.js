@@ -1,6 +1,6 @@
 /* File Name: LoadScene.js
  * Author: Mathew Boland
- * Last Updated: November 8, 2019
+ * Last Updated: November 10, 2019
  * Description: This class loads the bulk of the data for the game while displaying 
  * a horizontal loading bar.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -11,10 +11,6 @@ export class LoadScene extends Phaser.Scene{
 		super({
 			key: CST.SCENES.LOAD
 		})
-	}
-
-	create(){
-		
 	}
 
 	loadImages(){
@@ -52,10 +48,15 @@ export class LoadScene extends Phaser.Scene{
 					frameHeight: 80,
 					frameWidth: 44
 				});
-			}else if(CST.SPRITE[prop] == CST.SPRITE.CAT || CST.SPRITE[prop] == CST.SPRITE.ITEM || CST.SPRITE[prop] == CST.SPRITE.WHIP){
+			}else if(CST.SPRITE[prop] == CST.SPRITE.BALL || CST.SPRITE[prop] == CST.SPRITE.ITEM || CST.SPRITE[prop] == CST.SPRITE.WHIP){
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
 					frameHeight: 32,
 					frameWidth: 32
+				});
+			}else if(CST.SPRITE[prop] == CST.SPRITE.FAT){
+				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
+					frameHeight: 80,
+					frameWidth: 48
 				});
 			}else{
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {

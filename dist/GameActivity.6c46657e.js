@@ -160,17 +160,21 @@ var CST = {
     TITLE: "title_music.mp3"
   },
   SPRITE: {
-    CAT: "cat.png",
     PLAYER: "player.png",
-    CHAD: "chadsprite.png",
     WHIP: "whip.png",
+    BALL: "pingpong.png",
+    NPC_LOT: "npc_lot.png",
+    CHAD: "chadsprite.png",
+    KYLE: "kyle.png",
+    BRAD: "brad.png",
+    NICOLED: "nicolecreepy.png",
     ITEM: "itemsall.png",
     NPCS: "npcs.png",
-    NICOLED: "nicolecreepy.png",
     NERD1: "nerd1.png",
     NERD2: "nerd2.png",
     JASON: "jason.png",
-    NPC_LOT: "npc_lot.png"
+    FAT: "fat.png",
+    NERDGIRL: "nerdgirl.png"
   }
 };
 exports.CST = CST;
@@ -216,9 +220,6 @@ function (_Phaser$Scene) {
   }
 
   _createClass(LoadScene, [{
-    key: "create",
-    value: function create() {}
-  }, {
     key: "loadImages",
     value: function loadImages() {
       this.load.setPath("./assets/image"); //load all images in CST images
@@ -259,10 +260,15 @@ function (_Phaser$Scene) {
             frameHeight: 80,
             frameWidth: 44
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIP) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BALL || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIP) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 32,
             frameWidth: 32
+          });
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT) {
+          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+            frameHeight: 80,
+            frameWidth: 48
           });
         } else {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
@@ -354,16 +360,16 @@ function (_Phaser$Scene) {
       var startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.STARTNEWGAME).setDepth(1);
       var loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, _CST.CST.IMAGE.LOADGAME).setDepth(1); //create sprites
 
-      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
-      hoverSprite.setScale(2);
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
       hoverSprite.setVisible(false); //animate sprites
 
       this.anims.create({
         key: "walk",
-        frameRate: 4,
+        frameRate: 5,
         repeat: -1,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
-          frames: [0, 1, 2, 3]
+        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.FAT, {
+          start: 0,
+          end: 11
         })
       }); //create sounds for menu... commented out for the time being as its annoying
 
@@ -403,12 +409,6 @@ function (_Phaser$Scene) {
         _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL);
       });
     }
-  }, {
-    key: "init",
-    value: function init() {}
-  }, {
-    key: "preload",
-    value: function preload() {}
   }]);
 
   return MenuScene;
@@ -485,19 +485,6 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.D.reset();
       }
     }
-  }, {
-    key: "addCMD2Text",
-    value: function addCMD2Text(text, player) {
-      //If the command prompt has more than 34 lines, delete the first one before adding another
-      if (player.scene.cmd2Lines >= 34) {
-        player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/, "");
-      } else {
-        //Still room so don't remove anything, just increase counter for lines
-        player.scene.cmd2Lines++;
-      }
-
-      player.scene.cmd2Text.text = player.scene.cmd2Text.text + text + "\n";
-    }
   }]);
 
   return Sprite;
@@ -566,6 +553,15 @@ function (_Phaser$Physics$Arcad) {
   }
 
   _createClass(EnemySprite, [{
+    key: "ballHit",
+    value: function ballHit(ball) {
+      this.hp--;
+
+      if (this.hp <= 0) {
+        this.destory();
+      }
+    }
+  }, {
     key: "enemyCollide",
     value: function enemyCollide(player, enemy) {
       var curName; //Save whichever is in use to a temp variable to test conditions with
@@ -645,7 +641,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: November 4, 2019
+ * Last Updated: November 10, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -666,8 +662,12 @@ function (_Phaser$Physics$Arcad) {
 
     _this.setScale(2);
 
-    scene.physics.world.enableBody(_assertThisInitialized(_this)); //this.setImmovable(true);
+    scene.physics.world.enableBody(_assertThisInitialized(_this));
 
+    _this.setCollideWorldBounds(true);
+
+    _this.balls = 3;
+    _this.maxBalls = 3;
     _this.hp = 10;
     _this.money = 0;
     _this.npcPrev = '';
@@ -678,10 +678,48 @@ function (_Phaser$Physics$Arcad) {
   _createClass(CharacterSprite, [{
     key: "collectItem",
     value: function collectItem(player, item) {
+      //destroy the item and then add it to the inventory stats
       item.setVisible(false);
       item.destroy(item.body);
       player.money++;
       player.scene.cmd1Text.text = player.scene.cmd1Text.text + "Player Money: " + player.money + "\n";
+    }
+  }, {
+    key: "whipHitEnemy",
+    value: function whipHitEnemy(whip, enemy) {
+      //check if already got hit this animation
+      if (!whip.state) {
+        //adjust enemy stats on hit from whip
+        enemy.hp--;
+
+        if (enemy.hp == 0) {
+          enemy.destroy();
+        }
+
+        whip.setState(1); //indicate a hit already occured
+      }
+    }
+  }, {
+    key: "ballHitEnemy",
+    value: function ballHitEnemy(ball, enemy) {
+      //adjust inventory and enemy stats on hit from ball
+      enemy.scene.player.balls++;
+      enemy.hp--;
+
+      if (enemy.hp == 0) {
+        enemy.destroy();
+      }
+
+      ball.destroy();
+    }
+  }, {
+    key: "ballHitWall",
+    value: function ballHitWall(ball, wall) {
+      //timer calls this even if its been deleted so make sure it still exists
+      if (ball.scene != null) {
+        ball.scene.player.balls++;
+        ball.destroy();
+      }
     }
   }]);
 
@@ -915,6 +953,7 @@ function () {
             break;
 
           case "jason":
+          case "nerdgirl":
             //Now check if they've been pushed from their origin
             if (this.scene.enemyCont.list[_i].startY - 50 > this.scene.enemyCont.list[_i].y) {
               //npc below
@@ -945,21 +984,45 @@ function () {
             }
 
             if (_anim != "nothing") {
-              this.scene.enemyCont.list[_i].play("jason" + _anim, true);
+              this.scene.enemyCont.list[_i].play(this.scene.enemyCont.list[_i].name + _anim, true);
             } else {
               //have npc look at player general direction unless behind
               if (this.scene.player.y > this.scene.enemyCont.list[_i].y + 50) {
                 //face down
-                this.scene.enemyCont.list[_i].setFrame(4);
+                if (this.scene.enemyCont.list[_i].name == "jason") {
+                  this.scene.enemyCont.list[_i].setFrame(4); //jason
+
+                } else {
+                  this.scene.enemyCont.list[_i].setFrame(2); //nerdgirl
+
+                }
               } else if (this.scene.player.y < this.scene.enemyCont.list[_i].y - 50) {
                 //face up
-                this.scene.enemyCont.list[_i].setFrame(40);
+                if (this.scene.enemyCont.list[_i].name == "jason") {
+                  this.scene.enemyCont.list[_i].setFrame(40); //jason
+
+                } else {
+                  this.scene.enemyCont.list[_i].setFrame(12); //nerdgirl
+
+                }
               } else if (this.scene.player.x > this.scene.enemyCont.list[_i].x) {
                 //face right to player
-                this.scene.enemyCont.list[_i].setFrame(28);
+                if (this.scene.enemyCont.list[_i].name == "jason") {
+                  this.scene.enemyCont.list[_i].setFrame(28); //jason
+
+                } else {
+                  this.scene.enemyCont.list[_i].setFrame(8); //nerdgirl
+
+                }
               } else if (this.scene.player.x < this.scene.enemyCont.list[_i].x) {
                 //face left to player
-                this.scene.enemyCont.list[_i].setFrame(16);
+                if (this.scene.enemyCont.list[_i].name == "jason") {
+                  this.scene.enemyCont.list[_i].setFrame(16); //jason
+
+                } else {
+                  this.scene.enemyCont.list[_i].setFrame(4); //nerdgirl
+
+                }
               }
             }
 
@@ -971,13 +1034,12 @@ function () {
     key: "setPlayer",
     value: function setPlayer() {
       //add game sprites              
-      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 700, 4000, _CST.CST.SPRITE.PLAYER, 130);
-      this.scene.player.setCollideWorldBounds(true); //align the player hitbox and set its size
+      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 700, 4000, _CST.CST.SPRITE.PLAYER, 130); //align the player hitbox and set its size
 
       this.scene.player.setSize(32, 48);
       this.scene.player.setOffset(16, 12); //the whip sprite takes any
 
-      this.scene.whip = new _CharacterSprite.CharacterSprite(this.scene, 400, 3600, _CST.CST.SPRITE.WHIP, 0);
+      this.scene.whip = new _CharacterSprite.CharacterSprite(this.scene, 700, 4000, _CST.CST.SPRITE.WHIP, 0);
       this.scene.whip.setVisible(false);
       this.scene.whip.setScale(3);
       this.scene.playerCont = this.scene.add.container(0, 0, [this.scene.player, this.scene.whip]).setDepth(1); //initialize player and whip to face down at start
@@ -1035,36 +1097,113 @@ function () {
       }); //attack with whip input
 
       this.scene.input.keyboard.on("keydown-F", function () {
+        //indicate that attack animation is playing
+        _this.scene.player.setState(1); //stop player from moving if they were
+
+
+        _this.scene.player.setVelocityY(0);
+
+        _this.scene.player.setVelocityX(0); //Create a one time listener to make player movable again after animation finishes
+
+
+        _this.scene.playerCont.list[1].once("animationcomplete", _this.toggleAttack); //if(!this.scene.player.state){
+
+
         switch (_this.scene.player.isFacing) {
           case "left":
-            _this.scene.playerCont.list[0].play("playerwhipleft");
+            _this.scene.whip.setPosition(_this.scene.player.x - 70, _this.scene.player.y + 20);
 
-            _this.scene.playerCont.list[1].play("whip_left");
+            _this.scene.playerCont.list[0].play("attackleft", true);
+
+            _this.scene.playerCont.list[1].play("whip_left", true);
 
             break;
 
           case "right":
-            _this.scene.playerCont.list[0].play("playerwhipright");
+            _this.scene.whip.setPosition(_this.scene.player.x + 70, _this.scene.player.y);
+
+            _this.scene.playerCont.list[0].play("attackright");
 
             _this.scene.playerCont.list[1].play("whip_right");
 
             break;
 
           case "up":
-            _this.scene.playerCont.list[0].play("playerwhipup");
+            _this.scene.whip.setPosition(_this.scene.player.x, _this.scene.player.y - 70);
+
+            _this.scene.playerCont.list[0].play("attackup");
 
             _this.scene.playerCont.list[1].play("whip_up");
 
             break;
 
           case "down":
-            _this.scene.playerCont.list[0].play("playerwhipdown");
+            _this.scene.whip.setPosition(_this.scene.player.x, _this.scene.player.y + 70);
+
+            _this.scene.playerCont.list[0].play("attackdown");
 
             _this.scene.playerCont.list[1].play("whip_down");
 
             break;
         }
+      }); //attack with ping pong ball input
+
+      this.scene.input.keyboard.on("keydown-SPACE", function () {
+        if (_this.scene.player.balls >= 1) {
+          _this.scene.player.balls--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
+
+          var ball = new _CharacterSprite.CharacterSprite(_this.scene, _this.scene.player.x, _this.scene.player.y, _CST.CST.SPRITE.BALL, 0).setDepth(5);
+
+          _this.scene.physics.add.collider(_this.scene.enemySet, ball, ball.ballHitEnemy, null, _this.scene);
+
+          _this.scene.physics.add.collider(_this.scene.topLayer, ball, ball.ballHitWall, null, _this.scene);
+
+          _this.scene.time.delayedCall(1000, ball.ballHitWall, [ball, ball], _this.scene);
+
+          ball.setOffset(8, 6);
+
+          switch (_this.scene.player.isFacing) {
+            case "left":
+              _this.scene.playerCont.list[0].play("attackleft");
+
+              ball.setVelocityX(-512);
+              ball.x -= 25;
+              break;
+
+            case "right":
+              _this.scene.playerCont.list[0].play("attackright");
+
+              ball.setVelocityX(512);
+              ball.x += 25;
+              break;
+
+            case "up":
+              _this.scene.playerCont.list[0].play("attackup");
+
+              ball.setVelocityY(-512);
+              ball.y -= 25;
+              break;
+
+            case "down":
+              _this.scene.playerCont.list[0].play("attackdown");
+
+              ball.setVelocityY(512);
+              ball.y += 25;
+              break;
+          }
+        }
       });
+    }
+  }, {
+    key: "toggleAttack",
+    value: function toggleAttack() {
+      //this flag checks if the player can move or not
+      this.scene.player.setState(0); //this flag checks if an enemy has already taken damage from the whip
+
+      this.scene.whip.setState(0); //this puts the whip sprite out of view until its needed again
+
+      this.scene.whip.x = 0;
+      this.scene.whip.y = 0;
     }
   }, {
     key: "setCameras",
@@ -1118,6 +1257,7 @@ function () {
       this.createEnemies(580, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 2);
       this.createEnemies(584, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 2);
       this.createEnemies(467, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
+      this.createEnemies(4724, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 1500, 1.5);
       this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
   }, {
@@ -1235,7 +1375,12 @@ function () {
       this.createAnimation("nerd2left", 15, _CST.CST.SPRITE.NERD2, 5, 7, false);
       this.createAnimation("nerd2right", 15, _CST.CST.SPRITE.NERD2, 9, 11, false);
       this.createAnimation("nerd2down", 15, _CST.CST.SPRITE.NERD2, 1, 3, false);
-      this.createAnimation("nerd2up", 15, _CST.CST.SPRITE.NERD2, 13, 15, false); //Jason enemy animations
+      this.createAnimation("nerd2up", 15, _CST.CST.SPRITE.NERD2, 13, 15, false); //NerdGirl animations
+
+      this.createAnimation("nerdgirlleft", 15, _CST.CST.SPRITE.NERDGIRL, 5, 7, false);
+      this.createAnimation("nerdgirlright", 15, _CST.CST.SPRITE.NERDGIRL, 9, 11, false);
+      this.createAnimation("nerdgirldown", 15, _CST.CST.SPRITE.NERDGIRL, 1, 3, false);
+      this.createAnimation("nerdgirlup", 15, _CST.CST.SPRITE.NERDGIRL, 13, 15, false); //Jason enemy animations
 
       this.createAnimation("jasonleft", 10, _CST.CST.SPRITE.NPC_LOT, 15, 17, false);
       this.createAnimation("jasonright", 10, _CST.CST.SPRITE.NPC_LOT, 27, 29, false);
@@ -1270,12 +1415,12 @@ function () {
       this.createAnimation("whip_left", 15, _CST.CST.SPRITE.WHIP, 17, 22, true);
       this.createAnimation("whip_up", 15, _CST.CST.SPRITE.WHIP, 8, 11, true);
       this.createAnimation("whip_right", 15, _CST.CST.SPRITE.WHIP, 12, 15, true);
-      this.createAnimation("whip_down", 15, _CST.CST.SPRITE.WHIP, 0, 4, true); //Player whip animation
+      this.createAnimation("whip_down", 15, _CST.CST.SPRITE.WHIP, 0, 4, true); //Player attacking animation
 
-      this.createAnimation("playerwhipleft", 15, _CST.CST.SPRITE.PLAYER, 169, 174, false);
-      this.createAnimation("playerwhipup", 15, _CST.CST.SPRITE.PLAYER, 156, 161, false);
-      this.createAnimation("playerwhipright", 15, _CST.CST.SPRITE.PLAYER, 195, 200, false);
-      this.createAnimation("playerwhipdown", 15, _CST.CST.SPRITE.PLAYER, 182, 187, false); //Player directional movements
+      this.createAnimation("attackleft", 15, _CST.CST.SPRITE.PLAYER, 169, 174, false);
+      this.createAnimation("attackup", 15, _CST.CST.SPRITE.PLAYER, 156, 161, false);
+      this.createAnimation("attackright", 15, _CST.CST.SPRITE.PLAYER, 195, 200, false);
+      this.createAnimation("attackdown", 15, _CST.CST.SPRITE.PLAYER, 182, 187, false); //Player directional movements
 
       this.createAnimation("left", 10, _CST.CST.SPRITE.PLAYER, 117, 125, false);
       this.createAnimation("right", 10, _CST.CST.SPRITE.PLAYER, 143, 151, false);
@@ -1381,7 +1526,9 @@ function (_Phaser$Scene) {
       this.lm = new _LevelManager.LevelManager(this, mappy); //map collisions
 
       this.physics.add.collider(this.player, this.topLayer);
-      this.physics.add.collider(this.player, this.furnishing);
+      this.physics.add.collider(this.player, this.furnishing); //add whip colliders for enemies
+
+      this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this);
       this.topLayer.setCollisionByProperty({
         collides: true
       });
@@ -1393,55 +1540,54 @@ function (_Phaser$Scene) {
     key: "update",
     value: function update() {
       //Play enemy animations and move them as needed
-      this.lm.updateEnemies(); //Set player movement on keypress
+      this.lm.updateEnemies(); //Make sure the player isnt attacking before moving him
 
-      if (this.keyboard.D.isDown === true) {
-        this.player.setVelocityX(512);
-      }
+      if (!this.player.state) {
+        //Set player movement on keypress
+        if (this.keyboard.D.isDown === true) {
+          this.player.setVelocityX(512);
+        }
 
-      if (this.keyboard.W.isDown === true) {
-        this.player.setVelocityY(-512);
-      }
+        if (this.keyboard.W.isDown === true) {
+          this.player.setVelocityY(-512);
+        }
 
-      if (this.keyboard.S.isDown === true) {
-        this.player.setVelocityY(512);
-      }
+        if (this.keyboard.S.isDown === true) {
+          this.player.setVelocityY(512);
+        }
 
-      if (this.keyboard.A.isDown === true) {
-        this.player.setVelocityX(-512);
-      }
+        if (this.keyboard.A.isDown === true) {
+          this.player.setVelocityX(-512);
+        }
 
-      if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
-        //not moving on X axis
-        this.player.setVelocityX(0);
-      }
+        if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
+          //not moving on X axis
+          this.player.setVelocityX(0);
+        }
 
-      if (this.keyboard.W.isUp && this.keyboard.S.isUp) {
-        //not pressing y movement
-        this.player.setVelocityY(0);
-      } //set animations for player
+        if (this.keyboard.W.isUp && this.keyboard.S.isUp) {
+          //not pressing y movement
+          this.player.setVelocityY(0);
+        } //set animations for player
 
 
-      if (this.player.body.velocity.x > 0) {
-        //moving right
-        this.whip.setPosition(this.player.x + 70, this.player.y);
-        this.player.play("right", true);
-        this.player.isFacing = "right";
-      } else if (this.player.body.velocity.x < 0) {
-        //moving left
-        this.whip.setPosition(this.player.x - 70, this.player.y + 20);
-        this.player.play("left", true);
-        this.player.isFacing = "left";
-      } else if (this.player.body.velocity.y < 0) {
-        //moving up
-        this.whip.setPosition(this.player.x, this.player.y - 70);
-        this.player.play("up", true);
-        this.player.isFacing = "up";
-      } else if (this.player.body.velocity.y > 0) {
-        //moving down
-        this.whip.setPosition(this.player.x, this.player.y + 70);
-        this.player.play("down", true);
-        this.player.isFacing = "down";
+        if (this.player.body.velocity.x > 0) {
+          //moving right
+          this.player.play("right", true);
+          this.player.isFacing = "right";
+        } else if (this.player.body.velocity.x < 0) {
+          //moving left
+          this.player.play("left", true);
+          this.player.isFacing = "left";
+        } else if (this.player.body.velocity.y < 0) {
+          //moving up
+          this.player.play("up", true);
+          this.player.isFacing = "up";
+        } else if (this.player.body.velocity.y > 0) {
+          //moving down
+          this.player.play("down", true);
+          this.player.isFacing = "down";
+        }
       }
     }
   }, {
@@ -1515,18 +1661,8 @@ function (_Phaser$Scene) {
       var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
       title.setY(title.height / 2);
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
-      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
-      hoverSprite.setScale(2);
-      hoverSprite.setVisible(false); //animate sprites
-
-      this.anims.create({
-        key: "walk",
-        frameRate: 4,
-        repeat: -1,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
-          frames: [0, 1, 2, 3]
-        })
-      }); //create sounds for menu and pause!
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
+      hoverSprite.setVisible(false); //create sounds for menu and pause!
 
       /*this.sound.play(CST.AUDIO.TITLE, {
       	loop: true
@@ -1619,18 +1755,8 @@ function (_Phaser$Scene) {
       var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.SHOP);
       title.setY(title.height / 2);
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.9, _CST.CST.IMAGE.EXIT).setDepth(1);
-      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
-      hoverSprite.setScale(2);
-      hoverSprite.setVisible(false); //animate sprites
-
-      this.anims.create({
-        key: "walk",
-        frameRate: 4,
-        repeat: -1,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
-          frames: [0, 1, 2, 3]
-        })
-      }); //create sounds for menu and pause!
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
+      hoverSprite.setVisible(false); //create sounds for menu and pause!
 
       /*this.sound.play(CST.AUDIO.TITLE, {
       	loop: true
@@ -1731,18 +1857,8 @@ function (_Phaser$Scene) {
       this.selectDialogue(this.player, this.npc); //add in assets
 
       var contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.CONTINUE).setDepth(1);
-      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.CAT);
-      hoverSprite.setScale(2);
-      hoverSprite.setVisible(false); //animate sprites
-
-      this.anims.create({
-        key: "walk",
-        frameRate: 4,
-        repeat: -1,
-        frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.CAT, {
-          frames: [0, 1, 2, 3]
-        })
-      }); //make space resume game as well
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
+      hoverSprite.setVisible(false); //make space resume game as well
 
       this.input.keyboard.on('keyup-SPACE', function () {
         _this.acceptInput();
@@ -1915,7 +2031,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62815" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65469" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

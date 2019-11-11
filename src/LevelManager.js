@@ -1,6 +1,6 @@
 /* File Name: LevelManager.js
  * Author: Mathew Boland
- * Last Updated: November 8, 2019
+ * Last Updated: November 10, 2019
  * Description: A class to build a levels animations and sprites for the game
  * given the map and scene.
 */
@@ -169,6 +169,7 @@ export class LevelManager{
                         this.scene.enemyCont.list[i].setVelocityX(90);
                         break;
                 case "jason":
+                case "nerdgirl":
                     //Now check if they've been pushed from their origin
                     if(this.scene.enemyCont.list[i].startY - 50 > this.scene.enemyCont.list[i].y){
                         //npc below
@@ -193,21 +194,37 @@ export class LevelManager{
                         this.scene.enemyCont.list[i].setVelocityX(0);
                     }
                     if(anim != "nothing"){
-                        this.scene.enemyCont.list[i].play("jason" + anim, true);
+                        this.scene.enemyCont.list[i].play(this.scene.enemyCont.list[i].name + anim, true);
                     }else{
                         //have npc look at player general direction unless behind
                         if(this.scene.player.y > this.scene.enemyCont.list[i].y+50){
                             //face down
-                            this.scene.enemyCont.list[i].setFrame(4);
+                            if(this.scene.enemyCont.list[i].name == "jason"){
+                                this.scene.enemyCont.list[i].setFrame(4);//jason
+                            }else{
+                                this.scene.enemyCont.list[i].setFrame(2);//nerdgirl
+                            }                            
                         }else if(this.scene.player.y < this.scene.enemyCont.list[i].y-50){
                             //face up
-                            this.scene.enemyCont.list[i].setFrame(40);
+                            if(this.scene.enemyCont.list[i].name == "jason"){
+                                this.scene.enemyCont.list[i].setFrame(40);//jason
+                            }else{
+                                this.scene.enemyCont.list[i].setFrame(12);//nerdgirl
+                            } 
                         }else if(this.scene.player.x > this.scene.enemyCont.list[i].x){
                             //face right to player
-                            this.scene.enemyCont.list[i].setFrame(28);
+                            if(this.scene.enemyCont.list[i].name == "jason"){
+                                this.scene.enemyCont.list[i].setFrame(28);//jason
+                            }else{
+                                this.scene.enemyCont.list[i].setFrame(8);//nerdgirl
+                            } 
                         }else if(this.scene.player.x < this.scene.enemyCont.list[i].x){
                             //face left to player
-                            this.scene.enemyCont.list[i].setFrame(16);
+                            if(this.scene.enemyCont.list[i].name == "jason"){
+                                this.scene.enemyCont.list[i].setFrame(16);//jason
+                            }else{
+                                this.scene.enemyCont.list[i].setFrame(4);//nerdgirl
+                            } 
                         }
                     }
                     break;
@@ -218,12 +235,11 @@ export class LevelManager{
     setPlayer(){
         //add game sprites              
         this.scene.player = new CharacterSprite(this.scene, 700, 4000, CST.SPRITE.PLAYER, 130);
-        this.scene.player.setCollideWorldBounds(true);
         //align the player hitbox and set its size
         this.scene.player.setSize(32,48);
         this.scene.player.setOffset(16,12);
         //the whip sprite takes any
-        this.scene.whip = new CharacterSprite(this.scene, 400, 3600, CST.SPRITE.WHIP, 0);
+        this.scene.whip = new CharacterSprite(this.scene, 700, 4000, CST.SPRITE.WHIP, 0);
         this.scene.whip.setVisible(false);
         this.scene.whip.setScale(3);
         this.scene.playerCont = this.scene.add.container(0, 0, [this.scene.player, this.scene.whip]).setDepth(1);
@@ -271,21 +287,73 @@ export class LevelManager{
         })
         //attack with whip input
         this.scene.input.keyboard.on("keydown-F", ()=>{
-            switch(this.scene.player.isFacing){
-                case "left":this.scene.playerCont.list[0].play("playerwhipleft");
-                this.scene.playerCont.list[1].play("whip_left");
-                break;
-                case "right":this.scene.playerCont.list[0].play("playerwhipright");
-                this.scene.playerCont.list[1].play("whip_right");
-                break;
-                case "up":this.scene.playerCont.list[0].play("playerwhipup");
-                this.scene.playerCont.list[1].play("whip_up");
-                break;
-                case "down":this.scene.playerCont.list[0].play("playerwhipdown");
-                this.scene.playerCont.list[1].play("whip_down");
-                break;
-            }            
+            //indicate that attack animation is playing
+            this.scene.player.setState(1);
+            //stop player from moving if they were
+            this.scene.player.setVelocityY(0);
+            this.scene.player.setVelocityX(0);
+            //Create a one time listener to make player movable again after animation finishes
+            this.scene.playerCont.list[1].once("animationcomplete", this.toggleAttack);
+            //if(!this.scene.player.state){
+                switch(this.scene.player.isFacing){
+                    case "left":this.scene.whip.setPosition(this.scene.player.x-70,this.scene.player.y+20);
+                    this.scene.playerCont.list[0].play("attackleft", true);
+                    this.scene.playerCont.list[1].play("whip_left", true);                    
+                    break;
+                    case "right": this.scene.whip.setPosition(this.scene.player.x+70,this.scene.player.y);    
+                    this.scene.playerCont.list[0].play("attackright");
+                    this.scene.playerCont.list[1].play("whip_right");
+                    break;
+                    case "up":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y-70);
+                    this.scene.playerCont.list[0].play("attackup");
+                    this.scene.playerCont.list[1].play("whip_up");
+                    break;
+                    case "down":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y+70);
+                    this.scene.playerCont.list[0].play("attackdown");
+                    this.scene.playerCont.list[1].play("whip_down");
+                    break;
+                }         
         })
+        //attack with ping pong ball input
+        this.scene.input.keyboard.on("keydown-SPACE", ()=>{
+            if(this.scene.player.balls >= 1){   
+                this.scene.player.balls--;
+                //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
+                let ball = new CharacterSprite(this.scene, this.scene.player.x, this.scene.player.y, CST.SPRITE.BALL, 0).setDepth(5);
+                this.scene.physics.add.collider(this.scene.enemySet, ball, ball.ballHitEnemy, null, this.scene);
+                this.scene.physics.add.collider(this.scene.topLayer, ball, ball.ballHitWall, null, this.scene);
+                this.scene.time.delayedCall(1000, ball.ballHitWall, [ball, ball], this.scene);
+                ball.setOffset(8,6);
+                switch(this.scene.player.isFacing){
+                    case "left":this.scene.playerCont.list[0].play("attackleft");
+                    ball.setVelocityX(-512);  
+                    ball.x -=25;              
+                    break;                
+                    case "right":this.scene.playerCont.list[0].play("attackright");
+                    ball.setVelocityX(512);
+                    ball.x +=25
+                    break;                
+                    case "up":this.scene.playerCont.list[0].play("attackup");
+                    ball.setVelocityY(-512);
+                    ball.y -=25;
+                    break;                
+                    case "down":this.scene.playerCont.list[0].play("attackdown");
+                    ball.setVelocityY(512);
+                    ball.y+=25;
+                    break;
+                } 
+            }           
+        })
+    }
+
+    toggleAttack(){
+        //this flag checks if the player can move or not
+        this.scene.player.setState(0);
+        //this flag checks if an enemy has already taken damage from the whip
+        this.scene.whip.setState(0);
+        //this puts the whip sprite out of view until its needed again
+        this.scene.whip.x = 0;
+        this.scene.whip.y = 0;
     }
 
     setCameras(){
@@ -338,6 +406,7 @@ export class LevelManager{
         this.createEnemies(580, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 2);
         this.createEnemies(584, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 2);
         this.createEnemies(467, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 1.5);
+        this.createEnemies(4724, CST.SPRITE.NPCS, 6, CST.SPRITE.NERDGIRL, 2, "nerdgirl", 1500, 1.5);
         this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
 

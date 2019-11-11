@@ -33,15 +33,4 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
             player.scene.keyboard.D.reset();
         }
     }
-
-    addCMD2Text(text, player){
-        //If the command prompt has more than 34 lines, delete the first one before adding another
-        if(player.scene.cmd2Lines >= 34){
-            player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/,"");
-        }else{
-            //Still room so don't remove anything, just increase counter for lines
-            player.scene.cmd2Lines ++;
-        }
-        player.scene.cmd2Text.text = player.scene.cmd2Text.text+text+"\n";
-    }
 }
