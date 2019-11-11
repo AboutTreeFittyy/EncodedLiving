@@ -69,28 +69,28 @@ export class TalkScene extends Phaser.Scene{
 				this.chats = ["C:/Users/oliceN/To_Player/Hwy ddi sith paphen<1@?"];
             break;
             case "Claire1":
-				this.chats = ["Hey, I'm Claire! What are you doing here?"];
+				this.chats = ["C:/Users/Claire/To_Player/Hey, I'm Claire! What are\n you doing here?"];
             break;
             case "Claire2":
-				this.chats = ["Oh hey again, I can't talk. I gotta go see Brad."];
+				this.chats = ["C:/Users/Claire/To_Player/Oh hey again, I can't\ntalk. I gotta go see Brad."];
             break;
             case "Kyle":
-				this.chats = ["How are you doing? I'm so pumped for school!"];
+				this.chats = ["C:/Users/Kyle/To_Player/How are you doing? I'm so \npumped for school!"];
             break;
-            case "Chad":
-				this.chats = ["Hey bro! Wanna come to my party later?"];
+            case "chad":
+				this.chats = ["C:/Users/Chad/To_Player/Hey bro! Wanna come to my\nparty later?"];
             break;
             case "Brad":
-				this.chats = ["Yo dude. Can you pick up some booze?"];
+				this.chats = ["C:/Users/Brad/To_Player/Yo dude. Can you pick up\nsome booze?"];
             break;
             case "Vlad":
-				this.chats = ["Whoa! Are you actually looking at me!?"];
+				this.chats = ["C:/Users/Vlad/To_Player/Whoa! Are you actually\nlooking at me!?"];
             break
             case "Stevie":
-				this.chats = ["Look, I maybe short but I'm no Starbucks item!"];
+				this.chats = ["C:/Users/Stevie/To_Player/Look, I maybe short but\nI'm no Starbucks item!"];
 			break;
 			case "Prof":
-				this.chats = ["Hey I lost some... oh nevermind..."];
+				this.chats = ["C:/Users/Prof/To_Player/Hey I lost some... \noh nevermind..."];
 			break;
 		}
 		//Print first segment of speech

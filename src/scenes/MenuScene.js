@@ -28,6 +28,7 @@ export class MenuScene extends Phaser.Scene{
 			key: "walk",
 			frameRate: 5,
 			repeat: -1,
+			yoyo: true,
 			frames: this.anims.generateFrameNumbers(CST.SPRITE.FAT, {
 				start: 0,
 				end: 11

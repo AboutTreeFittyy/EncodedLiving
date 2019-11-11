@@ -15,8 +15,8 @@ export class PauseScene extends Phaser.Scene{
 	create(){
 		//add in assets
 		this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, CST.IMAGE.PAUSED).setDepth(1);
-		let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
-		title.setY(title.height/2);
+		//let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
+		//title.setY(title.height/2);
         let resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.RESUME).setDepth(1);
 		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
 		hoverSprite.setVisible(false);

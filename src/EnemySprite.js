@@ -1,6 +1,6 @@
 /* File Name: EnemySprite.js
  * Author: Mathew Boland
- * Last Updated: November 8, 2019
+ * Last Updated: November 11, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -15,10 +15,10 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         scene.physics.world.enableBody(this);
         this.setImmovable(true);
         this.hp = hp;
+        this.jsons = 5;
         this.name = name;
         this.startX = x;
         this.startY = y;
-        this.collideName = '';
     }
 
     ballHit(ball){
@@ -26,6 +26,32 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         if(this.hp <= 0){
             this.destory();
         }
+    }
+
+    jsonHitPlayer(player, json){
+        //adjust inventory and enemy stats on hit from ball
+        player.hp--;
+        if(player.hp == 0){
+            //player.destroy();
+            console.log("OOF");
+        }
+        json.destroy();
+    }
+
+    jsonHitWall(json, wall){
+        //timer calls this even if its been deleted so make sure it still exists
+        if(json.scene != null){
+            json.jsons++;
+            json.destroy();
+        }        
+    }
+
+    jsonTimeOut(json, jason){
+        //console.log("as"+JSON.stringify(jason));//timer calls this even if its been deleted so make sure it still exists
+        if(jason.scene != null){
+            jason.jsons++;
+            json.destroy();
+        }        
     }
 
     enemyCollide(player, enemy){

@@ -373,6 +373,7 @@ function (_Phaser$Scene) {
         key: "walk",
         frameRate: 5,
         repeat: -1,
+        yoyo: true,
         frames: this.anims.generateFrameNumbers(_CST.CST.SPRITE.FAT, {
           start: 0,
           end: 11
@@ -525,7 +526,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 /* File Name: EnemySprite.js
  * Author: Mathew Boland
- * Last Updated: November 8, 2019
+ * Last Updated: November 11, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -551,10 +552,10 @@ function (_Phaser$Physics$Arcad) {
     _this.setImmovable(true);
 
     _this.hp = hp;
+    _this.jsons = 5;
     _this.name = name;
     _this.startX = x;
     _this.startY = y;
-    _this.collideName = '';
     return _this;
   }
 
@@ -565,6 +566,37 @@ function (_Phaser$Physics$Arcad) {
 
       if (this.hp <= 0) {
         this.destory();
+      }
+    }
+  }, {
+    key: "jsonHitPlayer",
+    value: function jsonHitPlayer(player, json) {
+      //adjust inventory and enemy stats on hit from ball
+      player.hp--;
+
+      if (player.hp == 0) {
+        //player.destroy();
+        console.log("OOF");
+      }
+
+      json.destroy();
+    }
+  }, {
+    key: "jsonHitWall",
+    value: function jsonHitWall(json, wall) {
+      //timer calls this even if its been deleted so make sure it still exists
+      if (json.scene != null) {
+        json.jsons++;
+        json.destroy();
+      }
+    }
+  }, {
+    key: "jsonTimeOut",
+    value: function jsonTimeOut(json, jason) {
+      //console.log("as"+JSON.stringify(jason));//timer calls this even if its been deleted so make sure it still exists
+      if (jason.scene != null) {
+        jason.jsons++;
+        json.destroy();
       }
     }
   }, {
@@ -771,44 +803,14 @@ function () {
   }
 
   _createClass(LevelManager, [{
-    key: "updateEnemies",
-    value: function updateEnemies() {
+    key: "updateSprites",
+    value: function updateSprites() {
       //Scan through all the NPCs to update them
       for (var i = 0; i < this.scene.npcCont.count('visible', true); i++) {
-        var anim = "nothing";
-
         switch (this.scene.npcCont.list[i].name) {
           case "Nicole":
           case "NicoleD":
-            //Have her follow the player around                                      
-            if (this.scene.player.y - 100 > this.scene.npcCont.list[i].y) {
-              //player below
-              this.scene.npcCont.list[i].setVelocityY(256);
-              anim = "down";
-            } else if (this.scene.player.y + 100 < this.scene.npcCont.list[i].y) {
-              //player above
-              this.scene.npcCont.list[i].setVelocityY(-256);
-              anim = "up";
-            } else {
-              this.scene.npcCont.list[i].setVelocityY(0);
-            }
-
-            if (this.scene.player.x - 100 > this.scene.npcCont.list[i].x) {
-              //player in front
-              this.scene.npcCont.list[i].setVelocityX(256);
-              anim = "right";
-            } else if (this.scene.player.x + 100 < this.scene.npcCont.list[i].x) {
-              //player behind
-              this.scene.npcCont.list[i].setVelocityX(-256);
-              anim = "left";
-            } else {
-              this.scene.npcCont.list[i].setVelocityX(0);
-            }
-
-            if (anim != "nothing") {
-              this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
-            }
-
+            this.followPlayer(this.scene.npcCont.list[i]);
             break;
 
           case "Kyle":
@@ -818,190 +820,190 @@ function () {
           case "Prof":
           case "Stevie":
           case "chad":
-            //Now check if they've been pushed from their origin
-            if (this.scene.npcCont.list[i].startY - 50 > this.scene.npcCont.list[i].y) {
-              //npc below
-              this.scene.npcCont.list[i].setVelocityY(128);
-              anim = "down";
-            } else if (this.scene.npcCont.list[i].startY + 50 < this.scene.npcCont.list[i].y) {
-              //npc above
-              this.scene.npcCont.list[i].setVelocityY(-128);
-              anim = "up";
-            } else {
-              this.scene.npcCont.list[i].setVelocityY(0);
-            }
-
-            if (this.scene.npcCont.list[i].startX - 50 > this.scene.npcCont.list[i].x) {
-              //npc in front
-              this.scene.npcCont.list[i].setVelocityX(128);
-              anim = "right";
-            } else if (this.scene.npcCont.list[i].startX + 50 < this.scene.npcCont.list[i].x) {
-              //npc behind
-              this.scene.npcCont.list[i].setVelocityX(-128);
-              anim = "left";
-            } else {
-              this.scene.npcCont.list[i].setVelocityX(0);
-            }
-
-            if (anim != "nothing") {
-              this.scene.npcCont.list[i].play(this.scene.npcCont.list[i].name + anim, true);
-            } else {
-              //have npc look at player general direction unless behind
-              if (this.scene.player.y > this.scene.npcCont.list[i].y + 50) {
-                //face down
-                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].down);
-              } else if (this.scene.player.y < this.scene.npcCont.list[i].y - 50) {
-                //face up
-                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].up);
-              } else if (this.scene.player.x > this.scene.npcCont.list[i].x) {
-                //face right to player
-                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].right);
-              } else if (this.scene.player.x < this.scene.npcCont.list[i].x) {
-                //face left to player
-                this.scene.npcCont.list[i].setFrame(this.scene.npcCont.list[i].left);
-              }
-            }
-
+            //Now check if they've been pushed from their origin and make them face the player
+            this.watchPlayer(this.scene.npcCont.list[i], this.scene.npcCont.list[i].down, this.scene.npcCont.list[i].up, this.scene.npcCont.list[i].right, this.scene.npcCont.list[i].left);
             break;
         }
       } //Scan through all the enemy objects to update them
 
 
       for (var _i = 0; _i < this.scene.enemyCont.count('visible', true); _i++) {
-        var _anim = "nothing";
+        var go = this.scene.enemyCont.list[_i];
 
-        switch (this.scene.enemyCont.list[_i].name) {
+        switch (go.name) {
           case "nerd1down":
-            this.scene.enemyCont.list[_i].play("nerd1down", true);
-
-            this.scene.enemyCont.list[_i].setVelocityY(90);
-
+            go.play("nerd1down", true);
+            go.setVelocityY(90);
             break;
 
           case "nerd1up":
-            this.scene.enemyCont.list[_i].play("nerd1up", true);
-
-            this.scene.enemyCont.list[_i].setVelocityY(-90);
-
+            go.play("nerd1up", true);
+            go.setVelocityY(-90);
             break;
 
           case "nerd1left":
-            this.scene.enemyCont.list[_i].play("nerd1left", true);
-
-            this.scene.enemyCont.list[_i].setVelocityX(-90);
-
+            go.play("nerd1left", true);
+            go.setVelocityX(-90);
             break;
 
           case "nerd1right":
-            this.scene.enemyCont.list[_i].play("nerd1right", true);
-
-            this.scene.enemyCont.list[_i].setVelocityX(90);
-
+            go.play("nerd1right", true);
+            go.setVelocityX(90);
             break;
 
           case "nerd2down":
-            this.scene.enemyCont.list[_i].play("nerd2down", true);
-
-            this.scene.enemyCont.list[_i].setVelocityY(90);
-
+            go.play("nerd2down", true);
+            go.setVelocityY(90);
             break;
 
           case "nerd2up":
-            this.scene.enemyCont.list[_i].play("nerd2up", true);
-
-            this.scene.enemyCont.list[_i].setVelocityY(-90);
-
+            go.play("nerd2up", true);
+            go.setVelocityY(-90);
             break;
 
           case "nerd2left":
-            this.scene.enemyCont.list[_i].play("nerd2left", true);
-
-            this.scene.enemyCont.list[_i].setVelocityX(-90);
-
+            go.play("nerd2left", true);
+            go.setVelocityX(-90);
             break;
 
           case "nerd2right":
-            this.scene.enemyCont.list[_i].play("nerd2right", true);
-
-            this.scene.enemyCont.list[_i].setVelocityX(90);
-
+            go.play("nerd2right", true);
+            go.setVelocityX(90);
             break;
 
           case "jason":
-          case "nerdgirl":
             //Now check if they've been pushed from their origin
-            if (this.scene.enemyCont.list[_i].startY - 50 > this.scene.enemyCont.list[_i].y) {
-              //npc below
-              this.scene.enemyCont.list[_i].setVelocityY(128);
+            this.watchPlayer(go, 4, 40, 28, 16); //check if jason can project another json
 
-              _anim = "down";
-            } else if (this.scene.enemyCont.list[_i].startY + 50 < this.scene.enemyCont.list[_i].y) {
-              //npc above
-              this.scene.enemyCont.list[_i].setVelocityY(-128);
+            if (go.jsons > 0) {
+              go.jsons--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
 
-              _anim = "up";
-            } else {
-              this.scene.enemyCont.list[_i].setVelocityY(0);
-            }
+              var json = new _EnemySprite.EnemySprite(this.scene, go.x, go.y, _CST.CST.SPRITE.BALL, 0, 1).setDepth(5);
+              this.scene.physics.add.collider(this.scene.player, json, json.jsonHitPlayer, null, this.scene);
+              this.scene.physics.add.collider(this.scene.topLayer, json, json.jsonHitWall, null, this.scene); //pace the shots randomly
 
-            if (this.scene.enemyCont.list[_i].startX - 50 > this.scene.enemyCont.list[_i].x) {
-              //npc in front
-              this.scene.enemyCont.list[_i].setVelocityX(128);
+              var randTime = this.randomNum(1000, 2000);
+              this.scene.time.delayedCall(randTime, json.jsonTimeOut, [json, go], this.scene);
+              json.setOffset(8, 6); //get the difference of the player and jason coordinates
 
-              _anim = "right";
-            } else if (this.scene.enemyCont.list[_i].startX + 50 < this.scene.enemyCont.list[_i].x) {
-              //npc behind
-              this.scene.enemyCont.list[_i].setVelocityX(-128);
+              var x = this.scene.player.x - go.x;
+              var y = this.scene.player.y - go.y; //get random speeds
 
-              _anim = "left";
-            } else {
-              this.scene.enemyCont.list[_i].setVelocityX(0);
-            }
+              var randX = this.randomNum(64, 512);
+              var randY = this.randomNum(64, 512); //Aim for the player general area using their coordinates as reference for scatter shot
 
-            if (_anim != "nothing") {
-              this.scene.enemyCont.list[_i].play(this.scene.enemyCont.list[_i].name + _anim, true);
-            } else {
-              //have npc look at player general direction unless behind
-              if (this.scene.player.y > this.scene.enemyCont.list[_i].y + 50) {
-                //face down
-                if (this.scene.enemyCont.list[_i].name == "jason") {
-                  this.scene.enemyCont.list[_i].setFrame(4); //jason
-
-                } else {
-                  this.scene.enemyCont.list[_i].setFrame(2); //nerdgirl
-
-                }
-              } else if (this.scene.player.y < this.scene.enemyCont.list[_i].y - 50) {
-                //face up
-                if (this.scene.enemyCont.list[_i].name == "jason") {
-                  this.scene.enemyCont.list[_i].setFrame(40); //jason
-
-                } else {
-                  this.scene.enemyCont.list[_i].setFrame(12); //nerdgirl
-
-                }
-              } else if (this.scene.player.x > this.scene.enemyCont.list[_i].x) {
-                //face right to player
-                if (this.scene.enemyCont.list[_i].name == "jason") {
-                  this.scene.enemyCont.list[_i].setFrame(28); //jason
-
-                } else {
-                  this.scene.enemyCont.list[_i].setFrame(8); //nerdgirl
-
-                }
-              } else if (this.scene.player.x < this.scene.enemyCont.list[_i].x) {
-                //face left to player
-                if (this.scene.enemyCont.list[_i].name == "jason") {
-                  this.scene.enemyCont.list[_i].setFrame(16); //jason
-
-                } else {
-                  this.scene.enemyCont.list[_i].setFrame(4); //nerdgirl
-
-                }
+              if (x > 0 && y > 0) {
+                //to the right & below
+                json.setVelocityX(randX);
+                json.setVelocityY(randY);
+              } else if (x < 0 && y > 0) {
+                //to left and below
+                json.setVelocityX(-randX);
+                json.setVelocityY(randY);
+              } else if (x < 0 && y < 0) {
+                //to left and above
+                json.setVelocityX(-randX);
+                json.setVelocityY(-randY);
+              } else {
+                //to right and above
+                json.setVelocityX(randX);
+                json.setVelocityY(-randY);
               }
             }
 
             break;
+
+          case "nerdgirl":
+            //Now check if they've been pushed from their origin
+            this.watchPlayer(go, 2, 12, 8, 4);
+            break;
+        }
+      }
+    }
+  }, {
+    key: "randomNum",
+    value: function randomNum(min, max) {
+      // min and max included 
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+  }, {
+    key: "followPlayer",
+    value: function followPlayer(go) {
+      var anim = 'nothing'; //Have her follow the player around                                      
+
+      if (this.scene.player.y - 100 > go.y) {
+        //player below
+        go.setVelocityY(256);
+        anim = "down";
+      } else if (this.scene.player.y + 100 < go.y) {
+        //player above
+        go.setVelocityY(-256);
+        anim = "up";
+      } else {
+        go.setVelocityY(0);
+      }
+
+      if (this.scene.player.x - 100 > go.x) {
+        //player in front
+        go.setVelocityX(256);
+        anim = "right";
+      } else if (this.scene.player.x + 100 < go.x) {
+        //player behind
+        go.setVelocityX(-256);
+        anim = "left";
+      } else {
+        go.setVelocityX(0);
+      }
+
+      if (anim != "nothing") {
+        go.play(go.name + anim, true);
+      }
+    }
+  }, {
+    key: "watchPlayer",
+    value: function watchPlayer(go, down, up, right, left) {
+      var anim = "nothing";
+
+      if (go.startY - 50 > go.y) {
+        //npc below
+        go.setVelocityY(128);
+        anim = "down";
+      } else if (go.startY + 50 < go.y) {
+        //npc above
+        go.setVelocityY(-128);
+        anim = "up";
+      } else {
+        go.setVelocityY(0);
+      }
+
+      if (go.startX - 50 > go.x) {
+        //npc in front
+        go.setVelocityX(128);
+        anim = "right";
+      } else if (go.startX + 50 < go.x) {
+        //npc behind
+        go.setVelocityX(-128);
+        anim = "left";
+      } else {
+        go.setVelocityX(0);
+      }
+
+      if (anim != "nothing") {
+        go.play(go.name + anim, true);
+      } else {
+        //have npc look at player general direction unless behind
+        if (this.scene.player.y > go.y + 50) {
+          //face down
+          go.setFrame(down);
+        } else if (this.scene.player.y < go.y - 50) {
+          //face up
+          go.setFrame(up);
+        } else if (this.scene.player.x > go.x) {
+          //face right to player
+          go.setFrame(right);
+        } else if (this.scene.player.x < go.x) {
+          //face left to player
+          go.setFrame(left);
         }
       }
     }
@@ -1009,19 +1011,17 @@ function () {
     key: "setPlayer",
     value: function setPlayer() {
       //add game sprites              
-      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 700, 4000, _CST.CST.SPRITE.PLAYER, 130); //align the player hitbox and set its size
+      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 700, 4100, _CST.CST.SPRITE.PLAYER, 130).setDepth(1); //align the player hitbox and set its size
 
       this.scene.player.setSize(32, 48);
       this.scene.player.setOffset(16, 12); //the whip sprite takes any
 
-      this.scene.whip = new _CharacterSprite.CharacterSprite(this.scene, 700, 4000, _CST.CST.SPRITE.WHIP, 0);
+      this.scene.whip = new _CharacterSprite.CharacterSprite(this.scene, 0, 0, _CST.CST.SPRITE.WHIP, 0).setDepth(1);
       this.scene.whip.setVisible(false);
-      this.scene.whip.setScale(3);
-      this.scene.playerCont = this.scene.add.container(0, 0, [this.scene.player, this.scene.whip]).setDepth(1); //initialize player and whip to face down at start
+      this.scene.whip.setScale(3); //initialize player and whip to face down at start
 
       this.scene.player.isFacing = "down";
       this.scene.player.setPosition(this.scene.player.x, this.scene.player.y);
-      this.scene.whip.setPosition(this.scene.player.x, this.scene.player.y + 70);
     }
   }, {
     key: "setCMDS",
@@ -1081,43 +1081,42 @@ function () {
         _this.scene.player.setVelocityX(0); //Create a one time listener to make player movable again after animation finishes
 
 
-        _this.scene.playerCont.list[1].once("animationcomplete", _this.toggleAttack); //if(!this.scene.player.state){
-
+        _this.scene.whip.once("animationcomplete", _this.toggleAttack);
 
         switch (_this.scene.player.isFacing) {
           case "left":
             _this.scene.whip.setPosition(_this.scene.player.x - 70, _this.scene.player.y + 20);
 
-            _this.scene.playerCont.list[0].play("attackleft", true);
+            _this.scene.player.play("attackleft", true);
 
-            _this.scene.playerCont.list[1].play("whip_left", true);
+            _this.scene.whip.play("whip_left", true);
 
             break;
 
           case "right":
             _this.scene.whip.setPosition(_this.scene.player.x + 70, _this.scene.player.y);
 
-            _this.scene.playerCont.list[0].play("attackright");
+            _this.scene.player.play("attackright");
 
-            _this.scene.playerCont.list[1].play("whip_right");
+            _this.scene.whip.play("whip_right");
 
             break;
 
           case "up":
             _this.scene.whip.setPosition(_this.scene.player.x, _this.scene.player.y - 70);
 
-            _this.scene.playerCont.list[0].play("attackup");
+            _this.scene.player.play("attackup");
 
-            _this.scene.playerCont.list[1].play("whip_up");
+            _this.scene.whip.play("whip_up");
 
             break;
 
           case "down":
             _this.scene.whip.setPosition(_this.scene.player.x, _this.scene.player.y + 70);
 
-            _this.scene.playerCont.list[0].play("attackdown");
+            _this.scene.player.play("attackdown");
 
-            _this.scene.playerCont.list[1].play("whip_down");
+            _this.scene.whip.play("whip_down");
 
             break;
         }
@@ -1139,28 +1138,28 @@ function () {
 
           switch (_this.scene.player.isFacing) {
             case "left":
-              _this.scene.playerCont.list[0].play("attackleft");
+              _this.scene.player.play("attackleft");
 
               ball.setVelocityX(-512);
               ball.x -= 25;
               break;
 
             case "right":
-              _this.scene.playerCont.list[0].play("attackright");
+              _this.scene.player.play("attackright");
 
               ball.setVelocityX(512);
               ball.x += 25;
               break;
 
             case "up":
-              _this.scene.playerCont.list[0].play("attackup");
+              _this.scene.player.play("attackup");
 
               ball.setVelocityY(-512);
               ball.y -= 25;
               break;
 
             case "down":
-              _this.scene.playerCont.list[0].play("attackdown");
+              _this.scene.player.play("attackdown");
 
               ball.setVelocityY(512);
               ball.y += 25;
@@ -1212,8 +1211,8 @@ function () {
 
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
       this.scene.npcCont = this.scene.add.container();
-      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //this.createNPCS(591, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-
+      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+      this.createNPCS(593, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
       this.createNPCS(4704, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
       this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
       this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
@@ -1268,6 +1267,7 @@ function () {
         sprite = new _Sprite.Sprite(_this3.scene, sprite.x, sprite.y, cst2, down, up, left, right, name);
         sprite.body.setSize(sprite.displayWidth / 2, sprite.displayHeight / 2);
         sprite.setScale(1.5);
+        sprite.body.setOffset(sprite.displayWidth / 6, 0);
 
         _this3.scene.npcSet.add(sprite);
 
@@ -1534,7 +1534,7 @@ function (_Phaser$Scene) {
     key: "update",
     value: function update() {
       //Play enemy animations and move them as needed
-      this.lm.updateEnemies(); //Make sure the player isnt attacking before moving him
+      this.lm.updateSprites(); //Make sure the player isnt attacking before moving him
 
       if (!this.player.state) {
         //Set player movement on keypress
@@ -1651,9 +1651,9 @@ function (_Phaser$Scene) {
       var _this = this;
 
       //add in assets
-      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1);
-      var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
-      title.setY(title.height / 2);
+      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1); //let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
+      //title.setY(title.height/2);
+
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
       hoverSprite.setVisible(false); //create sounds for menu and pause!
@@ -1899,35 +1899,35 @@ function (_Phaser$Scene) {
           break;
 
         case "Claire1":
-          this.chats = ["Hey, I'm Claire! What are you doing here?"];
+          this.chats = ["C:/Users/Claire/To_Player/Hey, I'm Claire! What are\n you doing here?"];
           break;
 
         case "Claire2":
-          this.chats = ["Oh hey again, I can't talk. I gotta go see Brad."];
+          this.chats = ["C:/Users/Claire/To_Player/Oh hey again, I can't\ntalk. I gotta go see Brad."];
           break;
 
         case "Kyle":
-          this.chats = ["How are you doing? I'm so pumped for school!"];
+          this.chats = ["C:/Users/Kyle/To_Player/How are you doing? I'm so \npumped for school!"];
           break;
 
-        case "Chad":
-          this.chats = ["Hey bro! Wanna come to my party later?"];
+        case "chad":
+          this.chats = ["C:/Users/Chad/To_Player/Hey bro! Wanna come to my\nparty later?"];
           break;
 
         case "Brad":
-          this.chats = ["Yo dude. Can you pick up some booze?"];
+          this.chats = ["C:/Users/Brad/To_Player/Yo dude. Can you pick up\nsome booze?"];
           break;
 
         case "Vlad":
-          this.chats = ["Whoa! Are you actually looking at me!?"];
+          this.chats = ["C:/Users/Vlad/To_Player/Whoa! Are you actually\nlooking at me!?"];
           break;
 
         case "Stevie":
-          this.chats = ["Look, I maybe short but I'm no Starbucks item!"];
+          this.chats = ["C:/Users/Stevie/To_Player/Look, I maybe short but\nI'm no Starbucks item!"];
           break;
 
         case "Prof":
-          this.chats = ["Hey I lost some... oh nevermind..."];
+          this.chats = ["C:/Users/Prof/To_Player/Hey I lost some... \noh nevermind..."];
           break;
       } //Print first segment of speech
 

@@ -46,7 +46,7 @@ export class FirstLevel extends Phaser.Scene{
 
     update(){
         //Play enemy animations and move them as needed
-        this.lm.updateEnemies();      
+        this.lm.updateSprites();      
         //Make sure the player isnt attacking before moving him
         if(!this.player.state){
             //Set player movement on keypress
