@@ -111,7 +111,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Claire/You look like you know\n your way around here, what's your name?", 
 					"C:/Users/Claire/To_Player/The name's Claire and I\nsure do! What are you doing here?",
 					"C:/Users/Player/To_Claire/Introducing myself, I\nalways liked it when a friend cooks.",
-					"C:/Users/Claire/To_Player/Well I guess we'll get\nalong great then! Oh by the way, I have exam answers from\nlast year on this sheet. You can have it. It'll improve\nyour knowledge. *WINKS*",];
+					"C:/Users/Claire/To_Player/Well I guess we'll get\nalong great then! Oh by the way, I have exam answers\nfrom last year on this sheet. You can have it. It'll\nimprove your knowledge. *WINKS*",];
 					npc.state++;
 				break;
 				case 1:
@@ -215,19 +215,163 @@ export class TalkScene extends Phaser.Scene{
 			}
             break;
             case "chad":
-				this.chats = ["C:/Users/Chad/To_Player/Hey bro! Wanna come to my\nparty later?"];
+			switch(npc.state){
+				case 0:
+				this.chats = [
+					"C:/Users/Player/To_Chad/Hey, I hear you're throwing\na party..", 
+					"C:/Users/Chad/To_Player/Duh, I'm Chad! I throw\nthe sickest parties man! So sick, everyone's invited!",
+					"C:/Users/Player/To_Chad/Awesome man I can't wait\nto go!", 
+					"C:/Users/Player/To_Nicole/Are you gonna go?",
+					"C:/Users/Nicole/To_Player/Sorry but I'm gonna be\nstuck late here during my summer courses.", 
+					"C:/Users/Chad/To_Nicole/You're gonna miss out! My\nparties are the best in the country. Drive to my place\nand crash with me if you want, no pressure.",
+					"C:/Users/Nicole/To_Chad/Thanks for the offer but I\nprobably won't even be finished class by the time the\nparties over.", 
+					"C:/Users/Chad/To_Nicole/Well the offers there if you\nchange your mind.",
+					"C:/Users/Chad/To_Player/Hey, before you go I got\nsome exam sheets you can have.",
+					"C:/Users/Player/To_Chad/Thanks, you're the best!."];
+				npc.state++;
+				break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Chad/Got a spare bed I could\ncrash on for the party?", 
+					"C:/Users/Chad/To_Player/Sure do!",
+					"C:/Users/Player/To_Chad/Thanks Chad!"];
+					npc.state++;
+				break;
+				case 2:
+					this.chats = [
+					"C:/Users/Player/To_Chad/Who's going to the party?", 
+					"C:/Users/Chad/To_Player/Chicks, dudes, everyone!"];
+					npc.state++;
+					break;						
+				case 3:
+					this.chats = [ 
+					"C:/Users/Chad/To_Player/Not now bro. I'm busy\nsetting up."];
+					break;
+			}
             break;
             case "Brad":
-				this.chats = ["C:/Users/Brad/To_Player/Yo dude. Can you pick up\nsome booze?"];
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_Brad/Hey are you going to\nChads party?", 
+					"C:/Users/Brad/To_Player/Of course! Everyones\ngoing to that!",
+					"C:/Users/Player/To_Brad/Cool man, I'll see you\nthere then.", 
+					"C:/Users/Brad/To_Player/Oh could you get some\nbooze?",
+					"C:/Users/Player/To_Brad/I would but I'm broke.", 
+					"C:/Users/Brad/To_Player/Here take this cash then."];
+					npc.state++;
+					break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Brad/", 
+					"C:/Users/Brad/To_Player/"];
+					npc.state++;
+					break;
+				case 2:
+					this.chats = [
+					"C:/Users/Player/To_Brad/", 
+					"C:/Users/Brad/To_Player/"];
+					npc.state++;
+					break;						
+				case 3:
+					this.chats = [
+					"C:/Users/Player/To_Brad/", 
+					"C:/Users/Brad/To_Player/"];
+					break;
+			}
             break;
             case "Vlad":
-				this.chats = ["C:/Users/Vlad/To_Player/Whoa! Are you actually\nlooking at me!?"];
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_Vlad/", 
+					"C:/Users/Vlad/To_Player/"];
+					npc.state++;
+					break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Vlad/", 
+					"C:/Users/Vlad/To_Player/"];
+					npc.state++;
+					break;
+				case 2:
+					this.chats = [
+					"C:/Users/Player/To_Vlad/", 
+					"C:/Users/Vlad/To_Player/"];
+					npc.state++;
+					break;						
+				case 3:
+					this.chats = [
+					"C:/Users/Player/To_Vlad/", 
+					"C:/Users/Vlad/To_Player/"];
+					npc.state++;
+					break;
+			}
             break
             case "Stevie":
-				this.chats = ["C:/Users/Stevie/To_Player/Look, I maybe short but\nI'm no Starbucks item!"];
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_Stevie/Hey there, Mrs Short.", 
+					"C:/Users/Stevie/To_Player/Hey I may be energetic\nbut I ain't no StarBucks coffee!",
+					"C:/Users/Nicole/To_Stevie/You're looking great\nStevie! How are you doing?", 
+					"C:/Users/Stevie/To_Player/She this nice to you?",
+					"C:/Users/Player/To_Stevie/Nah I think she's hitting\non you...", 
+					"C:/Users/Nicole/To_Stevie/You two... always\nscrewing around.",
+					"C:/Users/Player/To_Nicole/Don't worry, I'll let you\nhit on me later. Now though, Stevie needs to hit\non Kyle.", 
+					"C:/Users/Stevie/To_Player/Who's Kyle?",
+					"C:/Users/Player/To_Stevie/This guy we met that you\nshould hit on. He said he'll hit on you though, so\nfeel free to just wait.", 
+					"C:/Users/Stevie/To_Player/Yeah, I'll just nap. Well\nthis energy drinks no use then. Here take it.",
+					"C:/Users/Nicole/To_Stevie/Aw you're both so similar,\n enjoy the nap."];
+					npc.state++;
+					break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Stevie/I thought you were gonna\nnap?", 
+					"C:/Users/Stevie/To_Player/Yeah I'm trying this type\nof nap where you're standing.",
+					"C:/Users/Nicole/To_Stevie/Sounds pretty hard.", 
+					"C:/Users/Stevie/To_Player/It is when people are\ntalking to you."];
+					npc.state++;
+					break;
+				case 2:
+					this.chats = [ 
+					"C:/Users/Stevie/To_Player/ZZZZzzzZZZzzz"];
+					npc.state++;
+					break;						
+				case 3:
+					this.chats = [
+					"C:/Users/Player/To_Stevie/Wake up!", 
+					"C:/Users/Stevie/To_Player/Huh? why? Is that kyle\nguy here yet?",
+					"C:/Users/Player/To_Stevie/Nah just bugging ya.", 
+					"C:/Users/Stevie/To_Player/Oh...ZZZzzzZZZzzz"];
+					npc.state=2;
+					break;
+			}
 			break;
 			case "Prof":
-				this.chats = ["C:/Users/Prof/To_Player/Hey I lost some... \noh nevermind..."];
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_Prof/Hey why do I need to take\nmusic?", 
+					"C:/Users/Prof/To_Player/Don't ask questions!",
+					"C:/Users/Player/To_Prof/Wait what?", 
+					"C:/Users/Prof/To_Player/Look I'll give you the exam\nanswers, just go away!",
+					"C:/Users/Player/To_Nicole/Is she for real?", 
+					"C:/Users/Nicole/To_Player/Shutup don't blow this!"];
+					npc.state++;
+					break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Prof/Look we never met and I\ndon't know you, now scram!", 
+					"C:/Users/Prof/To_Player/Sheesh, fine."];
+					npc.state++;
+					break;
+				case 2:
+					this.chats = [
+					"C:/Users/Player/To_Prof/Hey.",
+					"C:/Users/Prof/To_Player/Who are you?"];
+					break;						
+			}
 			break;
 		}
 		//Print first segment of speech
