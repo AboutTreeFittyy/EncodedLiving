@@ -48,7 +48,7 @@ export class TalkScene extends Phaser.Scene{
 	}
 
 	dropItem(frame, x, y, name){
-		let sprite = new Sprite(this.player.scene, this.player.x + x, this.player.y + y, CST.SPRITE.ITEM, frame, 0, 0, 0, name);
+		let sprite = new Sprite(this.player.scene, this.player.x + x, this.player.y + y, CST.SPRITE.ITEM, 0, 0, frame, 0, name);
 		this.player.scene.lm.itemSet.add(sprite);
 		sprite.setSize(32,32);
 		sprite.body.setOffset(0,0);
@@ -83,7 +83,87 @@ export class TalkScene extends Phaser.Scene{
 	selectDialogue(player, npc){
 		//Append new text to chats array based on npc name for acceptInputs function to print
         switch(npc.name){
-            case "Nicole":
+			case "skinny":
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_Skinny_Sister/Let me in.", 
+					"C:/Users/Skinny_Sister/To_Player/No way.\nChads all mine."];
+					npc.state++;
+				break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Skinny_Sister/I'm not gonna\ntake him from you.", 
+					"C:/Users/Skinny_Sister/To_Player/That's what\neveryone says."];
+					npc.state++;
+				break;
+				case 2:
+					this.chats = [ 
+					"C:/Users/Skinny_Sister/To_Player/Stop trying\nnobodies getting in here."];
+				break;
+			}
+			break;
+			case "medium":
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_Medium_Sister/Let me in.", 
+					"C:/Users/Skinny_Sister/To_Player/No way.\nWe gotta go on a date before I'll let you through!"];
+					npc.state++;
+				break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Medium_Sister/I'm not gonna\ndate you, you're erm... not my type.", 
+					"C:/Users/Medium_Sister/To_Player/That's what\neveryone says."];
+					npc.state++;
+				break;
+				case 2:
+					this.chats = [ 
+					"C:/Users/Medium_Sister/To_Player/Just date me\nor you're not getting in here."];
+				break;
+			}
+			break;
+			case "large":
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_Large_Sister/Let me in.", 
+					"C:/Users/Skinny_Sister/To_Player/No way.\nThis room is awful."];
+					npc.state++;
+				break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_Large_Sister/I'm don't care\njust let me in.", 
+					"C:/Users/Large_Sister/To_Player/That's what\neveryone says."];
+					npc.state++;
+				break;
+				case 2:
+					this.chats = [ 
+					"C:/Users/Large_Sister/To_Player/Stop trying\nI won't let you see this."];
+				break;
+			}
+			break;
+			case "extralarge":
+			switch(npc.state){
+				case 0:
+					this.chats = [
+					"C:/Users/Player/To_ExtraLarge_Sister/Let me in.", 
+					"C:/Users/ExtraLarge_Sister/To_Player/No way.\nThe food is all mine."];
+					npc.state++;
+				break;
+				case 1:
+					this.chats = [
+					"C:/Users/Player/To_ExtraLarge_Sister/I'm not gonna\ntake it from you.", 
+					"C:/Users/ExtraLarge_Sister/To_Player/That's what\neveryone says."];
+					npc.state++;
+				break;
+				case 2:
+					this.chats = [ 
+					"C:/Users/ExtraLarge_Sister/To_Player/Stop trying\nnobodies eating this food except me."];
+				break;
+			}
+			break;
+			case "Nicole":
 			switch(npc.state){
 				case 0:
 					this.chats = [

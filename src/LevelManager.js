@@ -20,6 +20,15 @@ export class LevelManager{
         this.setInputs();
     }
 
+    //returns the npc from the container of the given name
+    getNPC(name){
+        for(let i = 0; i < this.scene.npcCont.count('visible', true); i++){
+            if(this.scene.npcCont.list[i].name){
+                return this.scene.npcCont.list[i];
+            }
+        }
+    }
+
     updateSprites(){
         //Scan through all the NPCs to update them
         for(let i = 0; i < this.scene.npcCont.count('visible', true); i++){
@@ -205,7 +214,7 @@ export class LevelManager{
 
     setPlayer(){
         //add game sprites              
-        this.scene.player = new CharacterSprite(this.scene, 700, 4100, CST.SPRITE.PLAYER, 130).setDepth(1);
+        this.scene.player = new CharacterSprite(this.scene, 700, 4100, CST.SPRITE.PLAYER, 143).setDepth(1);
         //align the player hitbox and set its size
         this.scene.player.setSize(32,48);
         this.scene.player.setOffset(16,12);

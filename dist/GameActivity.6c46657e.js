@@ -471,7 +471,7 @@ function (_Phaser$Physics$Arcad) {
 
     _classCallCheck(this, Sprite);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Sprite).call(this, scene, x, y, texture, down));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Sprite).call(this, scene, x, y, texture, left));
     scene.sys.updateList.add(_assertThisInitialized(_this));
     scene.sys.displayList.add(_assertThisInitialized(_this));
     scene.physics.world.enableBody(_assertThisInitialized(_this));
@@ -491,11 +491,11 @@ function (_Phaser$Physics$Arcad) {
     value: function npcSpeak(player, npc) {
       //If the r button is pressed then begin chat scene
       if (player.scene.keyboard.E.isDown) {
-        this.scene.scene.launch(_CST.CST.SCENES.TALK, {
+        player.scene.scene.launch(_CST.CST.SCENES.TALK, {
           player: player,
           npc: npc
         });
-        this.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
+        player.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
 
         player.scene.keyboard.E.reset();
         player.scene.keyboard.W.reset();
@@ -848,9 +848,80 @@ function (_Phaser$Physics$Arcad) {
       }
     }
   }, {
-    key: "blocked",
-    value: function blocked() {
-      console.log("blocked");
+    key: "claireBlocked",
+    value: function claireBlocked(player, fat) {
+      //If the r button is pressed then begin chat scene
+      if (player.scene.keyboard.E.isDown) {
+        var npc = player.scene.extralarge;
+        player.scene.scene.launch(_CST.CST.SCENES.TALK, {
+          player: player,
+          npc: npc
+        });
+        player.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
+
+        player.scene.keyboard.E.reset();
+        player.scene.keyboard.W.reset();
+        player.scene.keyboard.A.reset();
+        player.scene.keyboard.S.reset();
+        player.scene.keyboard.D.reset();
+      }
+    }
+  }, {
+    key: "chadBlocked",
+    value: function chadBlocked(player, fat) {
+      //If the r button is pressed then begin chat scene
+      if (player.scene.keyboard.E.isDown) {
+        var npc = player.scene.skinny;
+        player.scene.scene.launch(_CST.CST.SCENES.TALK, {
+          player: player,
+          npc: npc
+        });
+        player.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
+
+        player.scene.keyboard.E.reset();
+        player.scene.keyboard.W.reset();
+        player.scene.keyboard.A.reset();
+        player.scene.keyboard.S.reset();
+        player.scene.keyboard.D.reset();
+      }
+    }
+  }, {
+    key: "vladBlocked",
+    value: function vladBlocked(player, fat) {
+      //If the r button is pressed then begin chat scene
+      if (player.scene.keyboard.E.isDown) {
+        var npc = player.scene.large;
+        player.scene.scene.launch(_CST.CST.SCENES.TALK, {
+          player: player,
+          npc: npc
+        });
+        player.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
+
+        player.scene.keyboard.E.reset();
+        player.scene.keyboard.W.reset();
+        player.scene.keyboard.A.reset();
+        player.scene.keyboard.S.reset();
+        player.scene.keyboard.D.reset();
+      }
+    }
+  }, {
+    key: "examBlocked",
+    value: function examBlocked(player, fat) {
+      //If the r button is pressed then begin chat scene
+      if (player.scene.keyboard.E.isDown) {
+        var npc = player.scene.medium;
+        player.scene.scene.launch(_CST.CST.SCENES.TALK, {
+          player: player,
+          npc: npc
+        });
+        player.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
+
+        player.scene.keyboard.E.reset();
+        player.scene.keyboard.W.reset();
+        player.scene.keyboard.A.reset();
+        player.scene.keyboard.S.reset();
+        player.scene.keyboard.D.reset();
+      }
     }
   }, {
     key: "decrementWill",
@@ -905,9 +976,19 @@ function () {
     this.setCMDS();
     this.setCameras();
     this.setInputs();
-  }
+  } //returns the npc from the container of the given name
+
 
   _createClass(LevelManager, [{
+    key: "getNPC",
+    value: function getNPC(name) {
+      for (var i = 0; i < this.scene.npcCont.count('visible', true); i++) {
+        if (this.scene.npcCont.list[i].name) {
+          return this.scene.npcCont.list[i];
+        }
+      }
+    }
+  }, {
     key: "updateSprites",
     value: function updateSprites() {
       //Scan through all the NPCs to update them
@@ -1116,7 +1197,7 @@ function () {
     key: "setPlayer",
     value: function setPlayer() {
       //add game sprites              
-      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 700, 4100, _CST.CST.SPRITE.PLAYER, 130).setDepth(1); //align the player hitbox and set its size
+      this.scene.player = new _CharacterSprite.CharacterSprite(this.scene, 700, 4100, _CST.CST.SPRITE.PLAYER, 143).setDepth(1); //align the player hitbox and set its size
 
       this.scene.player.setSize(32, 48);
       this.scene.player.setOffset(16, 12); //the whip sprite takes any
@@ -1588,6 +1669,8 @@ var _LevelManager = require("../LevelManager");
 
 var _AnimationManager = require("../AnimationManager");
 
+var _Sprite = require("../Sprite");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1639,26 +1722,50 @@ function (_Phaser$Scene) {
       mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
       this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
       this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
-      this.firstStage = mappy.createStaticLayer("firstStage", fat, 0, 0).setDepth(1); //Create the level using this scene and the map made above
+      this.claireRoom = mappy.createStaticLayer("claireRoom", fat, 0, 0).setDepth(1);
+      this.chadRoom = mappy.createStaticLayer("chadRoom", fat, 0, 0).setDepth(1);
+      this.vladRoom = mappy.createStaticLayer("vladRoom", fat, 0, 0).setDepth(1);
+      this.examRoom = mappy.createStaticLayer("examRoom", fat, 0, 0).setDepth(1); //Create the level using this scene and the map made above
 
       this.lm = new _LevelManager.LevelManager(this, mappy); //map collisions
 
       this.physics.add.collider(this.player, this.topLayer);
       this.physics.add.collider(this.player, this.furnishing); //add whip colliders for enemies
 
-      this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this); //add collider for chick blocks
+      this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this); //add colliders for chick blocks        
 
-      this.firstStage.setCollisionByProperty({
+      this.claireRoom.setCollisionByProperty({
         collides: true
       });
-      this.physics.add.collider(this.player, this.firstStage, this.player.blocked, null, this); //add colliders for terrain
+      this.chadRoom.setCollisionByProperty({
+        collides: true
+      });
+      this.vladRoom.setCollisionByProperty({
+        collides: true
+      });
+      this.examRoom.setCollisionByProperty({
+        collides: true
+      });
+      this.physics.add.collider(this.player, this.claireRoom, this.player.claireBlocked, null, this);
+      this.physics.add.collider(this.player, this.chadRoom, this.player.chadBlocked, null, this);
+      this.physics.add.collider(this.player, this.vladRoom, this.player.vladBlocked, null, this);
+      this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this); //create chick blocks sprites for talking
+
+      this.skinny = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "skinny");
+      this.medium = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "medium");
+      this.large = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "large");
+      this.extralarge = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "extralarge"); //add colliders for terrain
 
       this.topLayer.setCollisionByProperty({
         collides: true
       });
       this.furnishing.setCollisionByProperty({
         collides: true
-      });
+      }); //start talk with nicole
+
+      var nicole = this.lm.getNPC("Nicole");
+      this.player.scene.keyboard.E.isDown = true;
+      nicole.npcSpeak(this.player, nicole);
     }
   }, {
     key: "update",
@@ -1735,7 +1842,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.FirstLevel = FirstLevel;
-},{"../CST":"src/CST.js","../LevelManager":"src/LevelManager.js","../AnimationManager":"src/AnimationManager.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../LevelManager":"src/LevelManager.js","../AnimationManager":"src/AnimationManager.js","../Sprite":"src/Sprite.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2008,7 +2115,7 @@ function (_Phaser$Scene) {
   }, {
     key: "dropItem",
     value: function dropItem(frame, x, y, name) {
-      var sprite = new _Sprite.Sprite(this.player.scene, this.player.x + x, this.player.y + y, _CST.CST.SPRITE.ITEM, frame, 0, 0, 0, name);
+      var sprite = new _Sprite.Sprite(this.player.scene, this.player.x + x, this.player.y + y, _CST.CST.SPRITE.ITEM, 0, 0, frame, 0, name);
       this.player.scene.lm.itemSet.add(sprite);
       sprite.setSize(32, 32);
       sprite.body.setOffset(0, 0);
@@ -2047,6 +2154,82 @@ function (_Phaser$Scene) {
     value: function selectDialogue(player, npc) {
       //Append new text to chats array based on npc name for acceptInputs function to print
       switch (npc.name) {
+        case "skinny":
+          switch (npc.state) {
+            case 0:
+              this.chats = ["C:/Users/Player/To_Skinny_Sister/Let me in.", "C:/Users/Skinny_Sister/To_Player/No way.\nChads all mine."];
+              npc.state++;
+              break;
+
+            case 1:
+              this.chats = ["C:/Users/Player/To_Skinny_Sister/I'm not gonna\ntake him from you.", "C:/Users/Skinny_Sister/To_Player/That's what\neveryone says."];
+              npc.state++;
+              break;
+
+            case 2:
+              this.chats = ["C:/Users/Skinny_Sister/To_Player/Stop trying\nnobodies getting in here."];
+              break;
+          }
+
+          break;
+
+        case "medium":
+          switch (npc.state) {
+            case 0:
+              this.chats = ["C:/Users/Player/To_Medium_Sister/Let me in.", "C:/Users/Skinny_Sister/To_Player/No way.\nWe gotta go on a date before I'll let you through!"];
+              npc.state++;
+              break;
+
+            case 1:
+              this.chats = ["C:/Users/Player/To_Medium_Sister/I'm not gonna\ndate you, you're erm... not my type.", "C:/Users/Medium_Sister/To_Player/That's what\neveryone says."];
+              npc.state++;
+              break;
+
+            case 2:
+              this.chats = ["C:/Users/Medium_Sister/To_Player/Just date me\nor you're not getting in here."];
+              break;
+          }
+
+          break;
+
+        case "large":
+          switch (npc.state) {
+            case 0:
+              this.chats = ["C:/Users/Player/To_Large_Sister/Let me in.", "C:/Users/Skinny_Sister/To_Player/No way.\nThis room is awful."];
+              npc.state++;
+              break;
+
+            case 1:
+              this.chats = ["C:/Users/Player/To_Large_Sister/I'm don't care\njust let me in.", "C:/Users/Large_Sister/To_Player/That's what\neveryone says."];
+              npc.state++;
+              break;
+
+            case 2:
+              this.chats = ["C:/Users/Large_Sister/To_Player/Stop trying\nI won't let you see this."];
+              break;
+          }
+
+          break;
+
+        case "extralarge":
+          switch (npc.state) {
+            case 0:
+              this.chats = ["C:/Users/Player/To_ExtraLarge_Sister/Let me in.", "C:/Users/ExtraLarge_Sister/To_Player/No way.\nThe food is all mine."];
+              npc.state++;
+              break;
+
+            case 1:
+              this.chats = ["C:/Users/Player/To_ExtraLarge_Sister/I'm not gonna\ntake it from you.", "C:/Users/ExtraLarge_Sister/To_Player/That's what\neveryone says."];
+              npc.state++;
+              break;
+
+            case 2:
+              this.chats = ["C:/Users/ExtraLarge_Sister/To_Player/Stop trying\nnobodies eating this food except me."];
+              break;
+          }
+
+          break;
+
         case "Nicole":
           switch (npc.state) {
             case 0:

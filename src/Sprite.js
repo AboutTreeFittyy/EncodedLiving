@@ -7,7 +7,7 @@ import {CST} from "./CST";
 export class Sprite extends Phaser.Physics.Arcade.Sprite {
     
     constructor(scene, x, y, texture, down, up, left, right, name) {
-        super(scene, x, y, texture, down);
+        super(scene, x, y, texture, left);
         scene.sys.updateList.add(this);
         scene.sys.displayList.add(this);     
         scene.physics.world.enableBody(this);
@@ -24,8 +24,8 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
     npcSpeak(player, npc){
         //If the r button is pressed then begin chat scene
         if (player.scene.keyboard.E.isDown) {
-            this.scene.scene.launch(CST.SCENES.TALK, {player, npc});
-            this.scene.scene.pause();
+            player.scene.scene.launch(CST.SCENES.TALK, {player, npc});
+            player.scene.scene.pause();
             //Reset buttons so they don't get stuck when resuming
             player.scene.keyboard.E.reset();
             player.scene.keyboard.W.reset();

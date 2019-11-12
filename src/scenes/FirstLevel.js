@@ -8,6 +8,7 @@
 import {CST} from "../CST";
 import { LevelManager } from "../LevelManager";
 import { AnimationManager } from "../AnimationManager";
+import { Sprite } from "../Sprite";
 
 export class FirstLevel extends Phaser.Scene{
     
@@ -34,7 +35,10 @@ export class FirstLevel extends Phaser.Scene{
         mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
         this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
         this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
-        this.firstStage = mappy.createStaticLayer("firstStage", fat, 0, 0).setDepth(1);
+        this.claireRoom = mappy.createStaticLayer("claireRoom", fat, 0, 0).setDepth(1);
+        this.chadRoom = mappy.createStaticLayer("chadRoom", fat, 0, 0).setDepth(1);
+        this.vladRoom = mappy.createStaticLayer("vladRoom", fat, 0, 0).setDepth(1);
+        this.examRoom = mappy.createStaticLayer("examRoom", fat, 0, 0).setDepth(1);
         //Create the level using this scene and the map made above
         this.lm = new LevelManager(this, mappy); 
         //map collisions
@@ -42,12 +46,27 @@ export class FirstLevel extends Phaser.Scene{
         this.physics.add.collider(this.player, this.furnishing);
         //add whip colliders for enemies
         this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this);
-        //add collider for chick blocks
-        this.firstStage.setCollisionByProperty({collides:true});
-        this.physics.add.collider(this.player, this.firstStage, this.player.blocked, null, this);
+        //add colliders for chick blocks        
+        this.claireRoom.setCollisionByProperty({collides:true});
+        this.chadRoom.setCollisionByProperty({collides:true});
+        this.vladRoom.setCollisionByProperty({collides:true});
+        this.examRoom.setCollisionByProperty({collides:true});
+        this.physics.add.collider(this.player, this.claireRoom, this.player.claireBlocked, null, this);
+        this.physics.add.collider(this.player, this.chadRoom, this.player.chadBlocked, null, this);
+        this.physics.add.collider(this.player, this.vladRoom, this.player.vladBlocked, null, this);
+        this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this);
+        //create chick blocks sprites for talking
+        this.skinny = new Sprite(this,0,0,CST.SPRITE.FAT,0,0,0,0,"skinny");
+        this.medium = new Sprite(this,0,0,CST.SPRITE.FAT,0,0,0,0,"medium");
+        this.large = new Sprite(this,0,0,CST.SPRITE.FAT,0,0,0,0,"large");
+        this.extralarge = new Sprite(this,0,0,CST.SPRITE.FAT,0,0,0,0,"extralarge");
         //add colliders for terrain
         this.topLayer.setCollisionByProperty({collides:true});  
-        this.furnishing.setCollisionByProperty({collides:true});        
+        this.furnishing.setCollisionByProperty({collides:true});
+        //start talk with nicole
+        let nicole = this.lm.getNPC("Nicole");
+        this.player.scene.keyboard.E.isDown = true;
+        nicole.npcSpeak(this.player, nicole);        
     }   
 
     update(){

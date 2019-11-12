@@ -121,8 +121,64 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }        
     }
 
-    blocked(){
-        console.log("blocked");
+    claireBlocked(player, fat){
+        //If the r button is pressed then begin chat scene
+        if (player.scene.keyboard.E.isDown) {
+            let npc = player.scene.extralarge;
+            player.scene.scene.launch(CST.SCENES.TALK, {player, npc});
+            player.scene.scene.pause();
+            //Reset buttons so they don't get stuck when resuming
+            player.scene.keyboard.E.reset();
+            player.scene.keyboard.W.reset();
+            player.scene.keyboard.A.reset();
+            player.scene.keyboard.S.reset();
+            player.scene.keyboard.D.reset();
+        }
+    }
+
+    chadBlocked(player, fat){
+        //If the r button is pressed then begin chat scene
+        if (player.scene.keyboard.E.isDown) {
+            let npc = player.scene.skinny;
+            player.scene.scene.launch(CST.SCENES.TALK, {player, npc});
+            player.scene.scene.pause();
+            //Reset buttons so they don't get stuck when resuming
+            player.scene.keyboard.E.reset();
+            player.scene.keyboard.W.reset();
+            player.scene.keyboard.A.reset();
+            player.scene.keyboard.S.reset();
+            player.scene.keyboard.D.reset();
+        }
+    }
+
+    vladBlocked(player, fat){
+        //If the r button is pressed then begin chat scene
+        if (player.scene.keyboard.E.isDown) {
+            let npc = player.scene.large;
+            player.scene.scene.launch(CST.SCENES.TALK, {player, npc});
+            player.scene.scene.pause();
+            //Reset buttons so they don't get stuck when resuming
+            player.scene.keyboard.E.reset();
+            player.scene.keyboard.W.reset();
+            player.scene.keyboard.A.reset();
+            player.scene.keyboard.S.reset();
+            player.scene.keyboard.D.reset();
+        }
+    }
+
+    examBlocked(player, fat){
+        //If the r button is pressed then begin chat scene
+        if (player.scene.keyboard.E.isDown) {
+            let npc = player.scene.medium;
+            player.scene.scene.launch(CST.SCENES.TALK, {player, npc});
+            player.scene.scene.pause();
+            //Reset buttons so they don't get stuck when resuming
+            player.scene.keyboard.E.reset();
+            player.scene.keyboard.W.reset();
+            player.scene.keyboard.A.reset();
+            player.scene.keyboard.S.reset();
+            player.scene.keyboard.D.reset();
+        }
     }
 
     decrementWill(player){
