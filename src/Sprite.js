@@ -12,6 +12,7 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
         scene.sys.displayList.add(this);     
         scene.physics.world.enableBody(this);
         this.down = down;
+        this.rep = 1000;
         this.up = up;
         this.left = left;
         this.right = right;
@@ -33,5 +34,11 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
             player.scene.keyboard.S.reset();
             player.scene.keyboard.D.reset();
         }
+    }
+
+    chadFight(player, npc){
+        //Make Chad destroyable
+        this.rep = 5;
+        player.scene.physics.add.collider(player.scene.whip, npc, player.scene.whip.whipHitEnemy, null, this);
     }
 }

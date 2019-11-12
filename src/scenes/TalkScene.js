@@ -198,7 +198,12 @@ export class TalkScene extends Phaser.Scene{
 				break;
 				case 2:
 					this.chats = [
-						"C:/Users/Nicole/To_Player/That's enough learning.\nI think we're ready to take the exam now.",
+						"C:/Users/Nicole/To_Player/That's enough music.\nI think we're ready to go to cooking class.",
+						"C:/Users/Player/To_Nicole/Yeah, I'm hungry."];
+				break;
+				case 3:
+					this.chats = [
+						"C:/Users/Nicole/To_Player/That's enough cooking.\nI think we're ready to take our exams now.",
 						"C:/Users/Player/To_Nicole/I agree."];
 				break;
 			}				
@@ -364,6 +369,16 @@ export class TalkScene extends Phaser.Scene{
 				case 3:
 					this.chats = [ 
 					"C:/Users/Chad/To_Player/Not now bro. I'm busy\nsetting up."];
+					break;
+				case 4:
+					this.chats = [ 
+					"C:/Users/Chad/To_Player/Bro you're gonna love this\nchick I just met. She's perfect for you.",
+					"C:/Users/Player/To_Chad/Can this wait? I got to go\nto my exam.",
+					"C:/Users/Chad/To_Player/No way you can't miss out\non this chick man! I won't let you.",
+					"C:/Users/Player/To_Chad/Sorry but I'm going to go\nto my exam.",
+					"C:/Users/Chad/To_Player/Just try to get through!"];
+					//Put Chad into fighting mode
+					npc.chadFight(player, npc);
 					break;
 			}
             break;

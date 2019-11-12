@@ -21,7 +21,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         //Player stats
         this.rep = 10; //DVDs increase this as player health
         this.repMax = 10;
-        this.knowledgeNeeded = 10; ////Exam sheets increase this as player level
+        this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
         this.knowledgeProgress = 0;
         this.knowledgeLevel = 0;
         this.will = 10; //Energy Drinks increase this as the players stamina

@@ -476,6 +476,7 @@ function (_Phaser$Physics$Arcad) {
     scene.sys.displayList.add(_assertThisInitialized(_this));
     scene.physics.world.enableBody(_assertThisInitialized(_this));
     _this.down = down;
+    _this.rep = 1000;
     _this.up = up;
     _this.left = left;
     _this.right = right;
@@ -503,6 +504,13 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
       }
+    }
+  }, {
+    key: "chadFight",
+    value: function chadFight(player, npc) {
+      //Make Chad destroyable
+      this.rep = 5;
+      player.scene.physics.add.collider(player.scene.whip, npc, player.scene.whip.whipHitEnemy, null, this);
     }
   }]);
 
@@ -723,7 +731,7 @@ function (_Phaser$Physics$Arcad) {
     _this.rep = 10; //DVDs increase this as player health
 
     _this.repMax = 10;
-    _this.knowledgeNeeded = 10; ////Exam sheets increase this as player level
+    _this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
 
     _this.knowledgeProgress = 0;
     _this.knowledgeLevel = 0;
@@ -1746,10 +1754,10 @@ function (_Phaser$Scene) {
       this.examRoom.setCollisionByProperty({
         collides: true
       });
-      this.physics.add.collider(this.player, this.claireRoom, this.player.claireBlocked, null, this);
-      this.physics.add.collider(this.player, this.chadRoom, this.player.chadBlocked, null, this);
-      this.physics.add.collider(this.player, this.vladRoom, this.player.vladBlocked, null, this);
-      this.examRoomCollider = this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this); //create chick blocks sprites for talking
+      this.claireRoomCollider = this.physics.add.collider(this.player, this.claireRoom, this.player.claireBlocked, null, this);
+      this.examRoomCollider = this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this);
+      this.chadRoomCollider = this.physics.add.collider(this.player, this.chadRoom, this.player.chadBlocked, null, this);
+      this.vladRoomCollider = this.physics.add.collider(this.player, this.vladRoom, this.player.vladBlocked, null, this); //create chick blocks sprites for talking
 
       this.skinny = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "skinny");
       this.medium = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "medium");
@@ -1765,24 +1773,108 @@ function (_Phaser$Scene) {
 
       var nicole = this.lm.getNPC("Nicole");
       this.player.scene.keyboard.E.isDown = true;
-      nicole.npcSpeak(this.player, nicole);
-      this.finished = false;
+      nicole.npcSpeak(this.player, nicole); //progress tracking flags
+
+      this.finished1 = false;
+      this.finished2 = false;
+      this.finished3 = false;
+      this.finished4 = false;
     }
+    /*This progress check, checks the following: If the player has talked to Chad
+    * and Kyle. And if the player has reached the first level. Then it gets rid of the
+    * blocker to the cooking class. Nicole then informs the player this is available 
+    * when the check passes.
+    */
+
   }, {
-    key: "checkProgress",
-    value: function checkProgress() {
+    key: "checkProgress1",
+    value: function checkProgress1() {
       var chad = this.lm.getNPC("chad");
       var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
 
-      if (this.finished == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1) {
+      if (this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1) {
         var nicole = this.lm.getNPC("Nicole");
         nicole.state = 2; //hide blocker and remove their collider
+
+        this.claireRoom.visible = false;
+        this.physics.world.removeCollider(this.claireRoomCollider);
+        this.player.scene.keyboard.E.isDown = true;
+        nicole.npcSpeak(this.player, nicole);
+        this.finished1 = true;
+      }
+    }
+    /*This blocker checks that the player has talked to Claire, Stevie and Brad. It also checks if the player is level 2 yet.
+    * If these conditions are met then it unblocks the exam room and moves Chad to his fighting position there. Nicole then
+    * informs the player this is available when the check passes.
+    */
+
+  }, {
+    key: "checkProgress2",
+    value: function checkProgress2() {
+      var stevie = this.lm.getNPC("Stevie");
+      var claire = this.lm.getNPC("Claire1");
+      var brad = this.lm.getNPC("Brad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+
+      if (this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2) {
+        var nicole = this.lm.getNPC("Nicole");
+        var chad = this.lm.getNPC("chad");
+        nicole.state = 3; //4th state is her at chad fight
+        //hide blocker and remove their collider
 
         this.examRoom.visible = false;
         this.physics.world.removeCollider(this.examRoomCollider);
         this.player.scene.keyboard.E.isDown = true;
+        nicole.npcSpeak(this.player, nicole); //Move chad to 6200,4020 in the exam room and set him to fight mode
+
+        chad.x = 6200;
+        chad.y = 4020;
+        chad.startX = 6200;
+        chad.startY = 4020;
+        chad.state = 4;
+        this.finished2 = true;
+      }
+    }
+    /*This progress check is for after the first boss fight with Chad, which should open Chads room. This check unlocks 
+    * Vlads room if you have talked to Claire2 and Kyle this semester. You also must be level 3 to pass the check.
+    * NicoleD informs the player this is available when the check passes.
+    */
+
+  }, {
+    key: "checkProgress3",
+    value: function checkProgress3() {
+      var claire2 = this.lm.getNPC("Claire2");
+      var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+
+      if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3) {
+        var nicole = this.lm.getNPC("Nicole");
+        nicole.state = 2; //hide blocker and remove their collider
+
+        this.chadRoom.visible = false;
+        this.physics.world.removeCollider(this.chadRoomCollider);
+        this.player.scene.keyboard.E.isDown = true;
         nicole.npcSpeak(this.player, nicole);
-        this.finished = true;
+        this.finished3 = true;
+      }
+    }
+    /*This progress check is for unlocking the final exam and boss fight with Vlad. This makes sure you have talked to 
+    * Stevie again and Vlad before entering as well as being level 4. NicoleD informs player this is ready when the check passes.
+    */
+
+  }, {
+    key: "checkProgress4",
+    value: function checkProgress4() {
+      var stevie = this.lm.getNPC("Stevie");
+      var vlad = this.lm.getNPC("Vlad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+
+      if (this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4) {
+        var nicole = this.lm.getNPC("Nicole");
+        nicole.state = 2; //hide blocker and remove their collider
+
+        this.vladRoom.visible = false;
+        this.physics.world.removeCollider(this.vladRoomCollider);
+        this.player.scene.keyboard.E.isDown = true;
+        nicole.npcSpeak(this.player, nicole);
+        this.finished4 = true;
       }
     }
   }, {
@@ -1791,7 +1883,10 @@ function (_Phaser$Scene) {
       //Play enemy animations and move them as needed
       this.lm.updateSprites(); //See if the player can move on to the next level
 
-      this.checkProgress(); //Make sure the player isnt attacking before moving him
+      this.checkProgress1();
+      this.checkProgress2();
+      this.checkProgress3();
+      this.checkProgress4(); //Make sure the player isnt attacking before moving him
 
       if (!this.player.state) {
         //Set player movement on keypress
@@ -2272,7 +2367,11 @@ function (_Phaser$Scene) {
               break;
 
             case 2:
-              this.chats = ["C:/Users/Nicole/To_Player/That's enough learning.\nI think we're ready to take the exam now.", "C:/Users/Player/To_Nicole/I agree."];
+              this.chats = ["C:/Users/Nicole/To_Player/That's enough music.\nI think we're ready to go to cooking class.", "C:/Users/Player/To_Nicole/Yeah, I'm hungry."];
+              break;
+
+            case 3:
+              this.chats = ["C:/Users/Nicole/To_Player/That's enough cooking.\nI think we're ready to take our exams now.", "C:/Users/Player/To_Nicole/I agree."];
               break;
           }
 
@@ -2400,6 +2499,12 @@ function (_Phaser$Scene) {
 
             case 3:
               this.chats = ["C:/Users/Chad/To_Player/Not now bro. I'm busy\nsetting up."];
+              break;
+
+            case 4:
+              this.chats = ["C:/Users/Chad/To_Player/Bro you're gonna love this\nchick I just met. She's perfect for you.", "C:/Users/Player/To_Chad/Can this wait? I got to go\nto my exam.", "C:/Users/Chad/To_Player/No way you can't miss out\non this chick man! I won't let you.", "C:/Users/Player/To_Chad/Sorry but I'm going to go\nto my exam.", "C:/Users/Chad/To_Player/Just try to get through!"]; //Put Chad into fighting mode
+
+              npc.chadFight(player, npc);
               break;
           }
 
@@ -2580,7 +2685,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56991" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59945" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
