@@ -23,7 +23,7 @@ export class LevelManager{
     //returns the npc from the container of the given name
     getNPC(name){
         for(let i = 0; i < this.scene.npcCont.count('visible', true); i++){
-            if(this.scene.npcCont.list[i].name){
+            if(this.scene.npcCont.list[i].name == name){
                 return this.scene.npcCont.list[i];
             }
         }

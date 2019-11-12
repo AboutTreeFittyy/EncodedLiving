@@ -24,12 +24,20 @@ export class TalkScene extends Phaser.Scene{
 		this.chatsDone = 0; //The number of sections finished so far
 		this.selectDialogue(this.player, this.npc);
 		//add in assets
-        let contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.CONTINUE).setDepth(1);
+        let contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.75 , CST.IMAGE.CONTINUE).setDepth(1);
 		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
 		hoverSprite.setVisible(false);
         //make space resume game as well
         this.input.keyboard.on('keyup-SPACE', ()=>{
 			this.acceptInput();
+		})
+		//make e exit conversation as well
+        this.input.keyboard.on('keyup-F', ()=>{
+			//go through all inputs
+			while(this.chatsDone < this.chats.length){
+				this.acceptInput();
+			}
+			this.acceptInput();//get the last input
 		})
 		//make buttons interactive
 		contin.setInteractive();
@@ -187,6 +195,11 @@ export class TalkScene extends Phaser.Scene{
 					this.chats = [
 					"C:/Users/Player/To_Nicole/Know where to go?", 
 					"C:/Users/Nicole/To_Player/Yeah, the blue room."];
+				break;
+				case 2:
+					this.chats = [
+						"C:/Users/Nicole/To_Player/That's enough learning.\nI think we're ready to take the exam now.",
+						"C:/Users/Player/To_Nicole/I agree."];
 				break;
 			}				
             break;

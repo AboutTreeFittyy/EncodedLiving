@@ -983,7 +983,7 @@ function () {
     key: "getNPC",
     value: function getNPC(name) {
       for (var i = 0; i < this.scene.npcCont.count('visible', true); i++) {
-        if (this.scene.npcCont.list[i].name) {
+        if (this.scene.npcCont.list[i].name == name) {
           return this.scene.npcCont.list[i];
         }
       }
@@ -1749,7 +1749,7 @@ function (_Phaser$Scene) {
       this.physics.add.collider(this.player, this.claireRoom, this.player.claireBlocked, null, this);
       this.physics.add.collider(this.player, this.chadRoom, this.player.chadBlocked, null, this);
       this.physics.add.collider(this.player, this.vladRoom, this.player.vladBlocked, null, this);
-      this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this); //create chick blocks sprites for talking
+      this.examRoomCollider = this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this); //create chick blocks sprites for talking
 
       this.skinny = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "skinny");
       this.medium = new _Sprite.Sprite(this, 0, 0, _CST.CST.SPRITE.FAT, 0, 0, 0, 0, "medium");
@@ -1766,12 +1766,32 @@ function (_Phaser$Scene) {
       var nicole = this.lm.getNPC("Nicole");
       this.player.scene.keyboard.E.isDown = true;
       nicole.npcSpeak(this.player, nicole);
+      this.finished = false;
+    }
+  }, {
+    key: "checkProgress",
+    value: function checkProgress() {
+      var chad = this.lm.getNPC("chad");
+      var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+
+      if (this.finished == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1) {
+        var nicole = this.lm.getNPC("Nicole");
+        nicole.state = 2; //hide blocker and remove their collider
+
+        this.examRoom.visible = false;
+        this.physics.world.removeCollider(this.examRoomCollider);
+        this.player.scene.keyboard.E.isDown = true;
+        nicole.npcSpeak(this.player, nicole);
+        this.finished = true;
+      }
     }
   }, {
     key: "update",
     value: function update() {
       //Play enemy animations and move them as needed
-      this.lm.updateSprites(); //Make sure the player isnt attacking before moving him
+      this.lm.updateSprites(); //See if the player can move on to the next level
+
+      this.checkProgress(); //Make sure the player isnt attacking before moving him
 
       if (!this.player.state) {
         //Set player movement on keypress
@@ -2090,12 +2110,22 @@ function (_Phaser$Scene) {
 
       this.selectDialogue(this.player, this.npc); //add in assets
 
-      var contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.CONTINUE).setDepth(1);
+      var contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.75, _CST.CST.IMAGE.CONTINUE).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
       hoverSprite.setVisible(false); //make space resume game as well
 
       this.input.keyboard.on('keyup-SPACE', function () {
         _this.acceptInput();
+      }); //make e exit conversation as well
+
+      this.input.keyboard.on('keyup-F', function () {
+        //go through all inputs
+        while (_this.chatsDone < _this.chats.length) {
+          _this.acceptInput();
+        }
+
+        _this.acceptInput(); //get the last input
+
       }); //make buttons interactive
 
       contin.setInteractive();
@@ -2239,6 +2269,10 @@ function (_Phaser$Scene) {
 
             case 1:
               this.chats = ["C:/Users/Player/To_Nicole/Know where to go?", "C:/Users/Nicole/To_Player/Yeah, the blue room."];
+              break;
+
+            case 2:
+              this.chats = ["C:/Users/Nicole/To_Player/That's enough learning.\nI think we're ready to take the exam now.", "C:/Users/Player/To_Nicole/I agree."];
               break;
           }
 

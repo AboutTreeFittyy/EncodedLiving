@@ -54,7 +54,7 @@ export class FirstLevel extends Phaser.Scene{
         this.physics.add.collider(this.player, this.claireRoom, this.player.claireBlocked, null, this);
         this.physics.add.collider(this.player, this.chadRoom, this.player.chadBlocked, null, this);
         this.physics.add.collider(this.player, this.vladRoom, this.player.vladBlocked, null, this);
-        this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this);
+        this.examRoomCollider = this.physics.add.collider(this.player, this.examRoom, this.player.examBlocked, null, this);
         //create chick blocks sprites for talking
         this.skinny = new Sprite(this,0,0,CST.SPRITE.FAT,0,0,0,0,"skinny");
         this.medium = new Sprite(this,0,0,CST.SPRITE.FAT,0,0,0,0,"medium");
@@ -66,12 +66,31 @@ export class FirstLevel extends Phaser.Scene{
         //start talk with nicole
         let nicole = this.lm.getNPC("Nicole");
         this.player.scene.keyboard.E.isDown = true;
-        nicole.npcSpeak(this.player, nicole);        
+        nicole.npcSpeak(this.player, nicole);   
+        this.finished = false;     
     }   
+
+    checkProgress(){
+        let chad = this.lm.getNPC("chad");
+        let kyle = this.lm.getNPC("Kyle");
+        //See if this has been done already, check that all needed conversations are done and player level is high enough
+        if(this.finished == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1){
+            let nicole = this.lm.getNPC("Nicole");
+            nicole.state = 2;
+            //hide blocker and remove their collider
+            this.examRoom.visible = false;
+            this.physics.world.removeCollider(this.examRoomCollider);
+            this.player.scene.keyboard.E.isDown = true;
+            nicole.npcSpeak(this.player, nicole);  
+            this.finished = true;
+        } 
+    }
 
     update(){
         //Play enemy animations and move them as needed
-        this.lm.updateSprites();      
+        this.lm.updateSprites();  
+        //See if the player can move on to the next level
+        this.checkProgress();    
         //Make sure the player isnt attacking before moving him
         if(!this.player.state){
             //Set player movement on keypress
