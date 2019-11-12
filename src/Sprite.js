@@ -1,6 +1,6 @@
 /* File Name: Sprite.js
  * Author: Mathew Boland
- * Last Updated: November 8, 2019
+ * Last Updated: November 11, 2019
  * Description: Class used to create and hold the value of a Sprite object
 */
 import {CST} from "./CST";
@@ -18,6 +18,7 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
         this.startX = x;
         this.startY = y;
         this.name = name;
+        this.state = 0;
     }
 
     npcSpeak(player, npc){

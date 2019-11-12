@@ -62,14 +62,57 @@ export class TalkScene extends Phaser.Scene{
 		//Append new text to chats array based on npc name for acceptInputs function to print
         switch(npc.name){
             case "Nicole":
-				this.chats = ["C:/Users/Player/To_Self/Hey is that Nicole?", 
-				"C:/Users/Nicole/To_Player/Hey it's me! Thought I'd\n see you here. First day of programming school eh?"];	
+			switch(npc.state){
+				case 0:
+					this.chats = ["C:/Users/Player/To_Self/Hey is that Nicole?", 
+					"C:/Users/Nicole/To_Player/Hey it's me! Thought I'd\n see you here. First day of programming school eh?"];
+					npc.state++;
+				break;
+				case 1:
+					this.chats = ["C:/Users/Player/To_Self/Hey is that Nicole?", 
+					"C:/Users/Nicole/To_Player/Hey it's me! Thought I'd\n see you here. First day of programming school eh?"];
+				break;
+			}				
             break;
-            case "NicoleD":
-				this.chats = ["C:/Users/oliceN/To_Player/Hwy ddi sith paphen<1@?"];
+            case "NicoleD":				
+			switch(npc.state){
+				case 0:
+					this.chats = ["C:/Users/oliceN/To_Player/Hwy$ddi%sith(paphen?"];
+					npc.state++;
+				break;
+				case 1:
+					this.chats = ["C:/Users/oliceN/To_Player/mI'[os*rosry."];
+					npc.state++;
+				break;
+				case 2:
+					this.chats = ["C:/Users/oliceN/To_Player/eAr^uyo+neistling?"];
+					npc.state = 0; //restart
+				break;
+			}
             break;
             case "Claire1":
-				this.chats = ["C:/Users/Claire/To_Player/Hey, I'm Claire! What are\n you doing here?"];
+				switch(npc.state){
+					case 0:
+						this.chats = ["C:/Users/Player/To_Claire/You look like you know\n your way around here, what's your name?", 
+						"C:/Users/To_Player/The name's Claire and I sure do!\n What are you doing here?",
+						"C:/Users/Player/To_Claire/Introducing myself, I\nalways liked it when a friend cooks.",
+						"C:/Users/To_Player/Well I guess we'll get along\ngreat then! Oh by the way, I have exam answers from\nlast year on this sheet. You can have it. It'll improve\nyour knowledge. *WINKS*",];
+						npc.state++;
+					break;
+					case 1:
+						this.chats = ["C:/Users/Player/To_Claire/Is that food free?", 
+						"C:/Users/Claire/To_Player/Nothing in life is free. I\nmight sneak some out to Chads partylater, so you\ncan have some then if you go.",
+						"C:/Users/Player/To_Claire/Guess I'll have to go, see\nya there."];
+						npc.state++;
+					break;
+					case 2:
+						this.chats = ["C:/Users/Claire/To_Player/Sorry I can't talk anymore\nor this food won't be ready in time for Chads party."];
+						npc.state++;
+						break;						
+					case 3:
+						this.chats = ["C:/Users/Claire/To_Player/*IGNORES YOU*"];
+						break;
+				}
             break;
             case "Claire2":
 				this.chats = ["C:/Users/Claire/To_Player/Oh hey again, I can't\ntalk. I gotta go see Brad."];

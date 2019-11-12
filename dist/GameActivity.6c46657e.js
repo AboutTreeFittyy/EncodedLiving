@@ -158,7 +158,14 @@ var CST = {
   AUDIO: {
     THEME1: "level_1_theme.mp3",
     TITLE: "title_music.mp3",
-    JSON: "json.mp3"
+    JSON: "json.mp3",
+    CHAD: "chadWave.mp3",
+    VLAD: "vladWave.mp3",
+    PLAYERHIT: "playerHit.mp3",
+    BALLHIT: "ballHit.mp3",
+    WHIPHIT: "whipHit.mp3",
+    THROW: "throw.mp3",
+    WHIP: "whip.mp3"
   },
   SPRITE: {
     PLAYER: "player.png",
@@ -475,6 +482,7 @@ function (_Phaser$Physics$Arcad) {
     _this.startX = x;
     _this.startY = y;
     _this.name = name;
+    _this.state = 0;
     return _this;
   }
 
@@ -560,19 +568,11 @@ function (_Phaser$Physics$Arcad) {
   }
 
   _createClass(EnemySprite, [{
-    key: "ballHit",
-    value: function ballHit(ball) {
-      this.rep--;
-
-      if (this.rep <= 0) {
-        this.destory();
-      }
-    }
-  }, {
     key: "jsonHitPlayer",
     value: function jsonHitPlayer(player, json) {
       //adjust inventory and player stats on hit from json
-      player.rep -= json.dmg;
+      player.rep -= json.dmg; //Play sound effect
+
       json.scene.sound.play(_CST.CST.AUDIO.JSON, {
         loop: false
       });
@@ -615,6 +615,13 @@ function (_Phaser$Physics$Arcad) {
         player.displayInventory();
 
         if (player.rep <= 0) {//player.destroy();
+        }
+
+        if (curName.dmg > 0) {
+          //Play player hit sound effect
+          curName.scene.sound.play(_CST.CST.AUDIO.PLAYERHIT, {
+            loop: false
+          });
         }
       } //Based on the name from the collision decide what to do
 
@@ -667,6 +674,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CharacterSprite = void 0;
 
+var _CST = require("./CST");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -685,13 +694,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-/* File Name: CharacterSprite.js
- * Author: Mathew Boland
- * Last Updated: November 11, 2019
- * Description: A class to create and hold the value of a CharacterSprite object
- * with arcade physics.
- * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
-*/
 var CharacterSprite =
 /*#__PURE__*/
 function (_Phaser$Physics$Arcad) {
@@ -802,7 +804,11 @@ function (_Phaser$Physics$Arcad) {
     value: function whipHitEnemy(whip, enemy) {
       //check if already got hit this animation
       if (!whip.state) {
-        //adjust enemy stats on hit from whip
+        //Play sound effect
+        whip.scene.sound.play(_CST.CST.AUDIO.WHIPHIT, {
+          loop: false
+        }); //adjust enemy stats on hit from whip
+
         enemy.rep--;
 
         if (enemy.rep == 0) {
@@ -817,7 +823,11 @@ function (_Phaser$Physics$Arcad) {
     value: function ballHitEnemy(ball, enemy) {
       //adjust inventory and enemy stats on hit from ball
       enemy.scene.player.balls++;
-      enemy.rep--;
+      enemy.rep--; //Play sound effect
+
+      ball.scene.sound.play(_CST.CST.AUDIO.BALLHIT, {
+        loop: false
+      });
 
       if (enemy.rep == 0) {
         enemy.destroy();
@@ -840,7 +850,7 @@ function (_Phaser$Physics$Arcad) {
 }(Phaser.Physics.Arcade.Sprite);
 
 exports.CharacterSprite = CharacterSprite;
-},{}],"src/LevelManager.js":[function(require,module,exports) {
+},{"./CST":"src/CST.js"}],"src/LevelManager.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1157,7 +1167,12 @@ function () {
         _this.scene.player.setVelocityX(0); //Create a one time listener to make player movable again after animation finishes
 
 
-        _this.scene.whip.once("animationcomplete", _this.toggleAttack);
+        _this.scene.whip.once("animationcomplete", _this.toggleAttack); //Play sound effect
+
+
+        _this.scene.sound.play(_CST.CST.AUDIO.WHIP, {
+          loop: false
+        });
 
         switch (_this.scene.player.isFacing) {
           case "left":
@@ -1200,6 +1215,11 @@ function () {
 
       this.scene.input.keyboard.on("keydown-SPACE", function () {
         if (_this.scene.player.balls >= 1) {
+          //Play sound effect
+          _this.scene.sound.play(_CST.CST.AUDIO.THROW, {
+            loop: false
+          });
+
           _this.scene.player.balls--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
 
           var ball = new _CharacterSprite.CharacterSprite(_this.scene, _this.scene.player.x, _this.scene.player.y, _CST.CST.SPRITE.BALL, 0).setDepth(5);
@@ -1287,8 +1307,8 @@ function () {
 
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
       this.scene.npcCont = this.scene.add.container();
-      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
-      this.createNPCS(593, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+
       this.createNPCS(4704, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
       this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
       this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
@@ -1967,15 +1987,62 @@ function (_Phaser$Scene) {
       //Append new text to chats array based on npc name for acceptInputs function to print
       switch (npc.name) {
         case "Nicole":
-          this.chats = ["C:/Users/Player/To_Self/Hey is that Nicole?", "C:/Users/Nicole/To_Player/Hey it's me! Thought I'd\n see you here. First day of programming school eh?"];
+          switch (npc.state) {
+            case 0:
+              this.chats = ["C:/Users/Player/To_Self/Hey is that Nicole?", "C:/Users/Nicole/To_Player/Hey it's me! Thought I'd\n see you here. First day of programming school eh?"];
+              npc.state++;
+              break;
+
+            case 1:
+              this.chats = ["C:/Users/Player/To_Self/Hey is that Nicole?", "C:/Users/Nicole/To_Player/Hey it's me! Thought I'd\n see you here. First day of programming school eh?"];
+              break;
+          }
+
           break;
 
         case "NicoleD":
-          this.chats = ["C:/Users/oliceN/To_Player/Hwy ddi sith paphen<1@?"];
+          switch (npc.state) {
+            case 0:
+              this.chats = ["C:/Users/oliceN/To_Player/Hwy$ddi%sith(paphen?"];
+              npc.state++;
+              break;
+
+            case 1:
+              this.chats = ["C:/Users/oliceN/To_Player/mI'[os*rosry."];
+              npc.state++;
+              break;
+
+            case 2:
+              this.chats = ["C:/Users/oliceN/To_Player/eAr^uyo+neistling?"];
+              npc.state = 0; //restart
+
+              break;
+          }
+
           break;
 
         case "Claire1":
-          this.chats = ["C:/Users/Claire/To_Player/Hey, I'm Claire! What are\n you doing here?"];
+          switch (npc.state) {
+            case 0:
+              this.chats = ["C:/Users/Player/To_Claire/You look like you know\n your way around here, what's your name?", "C:/Users/To_Player/The name's Claire and I sure do!\n What are you doing here?", "C:/Users/Player/To_Claire/Introducing myself, I\nalways liked it when a friend cooks.", "C:/Users/To_Player/Well I guess we'll get along\ngreat then! Oh by the way, I have exam answers from\nlast year on this sheet. You can have it. It'll improve\nyour knowledge. *WINKS*"];
+              npc.state++;
+              break;
+
+            case 1:
+              this.chats = ["C:/Users/Player/To_Claire/Is that food free?", "C:/Users/Claire/To_Player/Nothing in life is free. I\nmight sneak some out to Chads partylater, so you\ncan have some then if you go.", "C:/Users/Player/To_Claire/Guess I'll have to go, see\nya there."];
+              npc.state++;
+              break;
+
+            case 2:
+              this.chats = ["C:/Users/Claire/To_Player/Sorry I can't talk anymore\nor this food won't be ready in time for Chads party."];
+              npc.state++;
+              break;
+
+            case 3:
+              this.chats = ["C:/Users/Claire/To_Player/*IGNORES YOU*"];
+              break;
+          }
+
           break;
 
         case "Claire2":

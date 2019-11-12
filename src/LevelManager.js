@@ -1,6 +1,6 @@
 /* File Name: LevelManager.js
  * Author: Mathew Boland
- * Last Updated: November 10, 2019
+ * Last Updated: November 11, 2019
  * Description: A class to build a levels animations and sprites for the game
  * given the map and scene.
 */
@@ -264,28 +264,36 @@ export class LevelManager{
             this.scene.player.setVelocityX(0);
             //Create a one time listener to make player movable again after animation finishes
             this.scene.whip.once("animationcomplete", this.toggleAttack);
-                switch(this.scene.player.isFacing){
-                    case "left":this.scene.whip.setPosition(this.scene.player.x-70,this.scene.player.y+20);
-                    this.scene.player.play("attackleft", true);
-                    this.scene.whip.play("whip_left", true);                    
-                    break;
-                    case "right": this.scene.whip.setPosition(this.scene.player.x+70,this.scene.player.y);    
-                    this.scene.player.play("attackright");
-                    this.scene.whip.play("whip_right");
-                    break;
-                    case "up":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y-70);
-                    this.scene.player.play("attackup");
-                    this.scene.whip.play("whip_up");
-                    break;
-                    case "down":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y+70);
-                    this.scene.player.play("attackdown");
-                    this.scene.whip.play("whip_down");
-                    break;
-                }         
+            //Play sound effect
+            this.scene.sound.play(CST.AUDIO.WHIP, {
+                loop: false
+            }) 
+            switch(this.scene.player.isFacing){
+                case "left":this.scene.whip.setPosition(this.scene.player.x-70,this.scene.player.y+20);
+                this.scene.player.play("attackleft", true);
+                this.scene.whip.play("whip_left", true);                    
+                break;
+                case "right": this.scene.whip.setPosition(this.scene.player.x+70,this.scene.player.y);    
+                this.scene.player.play("attackright");
+                this.scene.whip.play("whip_right");
+                break;
+                case "up":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y-70);
+                this.scene.player.play("attackup");
+                this.scene.whip.play("whip_up");
+                break;
+                case "down":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y+70);
+                this.scene.player.play("attackdown");
+                this.scene.whip.play("whip_down");
+                break;
+            }         
         })
         //attack with ping pong ball input
         this.scene.input.keyboard.on("keydown-SPACE", ()=>{
-            if(this.scene.player.balls >= 1){   
+            if(this.scene.player.balls >= 1){ 
+                //Play sound effect
+                this.scene.sound.play(CST.AUDIO.THROW, {
+                    loop: false
+                })  
                 this.scene.player.balls--;
                 //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
                 let ball = new CharacterSprite(this.scene, this.scene.player.x, this.scene.player.y, CST.SPRITE.BALL, 0).setDepth(5);
@@ -356,7 +364,7 @@ export class LevelManager{
         
         this.scene.npcCont = this.scene.add.container();
         this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
-        this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+        //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
         this.createNPCS(4704, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
         this.createNPCS(512, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
         this.createNPCS(473, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");

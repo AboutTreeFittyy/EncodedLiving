@@ -5,6 +5,7 @@
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
+import {CST} from "./CST";
 export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     
     constructor(scene, x, y, texture, frame) {
@@ -82,6 +83,10 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     whipHitEnemy(whip, enemy){
         //check if already got hit this animation
         if(!whip.state){
+            //Play sound effect
+            whip.scene.sound.play(CST.AUDIO.WHIPHIT, {
+                loop: false
+            })
             //adjust enemy stats on hit from whip
             enemy.rep--;
             if(enemy.rep == 0){
@@ -95,6 +100,10 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         //adjust inventory and enemy stats on hit from ball
         enemy.scene.player.balls++;
         enemy.rep--;
+        //Play sound effect
+        ball.scene.sound.play(CST.AUDIO.BALLHIT, {
+            loop: false
+        })
         if(enemy.rep == 0){
             enemy.destroy();
         }

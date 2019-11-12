@@ -23,16 +23,10 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         this.startY = y;
     }
 
-    ballHit(ball){
-        this.rep--;
-        if(this.rep <= 0){
-            this.destory();
-        }
-    }
-
     jsonHitPlayer(player, json){
         //adjust inventory and player stats on hit from json
         player.rep -= json.dmg;
+        //Play sound effect
         json.scene.sound.play(CST.AUDIO.JSON, {
             loop: false
         })
@@ -71,6 +65,12 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
             player.displayInventory();
             if(player.rep <= 0){
                 //player.destroy();
+            }
+            if(curName.dmg > 0){
+                //Play player hit sound effect
+                curName.scene.sound.play(CST.AUDIO.PLAYERHIT, {
+                    loop: false
+                })
             }
         }
         //Based on the name from the collision decide what to do
