@@ -257,7 +257,7 @@ function (_Phaser$Scene) {
             frameHeight: 64,
             frameWidth: 64
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CHAD) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CHAD || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 96,
             frameWidth: 64
@@ -282,7 +282,7 @@ function (_Phaser$Scene) {
             frameHeight: 48,
             frameWidth: 160
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BRAD) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BRAD) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 80,
             frameWidth: 48
@@ -846,6 +846,11 @@ function (_Phaser$Physics$Arcad) {
         ball.scene.player.displayInventory();
         ball.destroy();
       }
+    }
+  }, {
+    key: "blocked",
+    value: function blocked() {
+      console.log("blocked");
     }
   }, {
     key: "decrementWill",
@@ -1628,18 +1633,26 @@ function (_Phaser$Scene) {
       var terrain2 = mappy.addTilesetImage("ground2");
       var terrain3 = mappy.addTilesetImage("ground3");
       var holster = mappy.addTilesetImage("holster");
-      var lightwood = mappy.addTilesetImage("lightwood"); //layers
+      var lightwood = mappy.addTilesetImage("lightwood");
+      var fat = mappy.addTilesetImage("fat"); //layers
 
       mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
       this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
-      this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2); //Create the level using this scene and the map made above
+      this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
+      this.firstStage = mappy.createStaticLayer("firstStage", fat, 0, 0).setDepth(1); //Create the level using this scene and the map made above
 
       this.lm = new _LevelManager.LevelManager(this, mappy); //map collisions
 
       this.physics.add.collider(this.player, this.topLayer);
       this.physics.add.collider(this.player, this.furnishing); //add whip colliders for enemies
 
-      this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this);
+      this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this); //add collider for chick blocks
+
+      this.firstStage.setCollisionByProperty({
+        collides: true
+      });
+      this.physics.add.collider(this.player, this.firstStage, this.player.blocked, null, this); //add colliders for terrain
+
       this.topLayer.setCollisionByProperty({
         collides: true
       });
@@ -1712,6 +1725,7 @@ function (_Phaser$Scene) {
       this.load.image("ground2", "./assets/image/ground2.png");
       this.load.image("ground3", "./assets/image/ground3.png");
       this.load.image("holster", "./assets/image/holster.png");
+      this.load.image("fat", "./assets/sprite/fat.png");
       this.load.image("lightwood", "./assets/image/lightwood.png");
       this.load.tilemapTiledJSON("FirstLevel", "./assets/maps/FirstLevel.json");
     }

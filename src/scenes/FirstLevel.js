@@ -28,11 +28,13 @@ export class FirstLevel extends Phaser.Scene{
         let terrain2 = mappy.addTilesetImage("ground2"); 
         let terrain3 = mappy.addTilesetImage("ground3");      
         let holster = mappy.addTilesetImage("holster"); 
-        let lightwood = mappy.addTilesetImage("lightwood");    
+        let lightwood = mappy.addTilesetImage("lightwood");  
+        let fat = mappy.addTilesetImage("fat");   
         //layers
         mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
         this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
         this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
+        this.firstStage = mappy.createStaticLayer("firstStage", fat, 0, 0).setDepth(1);
         //Create the level using this scene and the map made above
         this.lm = new LevelManager(this, mappy); 
         //map collisions
@@ -40,6 +42,10 @@ export class FirstLevel extends Phaser.Scene{
         this.physics.add.collider(this.player, this.furnishing);
         //add whip colliders for enemies
         this.physics.add.collider(this.enemySet, this.whip, this.whip.whipHitEnemy, null, this);
+        //add collider for chick blocks
+        this.firstStage.setCollisionByProperty({collides:true});
+        this.physics.add.collider(this.player, this.firstStage, this.player.blocked, null, this);
+        //add colliders for terrain
         this.topLayer.setCollisionByProperty({collides:true});  
         this.furnishing.setCollisionByProperty({collides:true});        
     }   
@@ -94,6 +100,7 @@ export class FirstLevel extends Phaser.Scene{
         this.load.image("ground2", "./assets/image/ground2.png");
         this.load.image("ground3", "./assets/image/ground3.png");
         this.load.image("holster", "./assets/image/holster.png");
+        this.load.image("fat", "./assets/sprite/fat.png");
         this.load.image("lightwood", "./assets/image/lightwood.png");
         this.load.tilemapTiledJSON("FirstLevel", "./assets/maps/FirstLevel.json");
     }

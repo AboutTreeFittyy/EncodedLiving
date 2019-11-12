@@ -121,6 +121,10 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }        
     }
 
+    blocked(){
+        console.log("blocked");
+    }
+
     decrementWill(player){
         //Make sure there is some will to lose before decrementing 
         if(player.will > 0){
