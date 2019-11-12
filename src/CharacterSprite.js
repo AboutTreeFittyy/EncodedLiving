@@ -75,8 +75,9 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         invBuffer += "\n\n    <LEVEL>                   "+this.knowledgeLevel;
         invBuffer += "\n\n    <KNOWLEDGE>      "+this.knowledgeProgress+" / "+this.knowledgeNeeded;
         invBuffer += "\n\n    <WILLPOWER>      "+this.will+" / "+this.willMax;
-        invBuffer += "\n\n    <REPUTATION>     "+this.rep+" / "+this.repMax;
+        invBuffer += "\n\n    <REPUTATION>      "+this.rep+" / "+this.repMax;
         invBuffer += "\n\n    <MONEY>                $"+this.money+".00";
+        invBuffer += "\n\n    <PINGPONGS>           "+this.balls+"/"+this.maxBalls;
         this.scene.cmd1Text.text = invBuffer;
     }
 
@@ -99,6 +100,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     ballHitEnemy(ball, enemy){
         //adjust inventory and enemy stats on hit from ball
         enemy.scene.player.balls++;
+        ball.scene.player.displayInventory();
         enemy.rep--;
         //Play sound effect
         ball.scene.sound.play(CST.AUDIO.BALLHIT, {
@@ -112,9 +114,20 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 
     ballHitWall(ball, wall){
         //timer calls this even if its been deleted so make sure it still exists
-        if(ball.scene != null){
+        if(ball.scene != null){            
             ball.scene.player.balls++;
+            ball.scene.player.displayInventory();
             ball.destroy();
         }        
+    }
+
+    decrementWill(player){
+        //Make sure there is some will to lose before decrementing 
+        if(player.will > 0){
+            player.will--;
+            player.displayInventory();
+        }  
+        //recursively call function continuously so its always happening      
+        player.scene.time.delayedCall(15000, player.decrementWill, [player], player.scene);
     }
 }

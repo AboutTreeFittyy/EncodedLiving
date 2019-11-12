@@ -132,22 +132,22 @@ export class LevelManager{
     followPlayer(go){
         let anim = 'nothing';
         //Have her follow the player around                                      
-        if(this.scene.player.y - 100 > go.y){
+        if(this.scene.player.y - 150 > go.y){
             //player below
             go.setVelocityY(256);
             anim = "down";
-        }else if (this.scene.player.y + 100 < go.y){
+        }else if (this.scene.player.y + 150 < go.y){
             //player above
             go.setVelocityY(-256);
             anim = "up";
         }else{
             go.setVelocityY(0);
         }
-        if(this.scene.player.x - 100 > go.x){
+        if(this.scene.player.x - 150 > go.x){
             //player in front
             go.setVelocityX(256);
             anim = "right";
-        }else if (this.scene.player.x + 100< go.x){
+        }else if (this.scene.player.x + 150 < go.x){
             //player behind
             go.setVelocityX(-256);
             anim = "left";
@@ -187,10 +187,10 @@ export class LevelManager{
             go.play(go.name + anim, true);
         }else{
             //have npc look at player general direction unless behind
-            if(this.scene.player.y > go.y+50){
+            if(this.scene.player.y > go.y+25){
                 //face down
                 go.setFrame(down);                        
-            }else if(this.scene.player.y < go.y-50){
+            }else if(this.scene.player.y < go.y-100){
                 //face up
                 go.setFrame(up);
             }else if(this.scene.player.x > go.x){
@@ -216,6 +216,8 @@ export class LevelManager{
         //initialize player and whip to face down at start
         this.scene.player.isFacing = "down";
         this.scene.player.setPosition(this.scene.player.x,this.scene.player.y);
+        //Set timer to decrement willpower by 1 every 15 seconds
+        this.scene.time.delayedCall(15000, this.scene.player.decrementWill, [this.scene.player], this.scene);
     }
 
     setCMDS(){
@@ -295,11 +297,13 @@ export class LevelManager{
                     loop: false
                 })  
                 this.scene.player.balls--;
+                this.scene.player.displayInventory();
                 //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
                 let ball = new CharacterSprite(this.scene, this.scene.player.x, this.scene.player.y, CST.SPRITE.BALL, 0).setDepth(5);
                 this.scene.physics.add.collider(this.scene.enemySet, ball, ball.ballHitEnemy, null, this.scene);
                 this.scene.physics.add.collider(this.scene.topLayer, ball, ball.ballHitWall, null, this.scene);
-                this.scene.time.delayedCall(1000, ball.ballHitWall, [ball, ball], this.scene);
+                //delay call by amount of player will power, so lower will power makes throws go less far
+                this.scene.time.delayedCall(50 * this.scene.player.will, ball.ballHitWall, [ball, ball], this.scene);
                 ball.setOffset(8,6);
                 switch(this.scene.player.isFacing){
                     case "left":this.scene.player.play("attackleft");

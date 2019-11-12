@@ -5,6 +5,7 @@
  * the continue icon. This helps keep speech flow between the player and NPCs.
 */
 import {CST} from "../CST";
+import { Sprite } from "../Sprite";
 export class TalkScene extends Phaser.Scene{
 	constructor(){
 		super({
@@ -46,6 +47,27 @@ export class TalkScene extends Phaser.Scene{
 		})
 	}
 
+	dropItem(frame, x, y, name){
+		let sprite = new Sprite(this.player.scene, this.player.x + x, this.player.y + y, CST.SPRITE.ITEM, frame, 0, 0, 0, name);
+		this.player.scene.lm.itemSet.add(sprite);
+		sprite.setSize(32,32);
+		sprite.body.setOffset(0,0);
+	}
+
+	addCMD2Text(text, player){
+		//If the command prompt has more than 34 lines, delete the first one before adding another
+        if(text.split(/\r\n|\r|\n/).length + player.scene.cmd2Lines >= 35){
+			//Increment the number of lines tracker for each line of dialogue in the string
+			for(var i = 0; i <  text.split(/\r\n|\r|\n/).length; i++){
+				player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/,"");
+			}
+        }else{
+            //Still room so don't remove anything, just increase counter for lines
+            player.scene.cmd2Lines += text.split(/\r\n|\r|\n/).length;
+        }
+		player.scene.cmd2Text.text += text+"\n";
+	}
+	
 	acceptInput(){		
 		if(this.chatsDone >= this.chats.length){
 			//Return to game, no more dialogue now
@@ -113,6 +135,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Claire/Introducing myself, I\nalways liked it when a friend cooks.",
 					"C:/Users/Claire/To_Player/Well I guess we'll get\nalong great then! Oh by the way, I have exam answers\nfrom last year on this sheet. You can have it. It'll\nimprove your knowledge. *WINKS*",];
 					npc.state++;
+					this.dropItem(1, 0, -200, "examsheet");
 				break;
 				case 1:
 					this.chats = [
@@ -192,6 +215,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Kyle/To_Player/Ha, perfect I love em short.\nThanks pal. You want the rest of this energy drink?",
 					"C:/Users/Player/To_Kyle/Sure *Grabs drink* Why is\nit still full?", 
 					"C:/Users/Kyle/To_Player/People my size don't need\nmuch of that. Enjoy the drink, I'll see you around."];
+					this.dropItem(3, 0, -200, "energy");
 					npc.state++;
 				break;
 				case 1:
@@ -228,6 +252,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Chad/To_Nicole/Well the offers there if you\nchange your mind.",
 					"C:/Users/Chad/To_Player/Hey, before you go I got\nsome exam sheets you can have.",
 					"C:/Users/Player/To_Chad/Thanks, you're the best!."];
+					this.dropItem(1, 0, -200, "examsheet");
 				npc.state++;
 				break;
 				case 1:
@@ -260,6 +285,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Brad/I would but I'm broke.", 
 					"C:/Users/Brad/To_Player/Here take this cash then."];
 					npc.state++;
+					this.dropItem(2, 0, -200, "money");
 					break;
 				case 1:
 					this.chats = [
@@ -323,6 +349,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Stevie/This guy we met that you\nshould hit on. He said he'll hit on you though, so\nfeel free to just wait.", 
 					"C:/Users/Stevie/To_Player/Yeah, I'll just nap. Well\nthis energy drinks no use then. Here take it.",
 					"C:/Users/Nicole/To_Stevie/Aw you're both so similar,\n enjoy the nap."];
+					this.dropItem(3, 0, -200, "energy");
 					npc.state++;
 					break;
 				case 1:
@@ -358,6 +385,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Prof/To_Player/Look I'll give you the exam\nanswers, just go away!",
 					"C:/Users/Player/To_Nicole/Is she for real?", 
 					"C:/Users/Nicole/To_Player/Shutup don't blow this!"];
+					this.dropItem(1, 0, 200, "examsheet");
 					npc.state++;
 					break;
 				case 1:
@@ -376,19 +404,5 @@ export class TalkScene extends Phaser.Scene{
 		}
 		//Print first segment of speech
 		this.acceptInput();
-	}
-
-	addCMD2Text(text, player){
-		//If the command prompt has more than 34 lines, delete the first one before adding another
-        if(text.split(/\r\n|\r|\n/).length + player.scene.cmd2Lines >= 35){
-			//Increment the number of lines tracker for each line of dialogue in the string
-			for(var i = 0; i <  text.split(/\r\n|\r|\n/).length; i++){
-				player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/,"");
-			}
-        }else{
-            //Still room so don't remove anything, just increase counter for lines
-            player.scene.cmd2Lines += text.split(/\r\n|\r|\n/).length;
-        }
-		player.scene.cmd2Text.text += text+"\n";
-    }
+	}	
 }

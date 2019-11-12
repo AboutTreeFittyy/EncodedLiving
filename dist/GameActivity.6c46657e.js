@@ -795,8 +795,9 @@ function (_Phaser$Physics$Arcad) {
       invBuffer += "\n\n    <LEVEL>                   " + this.knowledgeLevel;
       invBuffer += "\n\n    <KNOWLEDGE>      " + this.knowledgeProgress + " / " + this.knowledgeNeeded;
       invBuffer += "\n\n    <WILLPOWER>      " + this.will + " / " + this.willMax;
-      invBuffer += "\n\n    <REPUTATION>     " + this.rep + " / " + this.repMax;
+      invBuffer += "\n\n    <REPUTATION>      " + this.rep + " / " + this.repMax;
       invBuffer += "\n\n    <MONEY>                $" + this.money + ".00";
+      invBuffer += "\n\n    <PINGPONGS>           " + this.balls + "/" + this.maxBalls;
       this.scene.cmd1Text.text = invBuffer;
     }
   }, {
@@ -823,6 +824,7 @@ function (_Phaser$Physics$Arcad) {
     value: function ballHitEnemy(ball, enemy) {
       //adjust inventory and enemy stats on hit from ball
       enemy.scene.player.balls++;
+      ball.scene.player.displayInventory();
       enemy.rep--; //Play sound effect
 
       ball.scene.sound.play(_CST.CST.AUDIO.BALLHIT, {
@@ -841,8 +843,21 @@ function (_Phaser$Physics$Arcad) {
       //timer calls this even if its been deleted so make sure it still exists
       if (ball.scene != null) {
         ball.scene.player.balls++;
+        ball.scene.player.displayInventory();
         ball.destroy();
       }
+    }
+  }, {
+    key: "decrementWill",
+    value: function decrementWill(player) {
+      //Make sure there is some will to lose before decrementing 
+      if (player.will > 0) {
+        player.will--;
+        player.displayInventory();
+      } //recursively call function continuously so its always happening      
+
+
+      player.scene.time.delayedCall(15000, player.decrementWill, [player], player.scene);
     }
   }]);
 
@@ -1016,11 +1031,11 @@ function () {
     value: function followPlayer(go) {
       var anim = 'nothing'; //Have her follow the player around                                      
 
-      if (this.scene.player.y - 100 > go.y) {
+      if (this.scene.player.y - 150 > go.y) {
         //player below
         go.setVelocityY(256);
         anim = "down";
-      } else if (this.scene.player.y + 100 < go.y) {
+      } else if (this.scene.player.y + 150 < go.y) {
         //player above
         go.setVelocityY(-256);
         anim = "up";
@@ -1028,11 +1043,11 @@ function () {
         go.setVelocityY(0);
       }
 
-      if (this.scene.player.x - 100 > go.x) {
+      if (this.scene.player.x - 150 > go.x) {
         //player in front
         go.setVelocityX(256);
         anim = "right";
-      } else if (this.scene.player.x + 100 < go.x) {
+      } else if (this.scene.player.x + 150 < go.x) {
         //player behind
         go.setVelocityX(-256);
         anim = "left";
@@ -1077,10 +1092,10 @@ function () {
         go.play(go.name + anim, true);
       } else {
         //have npc look at player general direction unless behind
-        if (this.scene.player.y > go.y + 50) {
+        if (this.scene.player.y > go.y + 25) {
           //face down
           go.setFrame(down);
-        } else if (this.scene.player.y < go.y - 50) {
+        } else if (this.scene.player.y < go.y - 100) {
           //face up
           go.setFrame(up);
         } else if (this.scene.player.x > go.x) {
@@ -1106,7 +1121,9 @@ function () {
       this.scene.whip.setScale(3); //initialize player and whip to face down at start
 
       this.scene.player.isFacing = "down";
-      this.scene.player.setPosition(this.scene.player.x, this.scene.player.y);
+      this.scene.player.setPosition(this.scene.player.x, this.scene.player.y); //Set timer to decrement willpower by 1 every 15 seconds
+
+      this.scene.time.delayedCall(15000, this.scene.player.decrementWill, [this.scene.player], this.scene);
     }
   }, {
     key: "setCMDS",
@@ -1220,15 +1237,19 @@ function () {
             loop: false
           });
 
-          _this.scene.player.balls--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
+          _this.scene.player.balls--;
+
+          _this.scene.player.displayInventory(); //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
+
 
           var ball = new _CharacterSprite.CharacterSprite(_this.scene, _this.scene.player.x, _this.scene.player.y, _CST.CST.SPRITE.BALL, 0).setDepth(5);
 
           _this.scene.physics.add.collider(_this.scene.enemySet, ball, ball.ballHitEnemy, null, _this.scene);
 
-          _this.scene.physics.add.collider(_this.scene.topLayer, ball, ball.ballHitWall, null, _this.scene);
+          _this.scene.physics.add.collider(_this.scene.topLayer, ball, ball.ballHitWall, null, _this.scene); //delay call by amount of player will power, so lower will power makes throws go less far
 
-          _this.scene.time.delayedCall(1000, ball.ballHitWall, [ball, ball], _this.scene);
+
+          _this.scene.time.delayedCall(50 * _this.scene.player.will, ball.ballHitWall, [ball, ball], _this.scene);
 
           ball.setOffset(8, 6);
 
@@ -1898,6 +1919,8 @@ exports.TalkScene = void 0;
 
 var _CST = require("../CST");
 
+var _Sprite = require("../Sprite");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1969,6 +1992,30 @@ function (_Phaser$Scene) {
       });
     }
   }, {
+    key: "dropItem",
+    value: function dropItem(frame, x, y, name) {
+      var sprite = new _Sprite.Sprite(this.player.scene, this.player.x + x, this.player.y + y, _CST.CST.SPRITE.ITEM, frame, 0, 0, 0, name);
+      this.player.scene.lm.itemSet.add(sprite);
+      sprite.setSize(32, 32);
+      sprite.body.setOffset(0, 0);
+    }
+  }, {
+    key: "addCMD2Text",
+    value: function addCMD2Text(text, player) {
+      //If the command prompt has more than 34 lines, delete the first one before adding another
+      if (text.split(/\r\n|\r|\n/).length + player.scene.cmd2Lines >= 35) {
+        //Increment the number of lines tracker for each line of dialogue in the string
+        for (var i = 0; i < text.split(/\r\n|\r|\n/).length; i++) {
+          player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/, "");
+        }
+      } else {
+        //Still room so don't remove anything, just increase counter for lines
+        player.scene.cmd2Lines += text.split(/\r\n|\r|\n/).length;
+      }
+
+      player.scene.cmd2Text.text += text + "\n";
+    }
+  }, {
     key: "acceptInput",
     value: function acceptInput() {
       if (this.chatsDone >= this.chats.length) {
@@ -2026,6 +2073,7 @@ function (_Phaser$Scene) {
             case 0:
               this.chats = ["C:/Users/Player/To_Claire/You look like you know\n your way around here, what's your name?", "C:/Users/Claire/To_Player/The name's Claire and I\nsure do! What are you doing here?", "C:/Users/Player/To_Claire/Introducing myself, I\nalways liked it when a friend cooks.", "C:/Users/Claire/To_Player/Well I guess we'll get\nalong great then! Oh by the way, I have exam answers\nfrom last year on this sheet. You can have it. It'll\nimprove your knowledge. *WINKS*"];
               npc.state++;
+              this.dropItem(1, 0, -200, "examsheet");
               break;
 
             case 1:
@@ -2079,6 +2127,7 @@ function (_Phaser$Scene) {
           switch (npc.state) {
             case 0:
               this.chats = ["C:/Users/Player/To_Kyle/How's the weather down\nthere?", "C:/Users/Kyle/To_Player/Amazing! I'm so pumped to\nbe here!", "C:/Users/Player/To_Kyle/Good, someone who isn't\neasily offended.", "C:/Users/Kyle/To_Player/Me? Never! Chicks don't\nlike insecure dudes.", "C:/Users/Player/To_Kyle/You're a ladies man then?", "C:/Users/Kyle/To_Player/Yeah, know any girls that I\nshould?", "C:/Users/Nicole/To_Player/Awe he would be so cute\nwith Stevie!", "C:/Users/Player/To_Kyle/Yeah, you should try with\nStevie. As long as you don't mind short people haha.", "C:/Users/Kyle/To_Player/Ha, perfect I love em short.\nThanks pal. You want the rest of this energy drink?", "C:/Users/Player/To_Kyle/Sure *Grabs drink* Why is\nit still full?", "C:/Users/Kyle/To_Player/People my size don't need\nmuch of that. Enjoy the drink, I'll see you around."];
+              this.dropItem(3, 0, -200, "energy");
               npc.state++;
               break;
 
@@ -2104,6 +2153,7 @@ function (_Phaser$Scene) {
           switch (npc.state) {
             case 0:
               this.chats = ["C:/Users/Player/To_Chad/Hey, I hear you're throwing\na party..", "C:/Users/Chad/To_Player/Duh, I'm Chad! I throw\nthe sickest parties man! So sick, everyone's invited!", "C:/Users/Player/To_Chad/Awesome man I can't wait\nto go!", "C:/Users/Player/To_Nicole/Are you gonna go?", "C:/Users/Nicole/To_Player/Sorry but I'm gonna be\nstuck late here during my summer courses.", "C:/Users/Chad/To_Nicole/You're gonna miss out! My\nparties are the best in the country. Drive to my place\nand crash with me if you want, no pressure.", "C:/Users/Nicole/To_Chad/Thanks for the offer but I\nprobably won't even be finished class by the time the\nparties over.", "C:/Users/Chad/To_Nicole/Well the offers there if you\nchange your mind.", "C:/Users/Chad/To_Player/Hey, before you go I got\nsome exam sheets you can have.", "C:/Users/Player/To_Chad/Thanks, you're the best!."];
+              this.dropItem(1, 0, -200, "examsheet");
               npc.state++;
               break;
 
@@ -2129,6 +2179,7 @@ function (_Phaser$Scene) {
             case 0:
               this.chats = ["C:/Users/Player/To_Brad/Hey are you going to\nChads party?", "C:/Users/Brad/To_Player/Of course! Everyones\ngoing to that!", "C:/Users/Player/To_Brad/Cool man, I'll see you\nthere then.", "C:/Users/Brad/To_Player/Oh could you get some\nbooze?", "C:/Users/Player/To_Brad/I would but I'm broke.", "C:/Users/Brad/To_Player/Here take this cash then."];
               npc.state++;
+              this.dropItem(2, 0, -200, "money");
               break;
 
             case 1:
@@ -2177,6 +2228,7 @@ function (_Phaser$Scene) {
           switch (npc.state) {
             case 0:
               this.chats = ["C:/Users/Player/To_Stevie/Hey there, Mrs Short.", "C:/Users/Stevie/To_Player/Hey I may be energetic\nbut I ain't no StarBucks coffee!", "C:/Users/Nicole/To_Stevie/You're looking great\nStevie! How are you doing?", "C:/Users/Stevie/To_Player/She this nice to you?", "C:/Users/Player/To_Stevie/Nah I think she's hitting\non you...", "C:/Users/Nicole/To_Stevie/You two... always\nscrewing around.", "C:/Users/Player/To_Nicole/Don't worry, I'll let you\nhit on me later. Now though, Stevie needs to hit\non Kyle.", "C:/Users/Stevie/To_Player/Who's Kyle?", "C:/Users/Player/To_Stevie/This guy we met that you\nshould hit on. He said he'll hit on you though, so\nfeel free to just wait.", "C:/Users/Stevie/To_Player/Yeah, I'll just nap. Well\nthis energy drinks no use then. Here take it.", "C:/Users/Nicole/To_Stevie/Aw you're both so similar,\n enjoy the nap."];
+              this.dropItem(3, 0, -200, "energy");
               npc.state++;
               break;
 
@@ -2202,6 +2254,7 @@ function (_Phaser$Scene) {
           switch (npc.state) {
             case 0:
               this.chats = ["C:/Users/Player/To_Prof/Hey why do I need to take\nmusic?", "C:/Users/Prof/To_Player/Don't ask questions!", "C:/Users/Player/To_Prof/Wait what?", "C:/Users/Prof/To_Player/Look I'll give you the exam\nanswers, just go away!", "C:/Users/Player/To_Nicole/Is she for real?", "C:/Users/Nicole/To_Player/Shutup don't blow this!"];
+              this.dropItem(1, 0, 200, "examsheet");
               npc.state++;
               break;
 
@@ -2221,29 +2274,13 @@ function (_Phaser$Scene) {
 
       this.acceptInput();
     }
-  }, {
-    key: "addCMD2Text",
-    value: function addCMD2Text(text, player) {
-      //If the command prompt has more than 34 lines, delete the first one before adding another
-      if (text.split(/\r\n|\r|\n/).length + player.scene.cmd2Lines >= 35) {
-        //Increment the number of lines tracker for each line of dialogue in the string
-        for (var i = 0; i < text.split(/\r\n|\r|\n/).length; i++) {
-          player.scene.cmd2Text.text = player.scene.cmd2Text.text.replace(/[\w\W]+?\n+?/, "");
-        }
-      } else {
-        //Still room so don't remove anything, just increase counter for lines
-        player.scene.cmd2Lines += text.split(/\r\n|\r|\n/).length;
-      }
-
-      player.scene.cmd2Text.text += text + "\n";
-    }
   }]);
 
   return TalkScene;
 }(Phaser.Scene);
 
 exports.TalkScene = TalkScene;
-},{"../CST":"src/CST.js"}],"src/GameActivity.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../Sprite":"src/Sprite.js"}],"src/GameActivity.js":[function(require,module,exports) {
 "use strict";
 
 var _LoadScene = require("./scenes/LoadScene");
