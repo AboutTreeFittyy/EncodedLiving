@@ -32,13 +32,14 @@ export const CST = {
 		THEME1:"level_1_theme.mp3",
 		TITLE:"title_music.mp3",
 		JSON:"json.mp3",
-		CHAD:"chadWave.mp3",
+		CHAD:"chadFlex.mp3",
 		VLAD:"vladWave.mp3",
 		PLAYERHIT:"playerHit.mp3",
 		BALLHIT:"ballHit.mp3",
 		WHIPHIT:"whipHit.mp3",
 		THROW:"throw.mp3",
-		WHIP:"whip.mp3"		
+		WHIP:"whip.mp3",
+
 	},
 	SPRITE:{
 		PLAYER: "player.png",
@@ -46,6 +47,7 @@ export const CST = {
 		BALL: "pingpong.png",
 		NPC_LOT: "npc_lot.png",
 		CHAD: "chadsprite.png",
+		HOTSTUFF: "hotStuff.png",
 		KYLE: "kyle.png",
 		BRAD: "brad.png",
 		STEVIE: "stevie.png",

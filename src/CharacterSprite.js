@@ -106,7 +106,10 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         ball.scene.sound.play(CST.AUDIO.BALLHIT, {
             loop: false
         })
-        if(enemy.rep == 0){
+        if(enemy.rep == 0){            
+            if(enemy.name == "chad"){
+                enemy.scene.sound.removeByKey(CST.AUDIO.CHAD);
+            }
             enemy.destroy();
         }
         ball.destroy();

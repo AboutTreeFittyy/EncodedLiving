@@ -83,7 +83,8 @@ export class FirstLevel extends Phaser.Scene{
         let chad = this.lm.getNPC("chad");
         let kyle = this.lm.getNPC("Kyle");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        if(this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1){
+        //if(this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1){
+        if(this.finished1 == false && this.player.knowledgeLevel >= 1){
             let nicole = this.lm.getNPC("Nicole");
             nicole.state = 2;
             //hide blocker and remove their collider
@@ -104,7 +105,8 @@ export class FirstLevel extends Phaser.Scene{
         let claire = this.lm.getNPC("Claire1");
         let brad = this.lm.getNPC("Brad");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        if(this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2){
+        //if(this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2){
+        if(this.finished2 == false && this.player.knowledgeLevel >= 1){    
             let nicole = this.lm.getNPC("Nicole");
             let chad = this.lm.getNPC("chad");
             nicole.state = 3; //4th state is her at chad fight
@@ -114,9 +116,9 @@ export class FirstLevel extends Phaser.Scene{
             this.player.scene.keyboard.E.isDown = true;
             nicole.npcSpeak(this.player, nicole);  
             //Move chad to 6200,4020 in the exam room and set him to fight mode
-            chad.x = 6200;
+            chad.x = 6600;
             chad.y = 4020;
-            chad.startX = 6200;
+            chad.startX = 6600;
             chad.startY = 4020;
             chad.state = 4;
             this.finished2 = true;

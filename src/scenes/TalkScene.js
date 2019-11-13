@@ -376,9 +376,11 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Chad/Can this wait? I got to go\nto my exam.",
 					"C:/Users/Chad/To_Player/No way you can't miss out\non this chick man! I won't let you.",
 					"C:/Users/Player/To_Chad/Sorry but I'm going to go\nto my exam.",
-					"C:/Users/Chad/To_Player/Just try to get through!"];
+					"C:/Users/Chad/To_Player/Just try to get through!",
+					"C:/Users/Nicole/To_Player/Oh my god don't look!\nThat's some HOT STUFF!!!"];
 					//Put Chad into fighting mode
-					npc.chadFight(player, npc);
+					npc.makeNPCAgro(player, npc);
+					npc.state++;
 					break;
 			}
             break;

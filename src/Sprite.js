@@ -36,9 +36,18 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    chadFight(player, npc){
+    makeNPCAgro(player, npc){
         //Make Chad destroyable
-        this.rep = 5;
+        this.rep = 10;
         player.scene.physics.add.collider(player.scene.whip, npc, player.scene.whip.whipHitEnemy, null, this);
+        if(npc.name=="chad"){
+            npc.scene.sound.play(CST.AUDIO.CHAD, {
+                loop: true
+            })
+        }
+    }
+
+    chadAttack(player, go){
+        go.state = 5;
     }
 }

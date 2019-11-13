@@ -159,7 +159,7 @@ var CST = {
     THEME1: "level_1_theme.mp3",
     TITLE: "title_music.mp3",
     JSON: "json.mp3",
-    CHAD: "chadWave.mp3",
+    CHAD: "chadFlex.mp3",
     VLAD: "vladWave.mp3",
     PLAYERHIT: "playerHit.mp3",
     BALLHIT: "ballHit.mp3",
@@ -173,6 +173,7 @@ var CST = {
     BALL: "pingpong.png",
     NPC_LOT: "npc_lot.png",
     CHAD: "chadsprite.png",
+    HOTSTUFF: "hotStuff.png",
     KYLE: "kyle.png",
     BRAD: "brad.png",
     STEVIE: "stevie.png",
@@ -281,6 +282,11 @@ function (_Phaser$Scene) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 48,
             frameWidth: 160
+          });
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.HOTSTUFF) {
+          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
+            frameHeight: 320,
+            frameWidth: 90
           });
         } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BRAD) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
@@ -506,11 +512,22 @@ function (_Phaser$Physics$Arcad) {
       }
     }
   }, {
-    key: "chadFight",
-    value: function chadFight(player, npc) {
+    key: "makeNPCAgro",
+    value: function makeNPCAgro(player, npc) {
       //Make Chad destroyable
-      this.rep = 5;
+      this.rep = 10;
       player.scene.physics.add.collider(player.scene.whip, npc, player.scene.whip.whipHitEnemy, null, this);
+
+      if (npc.name == "chad") {
+        npc.scene.sound.play(_CST.CST.AUDIO.CHAD, {
+          loop: true
+        });
+      }
+    }
+  }, {
+    key: "chadAttack",
+    value: function chadAttack(player, go) {
+      go.state = 5;
     }
   }]);
 
@@ -576,37 +593,40 @@ function (_Phaser$Physics$Arcad) {
   }
 
   _createClass(EnemySprite, [{
-    key: "jsonHitPlayer",
-    value: function jsonHitPlayer(player, json) {
-      //adjust inventory and player stats on hit from json
-      player.rep -= json.dmg; //Play sound effect
+    key: "projectileHitPlayer",
+    value: function projectileHitPlayer(player, projectile) {
+      //adjust inventory and player stats on hit from projectile
+      player.rep -= projectile.dmg; //Play sound effect
 
-      json.scene.sound.play(_CST.CST.AUDIO.JSON, {
-        loop: false
-      });
+      if (projectile.name == "json") {
+        projectile.scene.sound.play(_CST.CST.AUDIO.JSON, {
+          loop: false
+        });
+      }
+
       player.displayInventory();
 
       if (player.rep <= 0) {//player.destroy();
       }
 
-      json.destroy();
+      projectile.destroy();
     }
   }, {
-    key: "jsonHitWall",
-    value: function jsonHitWall(json, wall) {
+    key: "projectileHitWall",
+    value: function projectileHitWall(projectile, wall) {
       //timer calls this even if its been deleted so make sure it still exists
-      if (json.scene != null) {
-        json.jsons++;
-        json.destroy();
+      if (projectile.scene != null) {
+        projectile.jsons++;
+        projectile.destroy();
       }
     }
   }, {
-    key: "jsonTimeOut",
-    value: function jsonTimeOut(json, jason) {
+    key: "projectileTimeOut",
+    value: function projectileTimeOut(projectile, enemy) {
       //console.log("as"+JSON.stringify(jason));//timer calls this even if its been deleted so make sure it still exists
-      if (jason.scene != null) {
-        jason.jsons++;
-        json.destroy();
+      if (enemy.scene != null) {
+        enemy.jsons++;
+        projectile.destroy();
       }
     }
   }, {
@@ -840,6 +860,10 @@ function (_Phaser$Physics$Arcad) {
       });
 
       if (enemy.rep == 0) {
+        if (enemy.name == "chad") {
+          enemy.scene.sound.removeByKey(_CST.CST.AUDIO.CHAD);
+        }
+
         enemy.destroy();
       }
 
@@ -995,16 +1019,32 @@ function () {
           return this.scene.npcCont.list[i];
         }
       }
+
+      return null;
+    }
+  }, {
+    key: "spawnProjectile",
+    value: function spawnProjectile(x, y, cst, st, name, rep, dmg, size, time, sprite) {
+      var projectile = new _EnemySprite.EnemySprite(this.scene, x, y, cst, st, name, rep, dmg).setDepth(5); //Make projectile hit walls and players.
+
+      this.scene.physics.add.collider(this.scene.player, projectile, projectile.projectileHitPlayer, null, this.scene);
+      this.scene.physics.add.collider(this.scene.topLayer, projectile, projectile.projectileHitWall, null, this.scene);
+      projectile.setScale(size); //Make timer to destroy projectile after certain amount of time.
+
+      this.scene.time.delayedCall(time, projectile.projectileTimeOut, [projectile, sprite], this.scene);
+      return projectile;
     }
   }, {
     key: "updateSprites",
     value: function updateSprites() {
       //Scan through all the NPCs to update them
       for (var i = 0; i < this.scene.npcCont.count('visible', true); i++) {
-        switch (this.scene.npcCont.list[i].name) {
+        var go = this.scene.npcCont.list[i];
+
+        switch (go.name) {
           case "Nicole":
           case "NicoleD":
-            this.followPlayer(this.scene.npcCont.list[i]);
+            this.followPlayer(go);
             break;
 
           case "Kyle":
@@ -1013,75 +1053,125 @@ function () {
           case "Brad":
           case "Prof":
           case "Stevie":
-          case "chad":
             //Now check if they've been pushed from their origin and make them face the player
-            this.watchPlayer(this.scene.npcCont.list[i], this.scene.npcCont.list[i].down, this.scene.npcCont.list[i].up, this.scene.npcCont.list[i].right, this.scene.npcCont.list[i].left);
+            this.watchPlayer(go, go.down, go.up, go.right, go.left);
+
+          case "chad":
+            if (go.state < 5) {
+              //Now check if they've been pushed from their origin and make them face the player
+              this.watchPlayer(go, go.down, go.up, go.right, go.left);
+            } //Check if chad is currently an enemy and needs to attack the player
+
+
+            if (go.state == 5) {
+              //Timer has reset chad state to 5. Have him attack.
+
+              /*for(var i = -2; i < 3; i++){
+                  this.spawnProjectile(go.x, go.y + (i * 160), CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              }*/
+              this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              go.play("chadFlex", true); //Set flag to 6 so he doesn't attack again.
+
+              go.state = 6; //Set new timer to make him attack again in 2 seconds.
+
+              this.scene.time.delayedCall(2000, go.chadAttack, [this.scene.player, go], this.scene);
+            } else {
+              //Keep him in the right area, don't let him be pushed out of bounds
+              if (go.startY - 50 > go.y) {
+                go.setVelocityY(128);
+              } else if (go.startY + 50 < go.y) {
+                go.setVelocityY(-128);
+              } else {
+                go.setVelocityY(0);
+              }
+
+              if (go.startX - 50 > go.x) {
+                go.setVelocityX(128);
+              } else if (go.startX + 50 < go.x) {
+                go.setVelocityX(-128);
+              } else {
+                go.setVelocityX(0);
+              }
+            }
+
             break;
         }
       } //Scan through all the enemy objects to update them
 
 
       for (var _i = 0; _i < this.scene.enemyCont.count('visible', true); _i++) {
-        var go = this.scene.enemyCont.list[_i];
+        var _go = this.scene.enemyCont.list[_i];
 
-        switch (go.name) {
+        switch (_go.name) {
           case "nerd1down":
-            go.play("nerd1down", true);
-            go.setVelocityY(90);
+            _go.play("nerd1down", true);
+
+            _go.setVelocityY(90);
+
             break;
 
           case "nerd1up":
-            go.play("nerd1up", true);
-            go.setVelocityY(-90);
+            _go.play("nerd1up", true);
+
+            _go.setVelocityY(-90);
+
             break;
 
           case "nerd1left":
-            go.play("nerd1left", true);
-            go.setVelocityX(-90);
+            _go.play("nerd1left", true);
+
+            _go.setVelocityX(-90);
+
             break;
 
           case "nerd1right":
-            go.play("nerd1right", true);
-            go.setVelocityX(90);
+            _go.play("nerd1right", true);
+
+            _go.setVelocityX(90);
+
             break;
 
           case "nerd2down":
-            go.play("nerd2down", true);
-            go.setVelocityY(90);
+            _go.play("nerd2down", true);
+
+            _go.setVelocityY(90);
+
             break;
 
           case "nerd2up":
-            go.play("nerd2up", true);
-            go.setVelocityY(-90);
+            _go.play("nerd2up", true);
+
+            _go.setVelocityY(-90);
+
             break;
 
           case "nerd2left":
-            go.play("nerd2left", true);
-            go.setVelocityX(-90);
+            _go.play("nerd2left", true);
+
+            _go.setVelocityX(-90);
+
             break;
 
           case "nerd2right":
-            go.play("nerd2right", true);
-            go.setVelocityX(90);
+            _go.play("nerd2right", true);
+
+            _go.setVelocityX(90);
+
             break;
 
           case "jason":
             //Now check if they've been pushed from their origin
-            this.watchPlayer(go, 4, 40, 28, 16); //get the difference of the player and jason coordinates
+            this.watchPlayer(_go, 4, 40, 28, 16); //get the difference of the player and jason coordinates
 
-            var x = this.scene.player.x - go.x;
-            var y = this.scene.player.y - go.y; //check if jason can project another json or if he's close enough to
+            var x = this.scene.player.x - _go.x;
+            var y = this.scene.player.y - _go.y; //check if jason can project another json or if he's close enough to
 
-            if (go.jsons > 0 && Math.abs(x) < 250 && Math.abs(y) < 250) {
-              go.jsons--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
-
-              var json = new _EnemySprite.EnemySprite(this.scene, go.x, go.y, _CST.CST.SPRITE.JSON, 0, 1, 1, 1).setDepth(5);
-              this.scene.physics.add.collider(this.scene.player, json, json.jsonHitPlayer, null, this.scene);
-              this.scene.physics.add.collider(this.scene.topLayer, json, json.jsonHitWall, null, this.scene); //pace the shots randomly
+            if (_go.jsons > 0 && Math.abs(x) < 250 && Math.abs(y) < 250) {
+              _go.jsons--; //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
 
               var randTime = this.randomNum(1000, 3000);
-              this.scene.time.delayedCall(randTime, json.jsonTimeOut, [json, go], this.scene);
-              json.setScale(.5); //get random speeds
+              var json = this.spawnProjectile(_go.x, _go.y, _CST.CST.SPRITE.JSON, 0, 'json', 1, 1, .5, randTime, _go); //get random speeds
 
               var randX = this.randomNum(1, 256);
               var randY = this.randomNum(1, 256); //Aim for the player general area using their coordinates as reference for scatter shot
@@ -1109,7 +1199,7 @@ function () {
 
           case "nerdgirl":
             //Now check if they've been pushed from their origin
-            this.watchPlayer(go, 2, 12, 8, 4);
+            this.watchPlayer(_go, 2, 12, 8, 4);
             break;
         }
       }
@@ -1340,7 +1430,16 @@ function () {
 
           _this.scene.physics.add.collider(_this.scene.enemySet, ball, ball.ballHitEnemy, null, _this.scene);
 
-          _this.scene.physics.add.collider(_this.scene.topLayer, ball, ball.ballHitWall, null, _this.scene); //delay call by amount of player will power, so lower will power makes throws go less far
+          _this.scene.physics.add.collider(_this.scene.topLayer, ball, ball.ballHitWall, null, _this.scene); //see if chad is agro and needs a collider
+
+
+          var chad = _this.getNPC("chad");
+
+          if (chad != null) {
+            if (chad.state > 4) {
+              _this.scene.physics.add.collider(ball, chad, ball.ballHitEnemy, null, _this.scene);
+            }
+          } //delay call by amount of player will power, so lower will power makes throws go less far
 
 
           _this.scene.time.delayedCall(50 * _this.scene.player.will, ball.ballHitWall, [ball, ball], _this.scene);
@@ -1555,7 +1654,8 @@ function () {
       this.createAnimation("chadleft", 10, _CST.CST.SPRITE.CHAD, 0, 3, false);
       this.createAnimation("chadright", 10, _CST.CST.SPRITE.CHAD, 4, 7, false);
       this.createAnimation("chaddown", 10, _CST.CST.SPRITE.CHAD, 0, 3, false);
-      this.createAnimation("chadup", 10, _CST.CST.SPRITE.CHAD, 4, 7, false); //Nerd variant 1 animations
+      this.createAnimation("chadup", 10, _CST.CST.SPRITE.CHAD, 4, 7, false);
+      this.createAnimation("chadFlex", 10, _CST.CST.SPRITE.CHAD, 8, 15, false); //Nerd variant 1 animations
 
       this.createAnimation("nerd1left", 15, _CST.CST.SPRITE.NERD1, 5, 7, false);
       this.createAnimation("nerd1right", 15, _CST.CST.SPRITE.NERD1, 9, 11, false);
@@ -1791,8 +1891,9 @@ function (_Phaser$Scene) {
     value: function checkProgress1() {
       var chad = this.lm.getNPC("chad");
       var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+      //if(this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1){
 
-      if (this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1) {
+      if (this.finished1 == false && this.player.knowledgeLevel >= 1) {
         var nicole = this.lm.getNPC("Nicole");
         nicole.state = 2; //hide blocker and remove their collider
 
@@ -1814,8 +1915,9 @@ function (_Phaser$Scene) {
       var stevie = this.lm.getNPC("Stevie");
       var claire = this.lm.getNPC("Claire1");
       var brad = this.lm.getNPC("Brad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+      //if(this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2){
 
-      if (this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2) {
+      if (this.finished2 == false && this.player.knowledgeLevel >= 1) {
         var nicole = this.lm.getNPC("Nicole");
         var chad = this.lm.getNPC("chad");
         nicole.state = 3; //4th state is her at chad fight
@@ -1826,9 +1928,9 @@ function (_Phaser$Scene) {
         this.player.scene.keyboard.E.isDown = true;
         nicole.npcSpeak(this.player, nicole); //Move chad to 6200,4020 in the exam room and set him to fight mode
 
-        chad.x = 6200;
+        chad.x = 6600;
         chad.y = 4020;
-        chad.startX = 6200;
+        chad.startX = 6600;
         chad.startY = 4020;
         chad.state = 4;
         this.finished2 = true;
@@ -2502,9 +2604,10 @@ function (_Phaser$Scene) {
               break;
 
             case 4:
-              this.chats = ["C:/Users/Chad/To_Player/Bro you're gonna love this\nchick I just met. She's perfect for you.", "C:/Users/Player/To_Chad/Can this wait? I got to go\nto my exam.", "C:/Users/Chad/To_Player/No way you can't miss out\non this chick man! I won't let you.", "C:/Users/Player/To_Chad/Sorry but I'm going to go\nto my exam.", "C:/Users/Chad/To_Player/Just try to get through!"]; //Put Chad into fighting mode
+              this.chats = ["C:/Users/Chad/To_Player/Bro you're gonna love this\nchick I just met. She's perfect for you.", "C:/Users/Player/To_Chad/Can this wait? I got to go\nto my exam.", "C:/Users/Chad/To_Player/No way you can't miss out\non this chick man! I won't let you.", "C:/Users/Player/To_Chad/Sorry but I'm going to go\nto my exam.", "C:/Users/Chad/To_Player/Just try to get through!", "C:/Users/Nicole/To_Player/Oh my god don't look!\nThat's some HOT STUFF!!!"]; //Put Chad into fighting mode
 
-              npc.chadFight(player, npc);
+              npc.makeNPCAgro(player, npc);
+              npc.state++;
               break;
           }
 
@@ -2685,7 +2788,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59945" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58921" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

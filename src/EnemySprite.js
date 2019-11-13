@@ -23,33 +23,35 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         this.startY = y;
     }
 
-    jsonHitPlayer(player, json){
-        //adjust inventory and player stats on hit from json
-        player.rep -= json.dmg;
+    projectileHitPlayer(player, projectile){
+        //adjust inventory and player stats on hit from projectile
+        player.rep -= projectile.dmg;
         //Play sound effect
-        json.scene.sound.play(CST.AUDIO.JSON, {
-            loop: false
-        })
+        if(projectile.name == "json"){
+            projectile.scene.sound.play(CST.AUDIO.JSON, {
+                loop: false
+            })
+        }       
         player.displayInventory();
         if(player.rep <= 0){
             //player.destroy();
         }
-        json.destroy();
+        projectile.destroy();
     }
 
-    jsonHitWall(json, wall){
+    projectileHitWall(projectile, wall){
         //timer calls this even if its been deleted so make sure it still exists
-        if(json.scene != null){
-            json.jsons++;
-            json.destroy();
+        if(projectile.scene != null){
+            projectile.jsons++;
+            projectile.destroy();
         }        
     }
 
-    jsonTimeOut(json, jason){
+    projectileTimeOut(projectile, enemy){
         //console.log("as"+JSON.stringify(jason));//timer calls this even if its been deleted so make sure it still exists
-        if(jason.scene != null){
-            jason.jsons++;
-            json.destroy();
+        if(enemy.scene != null){
+            enemy.jsons++;
+            projectile.destroy();
         }        
     }
 

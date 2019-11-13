@@ -1,6 +1,6 @@
 /* File Name: LevelManager.js
  * Author: Mathew Boland
- * Last Updated: November 11, 2019
+ * Last Updated: November 12, 2019
  * Description: A class to build a levels animations and sprites for the game
  * given the map and scene.
 */
@@ -27,25 +27,72 @@ export class LevelManager{
                 return this.scene.npcCont.list[i];
             }
         }
+        return null;
+    }
+
+    spawnProjectile(x, y, cst, st, name, rep, dmg, size, time, sprite){
+        let projectile = new EnemySprite(this.scene, x, y, cst, st, name, rep, dmg).setDepth(5);
+        //Make projectile hit walls and players.
+        this.scene.physics.add.collider(this.scene.player, projectile, projectile.projectileHitPlayer, null, this.scene);
+        this.scene.physics.add.collider(this.scene.topLayer, projectile, projectile.projectileHitWall, null, this.scene);
+        projectile.setScale(size);
+        //Make timer to destroy projectile after certain amount of time.
+        this.scene.time.delayedCall(time, projectile.projectileTimeOut, [projectile, sprite], this.scene);
+        return projectile;
     }
 
     updateSprites(){
         //Scan through all the NPCs to update them
         for(let i = 0; i < this.scene.npcCont.count('visible', true); i++){
-            switch(this.scene.npcCont.list[i].name){
+            let go = this.scene.npcCont.list[i];
+            switch(go.name){
                 case "Nicole":
                 case "NicoleD":
-                    this.followPlayer(this.scene.npcCont.list[i]);
+                    this.followPlayer(go);
                     break;
                 case "Kyle":
                 case "Claire1":
                 case "Claire2":
                 case "Brad":
                 case "Prof":
-                case "Stevie": 
-                case "chad":       
+                case "Stevie":       
                     //Now check if they've been pushed from their origin and make them face the player
-                    this.watchPlayer(this.scene.npcCont.list[i], this.scene.npcCont.list[i].down, this.scene.npcCont.list[i].up, this.scene.npcCont.list[i].right, this.scene.npcCont.list[i].left);
+                    this.watchPlayer(go, go.down, go.up, go.right, go.left);
+                case "chad":                   
+                    if(go.state < 5){
+                        //Now check if they've been pushed from their origin and make them face the player
+                        this.watchPlayer(go, go.down, go.up, go.right, go.left);
+                    }    
+                    //Check if chad is currently an enemy and needs to attack the player
+                    if(go.state == 5){
+                        //Timer has reset chad state to 5. Have him attack.
+                        /*for(var i = -2; i < 3; i++){
+                            this.spawnProjectile(go.x, go.y + (i * 160), CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        }*/
+                        this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        this.spawnProjectile(go.x, go.y -100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        go.play("chadFlex", true);                        
+                        //Set flag to 6 so he doesn't attack again.
+                        go.state = 6;
+                        //Set new timer to make him attack again in 2 seconds.
+                        this.scene.time.delayedCall(2000, go.chadAttack, [this.scene.player, go], this.scene);
+                    }else{
+                        //Keep him in the right area, don't let him be pushed out of bounds
+                        if(go.startY - 50 > go.y){
+                            go.setVelocityY(128);
+                        }else if (go.startY + 50 < go.y){
+                            go.setVelocityY(-128);
+                        }else{
+                            go.setVelocityY(0);
+                        }
+                        if(go.startX - 50 > go.x){
+                            go.setVelocityX(128);
+                        }else if (go.startX + 50 < go.x){
+                            go.setVelocityX(-128);
+                        }else{
+                            go.setVelocityX(0);
+                        }
+                    }
                     break
             }
         } 
@@ -95,13 +142,8 @@ export class LevelManager{
                     if(go.jsons > 0 && Math.abs(x) < 250 && Math.abs(y) < 250){
                         go.jsons--;
                         //create the new ball sprite to throw, with colliders and a timer to destroy it on contact or no contact
-                        let json = new EnemySprite(this.scene, go.x, go.y, CST.SPRITE.JSON, 0, 1, 1, 1).setDepth(5);
-                        this.scene.physics.add.collider(this.scene.player, json, json.jsonHitPlayer, null, this.scene);
-                        this.scene.physics.add.collider(this.scene.topLayer, json, json.jsonHitWall, null, this.scene);
-                        //pace the shots randomly
                         let randTime = this.randomNum(1000, 3000);
-                        this.scene.time.delayedCall(randTime, json.jsonTimeOut, [json, go], this.scene);
-                        json.setScale(.5);                       
+                        let json = this.spawnProjectile(go.x, go.y, CST.SPRITE.JSON, 0, 'json', 1, 1, .5, randTime, go);                      
                         //get random speeds
                         let randX = this.randomNum(1, 256);
                         let randY = this.randomNum(1, 256);
@@ -311,6 +353,13 @@ export class LevelManager{
                 let ball = new CharacterSprite(this.scene, this.scene.player.x, this.scene.player.y, CST.SPRITE.BALL, 0).setDepth(5);
                 this.scene.physics.add.collider(this.scene.enemySet, ball, ball.ballHitEnemy, null, this.scene);
                 this.scene.physics.add.collider(this.scene.topLayer, ball, ball.ballHitWall, null, this.scene);
+                //see if chad is agro and needs a collider
+                let chad = this.getNPC("chad");
+                if(chad != null){
+                    if(chad.state > 4){
+                        this.scene.physics.add.collider(ball, chad, ball.ballHitEnemy, null, this.scene);
+                    }
+                }
                 //delay call by amount of player will power, so lower will power makes throws go less far
                 this.scene.time.delayedCall(50 * this.scene.player.will, ball.ballHitWall, [ball, ball], this.scene);
                 ball.setOffset(8,6);
