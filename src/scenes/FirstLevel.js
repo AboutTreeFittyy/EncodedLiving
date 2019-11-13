@@ -133,7 +133,8 @@ export class FirstLevel extends Phaser.Scene{
         let claire2 = this.lm.getNPC("Claire2");
         let kyle = this.lm.getNPC("Kyle");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
+        //if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
+            if(this.finished3 == false && this.player.knowledgeLevel >= 1){
             let nicole = this.lm.getNPC("Nicole");
             nicole.state = 2;
             //hide blocker and remove their collider
@@ -152,7 +153,8 @@ export class FirstLevel extends Phaser.Scene{
         let stevie = this.lm.getNPC("Stevie");
         let vlad = this.lm.getNPC("Vlad");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4){
+        //if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4){
+            if(this.finished4 == false && this.player.knowledgeLevel >= 1){
             let nicole = this.lm.getNPC("Nicole");
             nicole.state = 2;
             //hide blocker and remove their collider

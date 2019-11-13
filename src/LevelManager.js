@@ -66,16 +66,52 @@ export class LevelManager{
                     //Check if chad is currently an enemy and needs to attack the player
                     if(go.state == 5){
                         //Timer has reset chad state to 5. Have him attack.
-                        /*for(var i = -2; i < 3; i++){
-                            this.spawnProjectile(go.x, go.y + (i * 160), CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
-                        }*/
                         this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
                         this.spawnProjectile(go.x, go.y -100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
                         go.play("chadFlex", true);                        
                         //Set flag to 6 so he doesn't attack again.
                         go.state = 6;
                         //Set new timer to make him attack again in 2 seconds.
-                        this.scene.time.delayedCall(2000, go.chadAttack, [this.scene.player, go], this.scene);
+                        this.scene.time.delayedCall(2000, go.npcAttack, [this.scene.player, go], this.scene);
+                    }else if(go.state == 7){
+                        go.makeNPCAgro(this.scene.player, go); 
+                        go.state = 5;  
+                    }else{
+                        //Keep him in the right area, don't let him be pushed out of bounds
+                        if(go.startY - 50 > go.y){
+                            go.setVelocityY(128);
+                        }else if (go.startY + 50 < go.y){
+                            go.setVelocityY(-128);
+                        }else{
+                            go.setVelocityY(0);
+                        }
+                        if(go.startX - 50 > go.x){
+                            go.setVelocityX(128);
+                        }else if (go.startX + 50 < go.x){
+                            go.setVelocityX(-128);
+                        }else{
+                            go.setVelocityX(0);
+                        }
+                    }
+                    break
+                    case "Vlad":                 
+                    if(go.state < 5){
+                        //Now check if they've been pushed from their origin and make them face the player
+                        this.watchPlayer(go, go.down, go.up, go.right, go.left);
+                    }    
+                    //Check if chad is currently an enemy and needs to attack the player
+                    if(go.state == 5){
+                        //Timer has reset chad state to 5. Have him attack.
+                        this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        this.spawnProjectile(go.x, go.y -100, CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        go.play("VladCry", true);                        
+                        //Set flag to 6 so he doesn't attack again.
+                        go.state = 6;
+                        //Set new timer to make him attack again in 2 seconds.
+                        this.scene.time.delayedCall(2000, go.npcAttack, [this.scene.player, go], this.scene);
+                    }else if(go.state == 7){
+                        go.makeNPCAgro(this.scene.player, go); 
+                        go.state = 5;  
                     }else{
                         //Keep him in the right area, don't let him be pushed out of bounds
                         if(go.startY - 50 > go.y){
@@ -428,6 +464,7 @@ export class LevelManager{
         this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
         //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
         this.createNPCS(4704, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
+        this.createNPCS(5096, CST.SPRITE.NPCS, 6, CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
         this.createNPCS(512, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
         this.createNPCS(473, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
         this.createNPCS(515, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");

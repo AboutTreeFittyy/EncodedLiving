@@ -379,8 +379,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Chad/To_Player/Just try to get through!",
 					"C:/Users/Nicole/To_Player/Oh my god don't look!\nThat's some HOT STUFF!!!"];
 					//Put Chad into fighting mode
-					npc.makeNPCAgro(player, npc);
-					npc.state++;
+					npc.state = 7;
 					break;
 			}
             break;
@@ -419,28 +418,45 @@ export class TalkScene extends Phaser.Scene{
             case "Vlad":
 			switch(npc.state){
 				case 0:
-					this.chats = [
-					"C:/Users/Player/To_Vlad/", 
-					"C:/Users/Vlad/To_Player/"];
+				this.chats = [
+					"C:/Users/Player/To_Vlad/Hey.", 
+					"C:/Users/Vlad/To_Player/You can see me! Most\npeople who can see me just stare.",
+					"C:/Users/Player/To_Vlad/...",
+					"C:/Users/Vlad/To_Player/Oh, okay. Here's some\nanswers to the exams. I'll just fail anyway."];
+					this.dropItem(1, 0, -200, "examsheet");
 					npc.state++;
-					break;
+				break;
 				case 1:
 					this.chats = [
-					"C:/Users/Player/To_Vlad/", 
-					"C:/Users/Vlad/To_Player/"];
+					"C:/Users/Player/To_Vlad/Got anymore answer sheets?", 
+					"C:/Users/Vlad/To_Player/Sure do!",
+					"C:/Users/Player/To_Vlad/Thanks Vlad. I cancount\non you for these sheets.",
+					"C:/Users/Vlad/To_Player/It's the only thing anyone\ncan count on me for.",];
+					this.dropItem(1, 0, -200, "examsheet");
 					npc.state++;
-					break;
+				break;
 				case 2:
 					this.chats = [
-					"C:/Users/Player/To_Vlad/", 
-					"C:/Users/Vlad/To_Player/"];
+					"C:/Users/Player/To_Vlad/Can I have another sheet?", 
+					"C:/Users/Vlad/To_Player/This is my last one.\nGOD why didn't I print more! I'm so pathetic!",
+					"C:/Users/Player/To_Vlad/Uhh, okay."];
+					this.dropItem(1, 0, -200, "examsheet");
 					npc.state++;
 					break;						
 				case 3:
-					this.chats = [
-					"C:/Users/Player/To_Vlad/", 
-					"C:/Users/Vlad/To_Player/"];
-					npc.state++;
+					this.chats = [ 
+					"C:/Users/Vlad/To_Player/Not now man. I'm busy\nwallowing in self pity."];
+					break;
+				case 4:
+					this.chats = [ 
+					"C:/Users/Vlad/To_Player/I'm so sorry, I ran out of\nthose exam sheets. You must hate me now.",
+					"C:/Users/Player/To_Vlad/Can this wait? I got to go\nto my exam.",
+					"C:/Users/Vlad/To_Player/Oh god! Now I'm making you\nlate for your exam. You must really hate me!",
+					"C:/Users/Player/To_Vlad/Are you crying?",
+					"C:/Users/Vlad/To_Player/YES! *He won't move*",
+					"C:/Users/oliceN/To_Player/I*nact')ese#mhi!\nsHes'%os^tahpteci!'"];
+					//Put Vlad into fighting mode
+					npc.state = 7;
 					break;
 			}
             break

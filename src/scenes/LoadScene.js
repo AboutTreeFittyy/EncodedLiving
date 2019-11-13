@@ -38,7 +38,7 @@ export class LoadScene extends Phaser.Scene{
 					frameHeight: 64,
 					frameWidth: 64
 				});
-			}else if(CST.SPRITE[prop] == CST.SPRITE.CHAD || CST.SPRITE[prop] == CST.SPRITE.FAT ){
+			}else if(CST.SPRITE[prop] == CST.SPRITE.CHAD || CST.SPRITE[prop] == CST.SPRITE.VLAD || CST.SPRITE[prop] == CST.SPRITE.FAT ){
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
 					frameHeight: 96,
 					frameWidth: 64
@@ -63,7 +63,7 @@ export class LoadScene extends Phaser.Scene{
 					frameHeight: 48,
 					frameWidth: 160
 				});
-			}else if(CST.SPRITE[prop] == CST.SPRITE.HOTSTUFF){
+			}else if(CST.SPRITE[prop] == CST.SPRITE.HOTSTUFF || CST.SPRITE[prop] == CST.SPRITE.PATHETIC){
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {
 					frameHeight: 320,
 					frameWidth: 90

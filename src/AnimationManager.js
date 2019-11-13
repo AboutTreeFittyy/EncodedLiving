@@ -19,6 +19,12 @@ export class AnimationManager{
         this.createAnimation("chaddown", 10, CST.SPRITE.CHAD, 0, 3, false);
         this.createAnimation("chadup", 10, CST.SPRITE.CHAD, 4, 7, false);
         this.createAnimation("chadFlex", 10, CST.SPRITE.CHAD, 8, 15, false);
+        //Vlad sprites animation
+        this.createAnimation("Vladleft", 10, CST.SPRITE.VLAD, 0, 3, false);
+        this.createAnimation("Vladright", 10, CST.SPRITE.VLAD, 4, 7, false);
+        this.createAnimation("Vladdown", 10, CST.SPRITE.VLAD, 0, 3, false);
+        this.createAnimation("Vladup", 10, CST.SPRITE.VLAD, 4, 7, false);
+        this.createAnimation("VladCry", 10, CST.SPRITE.VLAD, 8, 15, false);
         //Nerd variant 1 animations
         this.createAnimation("nerd1left", 15, CST.SPRITE.NERD1, 5, 7, false);
         this.createAnimation("nerd1right", 15, CST.SPRITE.NERD1, 9, 11, false);

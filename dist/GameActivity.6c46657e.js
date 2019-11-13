@@ -174,6 +174,8 @@ var CST = {
     NPC_LOT: "npc_lot.png",
     CHAD: "chadsprite.png",
     HOTSTUFF: "hotStuff.png",
+    VLAD: "vlad.png",
+    PATHETIC: "pathetic.png",
     KYLE: "kyle.png",
     BRAD: "brad.png",
     STEVIE: "stevie.png",
@@ -258,7 +260,7 @@ function (_Phaser$Scene) {
             frameHeight: 64,
             frameWidth: 64
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CHAD || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.CHAD || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.VLAD || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.FAT) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 96,
             frameWidth: 64
@@ -283,7 +285,7 @@ function (_Phaser$Scene) {
             frameHeight: 48,
             frameWidth: 160
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.HOTSTUFF) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.HOTSTUFF || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.PATHETIC) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 320,
             frameWidth: 90
@@ -525,8 +527,8 @@ function (_Phaser$Physics$Arcad) {
       }
     }
   }, {
-    key: "chadAttack",
-    value: function chadAttack(player, go) {
+    key: "npcAttack",
+    value: function npcAttack(player, go) {
       go.state = 5;
     }
   }]);
@@ -1065,17 +1067,56 @@ function () {
 
             if (go.state == 5) {
               //Timer has reset chad state to 5. Have him attack.
-
-              /*for(var i = -2; i < 3; i++){
-                  this.spawnProjectile(go.x, go.y + (i * 160), CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
-              }*/
               this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
               this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
               go.play("chadFlex", true); //Set flag to 6 so he doesn't attack again.
 
               go.state = 6; //Set new timer to make him attack again in 2 seconds.
 
-              this.scene.time.delayedCall(2000, go.chadAttack, [this.scene.player, go], this.scene);
+              this.scene.time.delayedCall(2000, go.npcAttack, [this.scene.player, go], this.scene);
+            } else if (go.state == 7) {
+              go.makeNPCAgro(this.scene.player, go);
+              go.state = 5;
+            } else {
+              //Keep him in the right area, don't let him be pushed out of bounds
+              if (go.startY - 50 > go.y) {
+                go.setVelocityY(128);
+              } else if (go.startY + 50 < go.y) {
+                go.setVelocityY(-128);
+              } else {
+                go.setVelocityY(0);
+              }
+
+              if (go.startX - 50 > go.x) {
+                go.setVelocityX(128);
+              } else if (go.startX + 50 < go.x) {
+                go.setVelocityX(-128);
+              } else {
+                go.setVelocityX(0);
+              }
+            }
+
+            break;
+
+          case "Vlad":
+            if (go.state < 5) {
+              //Now check if they've been pushed from their origin and make them face the player
+              this.watchPlayer(go, go.down, go.up, go.right, go.left);
+            } //Check if chad is currently an enemy and needs to attack the player
+
+
+            if (go.state == 5) {
+              //Timer has reset chad state to 5. Have him attack.
+              this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              go.play("VladCry", true); //Set flag to 6 so he doesn't attack again.
+
+              go.state = 6; //Set new timer to make him attack again in 2 seconds.
+
+              this.scene.time.delayedCall(2000, go.npcAttack, [this.scene.player, go], this.scene);
+            } else if (go.state == 7) {
+              go.makeNPCAgro(this.scene.player, go);
+              go.state = 5;
             } else {
               //Keep him in the right area, don't let him be pushed out of bounds
               if (go.startY - 50 > go.y) {
@@ -1524,6 +1565,7 @@ function () {
       this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
 
       this.createNPCS(4704, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
+      this.createNPCS(5096, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
       this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
       this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
       this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
@@ -1655,7 +1697,13 @@ function () {
       this.createAnimation("chadright", 10, _CST.CST.SPRITE.CHAD, 4, 7, false);
       this.createAnimation("chaddown", 10, _CST.CST.SPRITE.CHAD, 0, 3, false);
       this.createAnimation("chadup", 10, _CST.CST.SPRITE.CHAD, 4, 7, false);
-      this.createAnimation("chadFlex", 10, _CST.CST.SPRITE.CHAD, 8, 15, false); //Nerd variant 1 animations
+      this.createAnimation("chadFlex", 10, _CST.CST.SPRITE.CHAD, 8, 15, false); //Vlad sprites animation
+
+      this.createAnimation("Vladleft", 10, _CST.CST.SPRITE.VLAD, 0, 3, false);
+      this.createAnimation("Vladright", 10, _CST.CST.SPRITE.VLAD, 4, 7, false);
+      this.createAnimation("Vladdown", 10, _CST.CST.SPRITE.VLAD, 0, 3, false);
+      this.createAnimation("Vladup", 10, _CST.CST.SPRITE.VLAD, 4, 7, false);
+      this.createAnimation("VladCry", 10, _CST.CST.SPRITE.VLAD, 8, 15, false); //Nerd variant 1 animations
 
       this.createAnimation("nerd1left", 15, _CST.CST.SPRITE.NERD1, 5, 7, false);
       this.createAnimation("nerd1right", 15, _CST.CST.SPRITE.NERD1, 9, 11, false);
@@ -1946,8 +1994,9 @@ function (_Phaser$Scene) {
     value: function checkProgress3() {
       var claire2 = this.lm.getNPC("Claire2");
       var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+      //if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
 
-      if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3) {
+      if (this.finished3 == false && this.player.knowledgeLevel >= 1) {
         var nicole = this.lm.getNPC("Nicole");
         nicole.state = 2; //hide blocker and remove their collider
 
@@ -1967,8 +2016,9 @@ function (_Phaser$Scene) {
     value: function checkProgress4() {
       var stevie = this.lm.getNPC("Stevie");
       var vlad = this.lm.getNPC("Vlad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+      //if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4){
 
-      if (this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4) {
+      if (this.finished4 == false && this.player.knowledgeLevel >= 1) {
         var nicole = this.lm.getNPC("Nicole");
         nicole.state = 2; //hide blocker and remove their collider
 
@@ -2606,8 +2656,7 @@ function (_Phaser$Scene) {
             case 4:
               this.chats = ["C:/Users/Chad/To_Player/Bro you're gonna love this\nchick I just met. She's perfect for you.", "C:/Users/Player/To_Chad/Can this wait? I got to go\nto my exam.", "C:/Users/Chad/To_Player/No way you can't miss out\non this chick man! I won't let you.", "C:/Users/Player/To_Chad/Sorry but I'm going to go\nto my exam.", "C:/Users/Chad/To_Player/Just try to get through!", "C:/Users/Nicole/To_Player/Oh my god don't look!\nThat's some HOT STUFF!!!"]; //Put Chad into fighting mode
 
-              npc.makeNPCAgro(player, npc);
-              npc.state++;
+              npc.state = 7;
               break;
           }
 
@@ -2641,23 +2690,31 @@ function (_Phaser$Scene) {
         case "Vlad":
           switch (npc.state) {
             case 0:
-              this.chats = ["C:/Users/Player/To_Vlad/", "C:/Users/Vlad/To_Player/"];
+              this.chats = ["C:/Users/Player/To_Vlad/Hey.", "C:/Users/Vlad/To_Player/You can see me! Most\npeople who can see me just stare.", "C:/Users/Player/To_Vlad/...", "C:/Users/Vlad/To_Player/Oh, okay. Here's some\nanswers to the exams. I'll just fail anyway."];
+              this.dropItem(1, 0, -200, "examsheet");
               npc.state++;
               break;
 
             case 1:
-              this.chats = ["C:/Users/Player/To_Vlad/", "C:/Users/Vlad/To_Player/"];
+              this.chats = ["C:/Users/Player/To_Vlad/Got anymore answer sheets?", "C:/Users/Vlad/To_Player/Sure do!", "C:/Users/Player/To_Vlad/Thanks Vlad. I cancount\non you for these sheets.", "C:/Users/Vlad/To_Player/It's the only thing anyone\ncan count on me for."];
+              this.dropItem(1, 0, -200, "examsheet");
               npc.state++;
               break;
 
             case 2:
-              this.chats = ["C:/Users/Player/To_Vlad/", "C:/Users/Vlad/To_Player/"];
+              this.chats = ["C:/Users/Player/To_Vlad/Can I have another sheet?", "C:/Users/Vlad/To_Player/This is my last one.\nGOD why didn't I print more! I'm so pathetic!", "C:/Users/Player/To_Vlad/Uhh, okay."];
+              this.dropItem(1, 0, -200, "examsheet");
               npc.state++;
               break;
 
             case 3:
-              this.chats = ["C:/Users/Player/To_Vlad/", "C:/Users/Vlad/To_Player/"];
-              npc.state++;
+              this.chats = ["C:/Users/Vlad/To_Player/Not now man. I'm busy\nwallowing in self pity."];
+              break;
+
+            case 4:
+              this.chats = ["C:/Users/Vlad/To_Player/I'm so sorry, I ran out of\nthose exam sheets. You must hate me now.", "C:/Users/Player/To_Vlad/Can this wait? I got to go\nto my exam.", "C:/Users/Vlad/To_Player/Oh god! Now I'm making you\nlate for your exam. You must really hate me!", "C:/Users/Player/To_Vlad/Are you crying?", "C:/Users/Vlad/To_Player/YES! *He won't move*", "C:/Users/oliceN/To_Player/I*nact')ese#mhi!\nsHes'%os^tahpteci!'"]; //Put Vlad into fighting mode
+
+              npc.state = 7;
               break;
           }
 

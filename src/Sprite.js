@@ -47,7 +47,7 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    chadAttack(player, go){
+    npcAttack(player, go){
         go.state = 5;
     }
 }

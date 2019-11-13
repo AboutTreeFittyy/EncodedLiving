@@ -48,6 +48,8 @@ export const CST = {
 		NPC_LOT: "npc_lot.png",
 		CHAD: "chadsprite.png",
 		HOTSTUFF: "hotStuff.png",
+		VLAD: "vlad.png",
+		PATHETIC: "pathetic.png",
 		KYLE: "kyle.png",
 		BRAD: "brad.png",
 		STEVIE: "stevie.png",
