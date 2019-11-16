@@ -26,7 +26,10 @@ export const CST = {
 		SHOP: "shop.png",
 		FIDDY: "fiddy.png",
 		EXIT: "exit.png",
-		CONTINUE: "continue.png"
+		CONTINUE: "continue.png",
+		ENERGY: "energy.png",
+		DVD: "dvd.png",
+		EXAM: "examSheet.png"
 	},
 	AUDIO:{
 		THEME1:"level_1_theme.mp3",

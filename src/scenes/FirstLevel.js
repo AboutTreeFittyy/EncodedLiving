@@ -33,6 +33,7 @@ export class FirstLevel extends Phaser.Scene{
         let fat = mappy.addTilesetImage("fat");   
         //layers
         mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
+        this.shopLayer = mappy.createStaticLayer("shop_layer", terrain1, 0, 0).setDepth(-1);
         this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
         this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
         this.claireRoom = mappy.createStaticLayer("claireRoom", fat, 0, 0).setDepth(1);
@@ -63,6 +64,9 @@ export class FirstLevel extends Phaser.Scene{
         //add colliders for terrain
         this.topLayer.setCollisionByProperty({collides:true});  
         this.furnishing.setCollisionByProperty({collides:true});
+        //Set collider handler for the shop entrance
+        this.shopLayer.setCollisionByProperty({collides:true});
+        this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this);
         //start talk with nicole
         let nicole = this.lm.getNPC("Nicole");
         this.player.scene.keyboard.E.isDown = true;

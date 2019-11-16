@@ -153,7 +153,10 @@ var CST = {
     SHOP: "shop.png",
     FIDDY: "fiddy.png",
     EXIT: "exit.png",
-    CONTINUE: "continue.png"
+    CONTINUE: "continue.png",
+    ENERGY: "energy.png",
+    DVD: "dvd.png",
+    EXAM: "examSheet.png"
   },
   AUDIO: {
     THEME1: "level_1_theme.mp3",
@@ -765,10 +768,33 @@ function (_Phaser$Physics$Arcad) {
   }
 
   _createClass(CharacterSprite, [{
+    key: "enterShop",
+    value: function enterShop(player) {
+      //If the r button is pressed then begin chat scene
+      if (player.scene.keyboard.E.isDown) {
+        player.scene.scene.launch(_CST.CST.SCENES.SHOP, player);
+        player.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
+
+        player.scene.keyboard.E.reset();
+        player.scene.keyboard.W.reset();
+        player.scene.keyboard.A.reset();
+        player.scene.keyboard.S.reset();
+        player.scene.keyboard.D.reset();
+      }
+    }
+  }, {
     key: "collectItem",
     value: function collectItem(player, item) {
+      player.addItem(player, item.name); //Picked up so destroy it
+
+      item.setVisible(false);
+      item.destroy(item.body);
+    }
+  }, {
+    key: "addItem",
+    value: function addItem(player, name) {
       //Find out which item was grabbed
-      switch (item.name) {
+      switch (name) {
         case "dvd":
           //Got DVD
           if (player.rep < player.repMax) {
@@ -812,10 +838,7 @@ function (_Phaser$Physics$Arcad) {
           break;
       }
 
-      player.displayInventory(); //Picked up so destroy it
-
-      item.setVisible(false);
-      item.destroy(item.body);
+      player.displayInventory();
     }
   }, {
     key: "displayInventory",
@@ -826,7 +849,7 @@ function (_Phaser$Physics$Arcad) {
       invBuffer += "\n\n    <KNOWLEDGE>      " + this.knowledgeProgress + " / " + this.knowledgeNeeded;
       invBuffer += "\n\n    <WILLPOWER>      " + this.will + " / " + this.willMax;
       invBuffer += "\n\n    <REPUTATION>      " + this.rep + " / " + this.repMax;
-      invBuffer += "\n\n    <MONEY>                $" + this.money + ".00";
+      invBuffer += "\n\n    <MONEY>                $" + this.money;
       invBuffer += "\n\n    <PINGPONGS>           " + this.balls + "/" + this.maxBalls;
       this.scene.cmd1Text.text = invBuffer;
     }
@@ -1384,11 +1407,6 @@ function () {
         _this.scene.scene.launch(_CST.CST.SCENES.PAUSE);
 
         _this.scene.scene.pause();
-      });
-      this.scene.input.keyboard.on('keyup-Y', function () {
-        _this.scene.scene.launch(_CST.CST.SCENES.SHOP);
-
-        _this.scene.scene.pause();
       }); //Adjust zoom out
 
       this.scene.input.keyboard.on('keyup-U', function () {
@@ -1876,6 +1894,7 @@ function (_Phaser$Scene) {
       var fat = mappy.addTilesetImage("fat"); //layers
 
       mappy.createStaticLayer("bottom_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(-1);
+      this.shopLayer = mappy.createStaticLayer("shop_layer", terrain1, 0, 0).setDepth(-1);
       this.furnishing = mappy.createStaticLayer("furnishing", [holster, lightwood, terrain2], 0, 0).setDepth(2);
       this.topLayer = mappy.createStaticLayer("top_layer", [terrain1, terrain2, terrain3], 0, 0).setDepth(2);
       this.claireRoom = mappy.createStaticLayer("claireRoom", fat, 0, 0).setDepth(1);
@@ -1917,7 +1936,12 @@ function (_Phaser$Scene) {
       });
       this.furnishing.setCollisionByProperty({
         collides: true
-      }); //start talk with nicole
+      }); //Set collider handler for the shop entrance
+
+      this.shopLayer.setCollisionByProperty({
+        collides: true
+      });
+      this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this); //start talk with nicole
 
       var nicole = this.lm.getNPC("Nicole");
       this.player.scene.keyboard.E.isDown = true;
@@ -2255,20 +2279,24 @@ function (_Phaser$Scene) {
       title.setY(title.height / 2);
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.9, _CST.CST.IMAGE.EXIT).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
-      hoverSprite.setVisible(false); //create sounds for menu and pause!
+      hoverSprite.setVisible(false); //Make purchase buttons for items
+
+      var exam = this.add.image(this.game.renderer.width / 2 + 250, this.game.renderer.height * 0.7, _CST.CST.IMAGE.EXAM).setDepth(1);
+      var dvd = this.add.image(this.game.renderer.width / 2 + 400, this.game.renderer.height * 0.7, _CST.CST.IMAGE.DVD).setDepth(1);
+      var energy = this.add.image(this.game.renderer.width / 2 + 100, this.game.renderer.height * 0.7, _CST.CST.IMAGE.ENERGY).setDepth(1); //create sounds for menu and pause!
 
       /*this.sound.play(CST.AUDIO.TITLE, {
       	loop: true
             })*/
       //make p resume game as well
 
-      this.input.keyboard.on('keyup-Y', function () {
+      this.input.keyboard.on('keyup-SPACE', function () {
         _this.sound.pauseAll();
 
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
-      }); //make buttons interactive
+      }); //make resume button interactive and exit game on click
 
       resume.setInteractive();
       resume.on("pointerover", function () {
@@ -2286,11 +2314,68 @@ function (_Phaser$Scene) {
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
+      }); //Make exam button interactive and purchase exam sheet on click for 3.5 dollars if player has enough
+
+      exam.setInteractive();
+      exam.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = exam.x;
+        hoverSprite.y = exam.y - 150;
+      });
+      exam.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      exam.on("pointerup", function () {
+        if (_this.player.money > 3) {
+          _this.player.money -= 3.5;
+
+          _this.player.addItem(_this.player, "examsheet");
+        }
+      }); //Make energy button interactive and purchase energy on click for 3.5 dollars if player has enough
+
+      energy.setInteractive();
+      energy.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = energy.x;
+        hoverSprite.y = energy.y - 150;
+      });
+      energy.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      energy.on("pointerup", function () {
+        if (_this.player.money > 3) {
+          _this.player.money -= 3.5;
+
+          _this.player.addItem(_this.player, "energy");
+        }
+      }); //Make  button interactive and purchased on click for 3.5 dollars if player has enough
+
+      dvd.setInteractive();
+      dvd.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = dvd.x;
+        hoverSprite.y = dvd.y - 150;
+      });
+      dvd.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      dvd.on("pointerup", function () {
+        if (_this.player.money > 3) {
+          _this.player.money -= 3.5;
+
+          _this.player.addItem(_this.player, "dvd");
+        }
       });
     }
   }, {
-    key: "preload",
-    value: function preload() {}
+    key: "init",
+    value: function init(data) {
+      //Get data from FirstLevel scene to work with in this scene
+      this.player = data;
+    }
   }]);
 
   return ShopScene;
@@ -2845,7 +2930,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58921" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51166" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

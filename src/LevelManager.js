@@ -332,10 +332,6 @@ export class LevelManager{
             this.scene.scene.launch(CST.SCENES.PAUSE);
             this.scene.scene.pause();
         })
-        this.scene.input.keyboard.on('keyup-Y', ()=>{
-            this.scene.scene.launch(CST.SCENES.SHOP);
-            this.scene.scene.pause();
-        })
         //Adjust zoom out
         this.scene.input.keyboard.on('keyup-U', ()=>{
             this.scene.cameras.main.setZoom(0.5);

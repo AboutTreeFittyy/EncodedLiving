@@ -29,9 +29,30 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.money = 0;
     }
 
+    enterShop(player){
+        //If the r button is pressed then begin chat scene
+        if (player.scene.keyboard.E.isDown) {
+            player.scene.scene.launch(CST.SCENES.SHOP, player);
+            player.scene.scene.pause();
+            //Reset buttons so they don't get stuck when resuming
+            player.scene.keyboard.E.reset();
+            player.scene.keyboard.W.reset();
+            player.scene.keyboard.A.reset();
+            player.scene.keyboard.S.reset();
+            player.scene.keyboard.D.reset();
+        }
+    }
+
     collectItem(player, item){
+        player.addItem(player, item.name);
+        //Picked up so destroy it
+        item.setVisible(false);
+        item.destroy(item.body);        
+    }
+
+    addItem(player, name){
         //Find out which item was grabbed
-        switch(item.name){
+        switch(name){
             case "dvd": //Got DVD
             if(player.rep < player.repMax){
                 player.rep++;
@@ -64,9 +85,6 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             break;
         }
         player.displayInventory();
-        //Picked up so destroy it
-        item.setVisible(false);
-        item.destroy(item.body);        
     }
 
     displayInventory(){
@@ -76,7 +94,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         invBuffer += "\n\n    <KNOWLEDGE>      "+this.knowledgeProgress+" / "+this.knowledgeNeeded;
         invBuffer += "\n\n    <WILLPOWER>      "+this.will+" / "+this.willMax;
         invBuffer += "\n\n    <REPUTATION>      "+this.rep+" / "+this.repMax;
-        invBuffer += "\n\n    <MONEY>                $"+this.money+".00";
+        invBuffer += "\n\n    <MONEY>                $"+this.money;
         invBuffer += "\n\n    <PINGPONGS>           "+this.balls+"/"+this.maxBalls;
         this.scene.cmd1Text.text = invBuffer;
     }
