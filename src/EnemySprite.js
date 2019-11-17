@@ -49,7 +49,7 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
     }
 
     projectileTimeOut(projectile, enemy){
-        //console.log("as"+JSON.stringify(jason));//timer calls this even if its been deleted so make sure it still exists
+        //timer calls this even if its been deleted so make sure it still exists
         if(enemy.scene != null){
             enemy.jsons++;
             projectile.destroy();
@@ -63,45 +63,47 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
             curName = player;
         }else{
             curName = enemy;
-            //adjust inventory and player stats on hit from json
-            player.rep -= curName.dmg;
-            player.displayInventory();
-            if(player.rep <= 0){
-                //player.destroy();
-            }
-            if(curName.dmg > 0){
-                //Play player hit sound effect
-                curName.scene.sound.play(CST.AUDIO.PLAYERHIT, {
-                    loop: false
-                })
+            //adjust inventory and player stats on hit from json if not in cooldown state
+            if(curName.state == 0){
+                player.rep -= curName.dmg;
+                player.displayInventory();
+                if(player.rep <= 0){
+                    //player.destroy();
+                }
+                if(curName.dmg > 0){
+                    //Play player hit sound effect
+                    curName.scene.sound.play(CST.AUDIO.PLAYERHIT, {
+                        loop: false
+                    })
+                }
             }
         }
-        //Based on the name from the collision decide what to do
-        switch(curName.name){
-            //For nerds just switch their current direction, slice their name so that it keeps the same variation number
-            case "nerd1up":
-            case "nerd2up":
-                curName.setVelocityY(-90);
-                curName.name = curName.name.slice(0, 5)+"down";
-            break;
-            case "nerd1down":
-            case "nerd2down":  
-                curName.setVelocityY(90);
-                curName.name = curName.name.slice(0, 5)+"up";
-            break;
-            case "nerd1right":
-            case "nerd2right":  
-                curName.setVelocityX(90);
-                curName.name = curName.name.slice(0, 5)+"left"; 
-            break;
-            case "nerd1left":
-            case "nerd2left":  
-                curName.setVelocityX(-90);
-                curName.name = curName.name.slice(0, 5)+"right";
-            break;
-            case "nerdgirl":  
-                //make sure it doesn't just keep spawning enemies    
-                if(curName.state == 0){
+        let coolTime = 500; //Standard for nerds
+        if(curName.state == 0){
+            //Based on the name from the collision decide what to do
+            switch(curName.name){
+                //For nerds just switch their current direction, slice their name so that it keeps the same variation number
+                case "nerd1up":
+                case "nerd2up":
+                    curName.setVelocityY(-90);
+                    curName.name = curName.name.slice(0, 5)+"down";
+                break;
+                case "nerd1down":
+                case "nerd2down":  
+                    curName.setVelocityY(90);
+                    curName.name = curName.name.slice(0, 5)+"up";
+                break;
+                case "nerd1right":
+                case "nerd2right":  
+                    curName.setVelocityX(90);
+                    curName.name = curName.name.slice(0, 5)+"left"; 
+                break;
+                case "nerd1left":
+                case "nerd2left":  
+                    curName.setVelocityX(-90);
+                    curName.name = curName.name.slice(0, 5)+"right";
+                break;
+                case "nerdgirl":  
                     //Spawn in ten nerds from above without hitboxes for the map
                     let sprite;
                     for(var i = -5; i < 5; i++){
@@ -112,17 +114,17 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
                         curName.scene.enemyCont.add(sprite);
                         curName.scene.physics.add.collider(curName.scene.player, sprite, sprite.enemyCollide, null, curName.scene);
                     }
-                    //Set timer cooldown so that it doesn't keep spawning them 
-                    curName.scene.time.delayedCall(4000, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
-                    curName.state = 1;
-                }
-            break;
-        }
-        //Now store the temp variable back into the game object
-        if(player.name != ''){
-            player.name = curName.name;
-        }else{
-            enemy.name = curName.name;
+                    coolTime = 4000; //Have longer cooldown delay for spawning nerds
+                break;
+            }
+            //Now store the temp variable back into the game object
+            if(player.name != ''){
+                player.name = curName.name;
+            }else{
+                enemy.name = curName.name;
+            }
+            curName.state = 1; //Set a timer to make enemies only be affected by collisions at most once per second
+            curName.scene.time.delayedCall(coolTime, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
         }  
     }
 

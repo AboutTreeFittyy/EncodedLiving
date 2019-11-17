@@ -633,7 +633,7 @@ function (_Phaser$Physics$Arcad) {
   }, {
     key: "projectileTimeOut",
     value: function projectileTimeOut(projectile, enemy) {
-      //console.log("as"+JSON.stringify(jason));//timer calls this even if its been deleted so make sure it still exists
+      //timer calls this even if its been deleted so make sure it still exists
       if (enemy.scene != null) {
         enemy.jsons++;
         projectile.destroy();
@@ -647,52 +647,55 @@ function (_Phaser$Physics$Arcad) {
       if (player.name != '') {
         curName = player;
       } else {
-        curName = enemy; //adjust inventory and player stats on hit from json
+        curName = enemy; //adjust inventory and player stats on hit from json if not in cooldown state
 
-        player.rep -= curName.dmg;
-        player.displayInventory();
+        if (curName.state == 0) {
+          player.rep -= curName.dmg;
+          player.displayInventory();
 
-        if (player.rep <= 0) {//player.destroy();
+          if (player.rep <= 0) {//player.destroy();
+          }
+
+          if (curName.dmg > 0) {
+            //Play player hit sound effect
+            curName.scene.sound.play(_CST.CST.AUDIO.PLAYERHIT, {
+              loop: false
+            });
+          }
         }
+      }
 
-        if (curName.dmg > 0) {
-          //Play player hit sound effect
-          curName.scene.sound.play(_CST.CST.AUDIO.PLAYERHIT, {
-            loop: false
-          });
-        }
-      } //Based on the name from the collision decide what to do
+      var coolTime = 500; //Standard for nerds
 
+      if (curName.state == 0) {
+        //Based on the name from the collision decide what to do
+        switch (curName.name) {
+          //For nerds just switch their current direction, slice their name so that it keeps the same variation number
+          case "nerd1up":
+          case "nerd2up":
+            curName.setVelocityY(-90);
+            curName.name = curName.name.slice(0, 5) + "down";
+            break;
 
-      switch (curName.name) {
-        //For nerds just switch their current direction, slice their name so that it keeps the same variation number
-        case "nerd1up":
-        case "nerd2up":
-          curName.setVelocityY(-90);
-          curName.name = curName.name.slice(0, 5) + "down";
-          break;
+          case "nerd1down":
+          case "nerd2down":
+            curName.setVelocityY(90);
+            curName.name = curName.name.slice(0, 5) + "up";
+            break;
 
-        case "nerd1down":
-        case "nerd2down":
-          curName.setVelocityY(90);
-          curName.name = curName.name.slice(0, 5) + "up";
-          break;
+          case "nerd1right":
+          case "nerd2right":
+            curName.setVelocityX(90);
+            curName.name = curName.name.slice(0, 5) + "left";
+            break;
 
-        case "nerd1right":
-        case "nerd2right":
-          curName.setVelocityX(90);
-          curName.name = curName.name.slice(0, 5) + "left";
-          break;
+          case "nerd1left":
+          case "nerd2left":
+            curName.setVelocityX(-90);
+            curName.name = curName.name.slice(0, 5) + "right";
+            break;
 
-        case "nerd1left":
-        case "nerd2left":
-          curName.setVelocityX(-90);
-          curName.name = curName.name.slice(0, 5) + "right";
-          break;
-
-        case "nerdgirl":
-          //make sure it doesn't just keep spawning enemies    
-          if (curName.state == 0) {
+          case "nerdgirl":
             //Spawn in ten nerds from above without hitboxes for the map
             var sprite;
 
@@ -703,21 +706,23 @@ function (_Phaser$Physics$Arcad) {
               sprite.body.setOffset(16, 16);
               curName.scene.enemyCont.add(sprite);
               curName.scene.physics.add.collider(curName.scene.player, sprite, sprite.enemyCollide, null, curName.scene);
-            } //Set timer cooldown so that it doesn't keep spawning them 
+            }
+
+            coolTime = 4000; //Have longer cooldown delay for spawning nerds
+
+            break;
+        } //Now store the temp variable back into the game object
 
 
-            curName.scene.time.delayedCall(4000, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
-            curName.state = 1;
-          }
+        if (player.name != '') {
+          player.name = curName.name;
+        } else {
+          enemy.name = curName.name;
+        }
 
-          break;
-      } //Now store the temp variable back into the game object
+        curName.state = 1; //Set a timer to make enemies only be affected by collisions at most once per second
 
-
-      if (player.name != '') {
-        player.name = curName.name;
-      } else {
-        enemy.name = curName.name;
+        curName.scene.time.delayedCall(coolTime, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
       }
     }
   }, {
