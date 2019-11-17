@@ -69,7 +69,7 @@ export class FirstLevel extends Phaser.Scene{
         this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this);
         //Set Nicoled flag to be invisible
         let nicoled = this.lm.getNPC("NicoleD");
-        nicoled.state = 10;
+        nicoled.state = 9;
         //start talk with nicole
         let nicole = this.lm.getNPC("Nicole");
         this.player.scene.keyboard.E.isDown = true;
@@ -90,8 +90,7 @@ export class FirstLevel extends Phaser.Scene{
         let chad = this.lm.getNPC("chad");
         let kyle = this.lm.getNPC("Kyle");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        //if(this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1){
-        if(this.finished1 == false && this.player.knowledgeLevel >= 1){
+        if(this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1){
             let nicole = this.lm.getNPC("Nicole");
             nicole.state = 2;
             //hide blocker and remove their collider
@@ -112,8 +111,7 @@ export class FirstLevel extends Phaser.Scene{
         let claire = this.lm.getNPC("Claire1");
         let brad = this.lm.getNPC("Brad");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        //if(this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2){
-        if(this.finished2 == false && this.player.knowledgeLevel >= 1){    
+        if(this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2){  
             let nicole = this.lm.getNPC("Nicole");
             let chad = this.lm.getNPC("chad");
             nicole.state = 3; //4th state is her at chad fight
@@ -132,7 +130,7 @@ export class FirstLevel extends Phaser.Scene{
         } 
     }
 
-    /*This progress check is for after the first boss fight with Chad, which should open Chads room. This check unlocks 
+    /*This progress check is for after the first boss fight with Chad, which should open Vlads room. This check unlocks 
     * Vlads room if you have talked to Claire2 and Kyle this semester. You also must be level 3 to pass the check.
     * NicoleD informs the player this is available when the check passes.
     */
@@ -140,8 +138,7 @@ export class FirstLevel extends Phaser.Scene{
         let claire2 = this.lm.getNPC("Claire2");
         let kyle = this.lm.getNPC("Kyle");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 1){
-            //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
+        if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
             let nicoled = this.lm.getNPC("NicoleD");
             nicoled.state = 3;
             //hide blocker and remove their collider
@@ -160,8 +157,7 @@ export class FirstLevel extends Phaser.Scene{
         let stevie = this.lm.getNPC("Stevie");
         let vlad = this.lm.getNPC("Vlad");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 2){
-            //if(this.finished4 == false && this.player.knowledgeLevel >= 1){
+        if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4){
             let nicoled = this.lm.getNPC("NicoleD");
             nicoled.state = 4;
             //hide blocker and remove their collider
@@ -169,6 +165,7 @@ export class FirstLevel extends Phaser.Scene{
             this.physics.world.removeCollider(this.examRoomCollider);
             this.player.scene.keyboard.E.isDown = true;
             nicoled.npcSpeak(this.player, nicoled);  
+            //Move Vlad to exam room
             vlad.x = 6600;
             vlad.y = 4020;
             vlad.startX = 6600;

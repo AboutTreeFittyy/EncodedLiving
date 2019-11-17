@@ -541,7 +541,8 @@ function (_Phaser$Physics$Arcad) {
           loop: true
         });
       }
-    }
+    } //Callback for Boss timer to attack again
+
   }, {
     key: "npcAttack",
     value: function npcAttack(player, go) {
@@ -901,6 +902,27 @@ function (_Phaser$Physics$Arcad) {
           }
 
           break;
+
+        case "mask":
+          //Unlock all doors
+          //Have Nicole/NicoleD tell you what it does
+          var nicole = player.scene.lm.getNPC("Nicole"); //Have Nicole tell player is shes active/visible
+
+          console.log("fore" + JSON.stringify(nicole));
+
+          if (nicole.visible) {
+            nicole.state = 10;
+            player.scene.keyboard.E.isDown = true;
+            nicole.npcSpeak(player, nicole);
+          } else {
+            //Have NicoleD tell player because Nicole is done
+            var nicoled = player.scene.lm.getNPC("NicoleD");
+            console.log("asd" + JSON.stringify(nicoled));
+            nicoled.state = 10;
+            player.scene.keyboard.E.isDown = true;
+            nicoled.npcSpeak(player, nicoled);
+          }
+
       }
 
       player.displayInventory();
@@ -1253,7 +1275,7 @@ function () {
             break;
 
           case "NicoleD":
-            if (go.state != 10) {
+            if (go.state != 9) {
               this.followPlayer(go);
             }
 
@@ -1812,7 +1834,8 @@ function () {
       this.createItems(459, 0, "dvd");
       this.createItems(460, 1, "examsheet");
       this.createItems(461, 2, "money");
-      this.createItems(462, 3, "energy"); //add the collider for all the items
+      this.createItems(462, 3, "energy");
+      this.createItems(463, 4, "mask"); //add the collider for all the items
 
       this.scene.physics.add.collider(this.scene.player, this.itemSet, this.scene.player.collectItem, null, this); //make group for npcs physics
 
@@ -1821,31 +1844,31 @@ function () {
 
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
       this.scene.npcCont = this.scene.add.container();
-      this.createNPCS(4704, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
-      this.createNPCS(5096, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
-      this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
-      this.createNPCS(473, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
-      this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
-      this.createNPCS(4741, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
-      this.createNPCS(4756, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
-      this.createNPCS(4792, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
-      this.createNPCS(593, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //make enemies group and container to handle them with*/
+      this.createNPCS(4705, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
+      this.createNPCS(5097, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
+      this.createNPCS(513, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
+      this.createNPCS(474, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
+      this.createNPCS(516, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
+      this.createNPCS(4742, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
+      this.createNPCS(4757, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
+      this.createNPCS(4793, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
+      this.createNPCS(594, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+      this.createNPCS(471, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //make enemies group and container to handle them with*/
 
       this.scene.enemySet = this.scene.physics.add.group();
       this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
       //Make different enemies
 
-      this.createEnemies(560, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 1, 2);
-      this.createEnemies(564, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 1, 2);
-      this.createEnemies(568, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 1, 2);
-      this.createEnemies(572, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 1, 2);
-      this.createEnemies(577, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 1, 2);
-      this.createEnemies(588, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 1, 2);
-      this.createEnemies(580, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 1, 2);
-      this.createEnemies(581, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 1, 2);
-      this.createEnemies(467, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
-      this.createEnemies(4724, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
+      this.createEnemies(561, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 1, 2);
+      this.createEnemies(565, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 1, 2);
+      this.createEnemies(569, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 1, 2);
+      this.createEnemies(573, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 1, 2);
+      this.createEnemies(578, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 1, 2);
+      this.createEnemies(589, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 1, 2);
+      this.createEnemies(581, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 1, 2);
+      this.createEnemies(582, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 1, 2);
+      this.createEnemies(468, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
+      this.createEnemies(4725, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
       this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
   }, {
@@ -2189,7 +2212,7 @@ function (_Phaser$Scene) {
       this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this); //Set Nicoled flag to be invisible
 
       var nicoled = this.lm.getNPC("NicoleD");
-      nicoled.state = 10; //start talk with nicole
+      nicoled.state = 9; //start talk with nicole
 
       var nicole = this.lm.getNPC("Nicole");
       this.player.scene.keyboard.E.isDown = true;
@@ -2211,9 +2234,8 @@ function (_Phaser$Scene) {
     value: function checkProgress1() {
       var chad = this.lm.getNPC("chad");
       var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
-      //if(this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1){
 
-      if (this.finished1 == false && this.player.knowledgeLevel >= 1) {
+      if (this.finished1 == false && chad.state > 0 && kyle.state > 0 && this.player.knowledgeLevel >= 1) {
         var nicole = this.lm.getNPC("Nicole");
         nicole.state = 2; //hide blocker and remove their collider
 
@@ -2235,9 +2257,8 @@ function (_Phaser$Scene) {
       var stevie = this.lm.getNPC("Stevie");
       var claire = this.lm.getNPC("Claire1");
       var brad = this.lm.getNPC("Brad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
-      //if(this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2){
 
-      if (this.finished2 == false && this.player.knowledgeLevel >= 1) {
+      if (this.finished2 == false && stevie.state > 0 && claire.state > 0 && brad.state > 0 && this.player.knowledgeLevel >= 2) {
         var nicole = this.lm.getNPC("Nicole");
         var chad = this.lm.getNPC("chad");
         nicole.state = 3; //4th state is her at chad fight
@@ -2257,7 +2278,7 @@ function (_Phaser$Scene) {
         this.finished2 = true;
       }
     }
-    /*This progress check is for after the first boss fight with Chad, which should open Chads room. This check unlocks 
+    /*This progress check is for after the first boss fight with Chad, which should open Vlads room. This check unlocks 
     * Vlads room if you have talked to Claire2 and Kyle this semester. You also must be level 3 to pass the check.
     * NicoleD informs the player this is available when the check passes.
     */
@@ -2268,8 +2289,7 @@ function (_Phaser$Scene) {
       var claire2 = this.lm.getNPC("Claire2");
       var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
 
-      if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 1) {
-        //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
+      if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3) {
         var nicoled = this.lm.getNPC("NicoleD");
         nicoled.state = 3; //hide blocker and remove their collider
 
@@ -2290,15 +2310,15 @@ function (_Phaser$Scene) {
       var stevie = this.lm.getNPC("Stevie");
       var vlad = this.lm.getNPC("Vlad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
 
-      if (this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 2) {
-        //if(this.finished4 == false && this.player.knowledgeLevel >= 1){
+      if (this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4) {
         var nicoled = this.lm.getNPC("NicoleD");
         nicoled.state = 4; //hide blocker and remove their collider
 
         this.examRoom.visible = false;
         this.physics.world.removeCollider(this.examRoomCollider);
         this.player.scene.keyboard.E.isDown = true;
-        nicoled.npcSpeak(this.player, nicoled);
+        nicoled.npcSpeak(this.player, nicoled); //Move Vlad to exam room
+
         vlad.x = 6600;
         vlad.y = 4020;
         vlad.startX = 6600;
@@ -2860,6 +2880,20 @@ function (_Phaser$Scene) {
               this.chats = ["C:/Users/Nicole/To_Player/Good job! Now we can\ntake our exams and be done with this semester.", "C:/Users/Player/To_Nicole/Yeah, what a relief."];
               npc.state++;
               break;
+
+            case 10:
+              //Unlock all rooms get mask
+              this.chats = ["C:/Users/Nicole/To_Player/Wow I think this will\nget rid of the girls blocking your way!", "C:/Users/Player/To_Self/Huh, neat."]; //See what state to reset to
+
+              if (npc.scene.finished2) {
+                npc.state = 3;
+              } else if (npc.scene.finished1) {
+                npc.state = 2;
+              } else {
+                npc.state = 1;
+              }
+
+              break;
           }
 
           break;
@@ -2894,6 +2928,18 @@ function (_Phaser$Scene) {
 
             case 5:
               this.chats = ["C:/Users/oliceN/To_Player/m'I#os rodpu^!$oYu\nta$eslat)amde$ti...", "C:/Users/Player/To_Self/Guess I should leave now...\nShould probably talk to Claire first though, wonder\nif she's still mad."];
+              break;
+
+            case 10:
+              //Unlock all rooms get mask
+              this.chats = ["C:/Users/oliceN/To_Player/oWw,$I%hinkt#hatt$iwll\netg$dir#fo%het#rilgs#lbcokngi@uory#ayw!", "C:/Users/Player/To_Self/Huh, neat."]; //See what state to reset to
+
+              if (npc.scene.finished4) {
+                npc.state = 4;
+              } else if (npc.scene.finished3) {
+                npc.state = 3;
+              }
+
               break;
           }
 

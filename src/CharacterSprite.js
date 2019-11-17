@@ -84,6 +84,25 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                 player.will++;
             }
             break;
+            case "mask":
+                //Unlock all doors
+
+                //Have Nicole/NicoleD tell you what it does
+                let nicole = player.scene.lm.getNPC("Nicole");
+                //Have Nicole tell player is shes active/visible
+                console.log("fore"+JSON.stringify(nicole));
+                if(nicole.visible){
+                    nicole.state = 10;
+                    player.scene.keyboard.E.isDown = true;
+                    nicole.npcSpeak(player, nicole);
+                }else{
+                    //Have NicoleD tell player because Nicole is done
+                    let nicoled = player.scene.lm.getNPC("NicoleD");
+                    console.log("asd"+JSON.stringify(nicoled));
+                    nicoled.state = 10;
+                    player.scene.keyboard.E.isDown = true;
+                    nicoled.npcSpeak(player, nicoled);
+                }
         }
         player.displayInventory();
     }

@@ -212,24 +212,42 @@ export class TalkScene extends Phaser.Scene{
 						"C:/Users/Player/To_Nicole/Yeah, what a relief."];
 					npc.state++;
 				break;
+				case 10:
+					//Unlock all rooms get mask
+					this.chats = [
+					"C:/Users/Nicole/To_Player/Wow I think this will\nget rid of the girls blocking your way!",
+					"C:/Users/Player/To_Self/Huh, neat."];
+					//See what state to reset to
+					if(npc.scene.finished2){
+						npc.state = 3;
+					}else if(npc.scene.finished1){
+						npc.state = 2;
+					}else{
+						npc.state = 1;
+					}
+				break;
 			}				
             break;
             case "NicoleD":				
 			switch(npc.state){
 				case 0:
-					this.chats = ["C:/Users/oliceN/To_Player/Hwy$ddi%sith(paphen?"];
+					this.chats = [
+					"C:/Users/oliceN/To_Player/Hwy$ddi%sith(paphen?"];
 					npc.state++;
 				break;
 				case 1:
-					this.chats = ["C:/Users/oliceN/To_Player/mI'[os*rosry."];
+					this.chats = [
+					"C:/Users/oliceN/To_Player/mI'[os*rosry."];
 					npc.state++;
 				break;
 				case 2:
-					this.chats = ["C:/Users/oliceN/To_Player/eAr^uyo+neistling?"];
+					this.chats = [
+					"C:/Users/oliceN/To_Player/eAr^uyo+neistling?"];
 					npc.state = 0; //restart
 				break;
 				case 3:
-					this.chats = ["C:/Users/oliceN/To_Player/lasePe$leph%em!"];
+					this.chats = [
+					"C:/Users/oliceN/To_Player/lasePe$leph%em!"];
 					npc.state = 0; //restart
 				break;
 				case 4:
@@ -240,6 +258,18 @@ export class TalkScene extends Phaser.Scene{
 					this.chats = [
 					"C:/Users/oliceN/To_Player/m'I#os rodpu^!$oYu\nta$eslat)amde$ti...",
 					"C:/Users/Player/To_Self/Guess I should leave now...\nShould probably talk to Claire first though, wonder\nif she's still mad."];
+				break;
+				case 10:
+					//Unlock all rooms get mask
+					this.chats = [
+					"C:/Users/oliceN/To_Player/oWw,$I%hinkt#hatt$iwll\netg$dir#fo%het#rilgs#lbcokngi@uory#ayw!",
+					"C:/Users/Player/To_Self/Huh, neat."];
+					//See what state to reset to
+					if(npc.scene.finished4){
+						npc.state = 4;
+					}else if(npc.scene.finished3){
+						npc.state = 3;
+					}
 				break;
 			}
             break;

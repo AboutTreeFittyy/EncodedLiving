@@ -1,6 +1,6 @@
 /* File Name: Sprite.js
  * Author: Mathew Boland
- * Last Updated: November 11, 2019
+ * Last Updated: November 17, 2019
  * Description: Class used to create and hold the value of a Sprite object
 */
 import {CST} from "./CST";
@@ -51,6 +51,7 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    //Callback for Boss timer to attack again
     npcAttack(player, go){
         go.state = 5;
     }
