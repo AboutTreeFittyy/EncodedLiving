@@ -163,7 +163,7 @@ var CST = {
     TITLE: "title_music.mp3",
     JSON: "json.mp3",
     CHAD: "chadFlex.mp3",
-    VLAD: "vladWave.mp3",
+    VLAD: "vladCry.mp3",
     PLAYERHIT: "playerHit.mp3",
     BALLHIT: "ballHit.mp3",
     WHIPHIT: "whipHit.mp3",
@@ -525,6 +525,10 @@ function (_Phaser$Physics$Arcad) {
 
       if (npc.name == "chad") {
         npc.scene.sound.play(_CST.CST.AUDIO.CHAD, {
+          loop: true
+        });
+      } else if (npc.name == "Vlad") {
+        npc.scene.sound.play(_CST.CST.AUDIO.VLAD, {
           loop: true
         });
       }
@@ -897,6 +901,8 @@ function (_Phaser$Physics$Arcad) {
         if (enemy.rep == 0) {
           if (enemy.name == "chad") {
             whip.startNextSemester(whip, enemy);
+          } else if (enemy.name == "Vlad") {
+            whip.endGame(whip, enemy);
           }
 
           enemy.destroy();
@@ -904,6 +910,11 @@ function (_Phaser$Physics$Arcad) {
 
         whip.setState(1); //indicate a hit already occured
       }
+    }
+  }, {
+    key: "endGame",
+    value: function endGame(weapon, enemy) {
+      enemy.scene.sound.removeByKey(_CST.CST.AUDIO.VLAD); //Stop chads sound
     }
   }, {
     key: "startNextSemester",
@@ -934,6 +945,8 @@ function (_Phaser$Physics$Arcad) {
       if (enemy.rep == 0) {
         if (enemy.name == "chad") {
           ball.startNextSemester(ball, enemy);
+        } else if (enemy.name == "Vlad") {
+          ball.endGame(ball, enemy);
         }
 
         enemy.destroy();
@@ -1181,6 +1194,10 @@ function () {
               //Timer has reset chad state to 5. Have him attack.
               this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
               this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+              this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+              this.spawnProjectile(go.x, go.y, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(200);
+              this.spawnProjectile(go.x, go.y, _CST.CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(-200);
               go.play("chadFlex", true); //Set flag to 6 so he doesn't attack again.
 
               go.state = 6; //Set new timer to make him attack again in 2 seconds.
@@ -1255,9 +1272,13 @@ function () {
 
 
             if (go.state == 5) {
-              //Timer has reset chad state to 5. Have him attack.
-              this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
-              this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              //Timer has reset vlad state to 5. Have him attack.
+              this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+              this.spawnProjectile(go.x, go.y + 100, _CST.CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+              this.spawnProjectile(go.x, go.y - 100, _CST.CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+              this.spawnProjectile(go.x, go.y, _CST.CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(200);
+              this.spawnProjectile(go.x, go.y, _CST.CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(-200);
               go.play("VladCry", true); //Set flag to 6 so he doesn't attack again.
 
               go.state = 6; //Set new timer to make him attack again in 2 seconds.
@@ -1440,11 +1461,11 @@ function () {
 
       if (go.startY - 50 > go.y) {
         //npc below
-        go.setVelocityY(128);
+        go.setVelocityY(256);
         anim = "down";
       } else if (go.startY + 50 < go.y) {
         //npc above
-        go.setVelocityY(-128);
+        go.setVelocityY(-256);
         anim = "up";
       } else {
         go.setVelocityY(0);
@@ -1452,11 +1473,11 @@ function () {
 
       if (go.startX - 50 > go.x) {
         //npc in front
-        go.setVelocityX(128);
+        go.setVelocityX(256);
         anim = "right";
       } else if (go.startX + 50 < go.x) {
         //npc behind
-        go.setVelocityX(-128);
+        go.setVelocityX(-256);
         anim = "left";
       } else {
         go.setVelocityX(0);
@@ -1623,6 +1644,15 @@ function () {
           if (chad != null) {
             if (chad.state > 4) {
               _this.scene.physics.add.collider(ball, chad, ball.ballHitEnemy, null, _this.scene);
+            }
+          } //see if vlad is agro and needs a collider
+
+
+          var vlad = _this.getNPC("Vlad");
+
+          if (vlad != null) {
+            if (vlad.state > 4) {
+              _this.scene.physics.add.collider(ball, vlad, ball.ballHitEnemy, null, _this.scene);
             }
           } //delay call by amount of player will power, so lower will power makes throws go less far
 
@@ -2149,7 +2179,7 @@ function (_Phaser$Scene) {
       var claire2 = this.lm.getNPC("Claire2");
       var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
 
-      if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 2) {
+      if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 1) {
         //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
         var nicoled = this.lm.getNPC("NicoleD");
         nicoled.state = 2; //hide blocker and remove their collider
@@ -2168,20 +2198,26 @@ function (_Phaser$Scene) {
   }, {
     key: "checkProgress4",
     value: function checkProgress4() {
-      /*let stevie = this.lm.getNPC("Stevie");
-      let vlad = this.lm.getNPC("Vlad");
-      //See if this has been done already, check that all needed conversations are done and player level is high enough
-      //if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4){
-          if(this.finished4 == false && this.player.knowledgeLevel >= 1){
-          //let nicole = this.lm.getNPC("Nicole");
-          //nicole.state = 2;
-          //hide blocker and remove their collider
-          this.vladRoom.visible = false;
-          this.physics.world.removeCollider(this.vladRoomCollider);
-          this.player.scene.keyboard.E.isDown = true;
-          nicole.npcSpeak(this.player, nicole);  
-          this.finished4 = true;
-      } */
+      var stevie = this.lm.getNPC("Stevie");
+      var vlad = this.lm.getNPC("Vlad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+
+      if (this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 2) {
+        //if(this.finished4 == false && this.player.knowledgeLevel >= 1){
+        var nicoled = this.lm.getNPC("NicoleD");
+        nicoled.state = 2; //hide blocker and remove their collider
+
+        this.examRoom.visible = false;
+        this.physics.world.removeCollider(this.examRoomCollider);
+        this.player.scene.keyboard.E.isDown = true;
+        nicoled.npcSpeak(this.player, nicoled);
+        vlad.x = 6600;
+        vlad.y = 4020;
+        vlad.startX = 6600;
+        vlad.startY = 4020;
+        vlad.state = 4; //Fight state
+
+        this.finished4 = true;
+      }
     }
   }, {
     key: "update",
@@ -2799,6 +2835,8 @@ function (_Phaser$Scene) {
           switch (npc.state) {
             case 0:
               this.chats = ["C:/Users/Player/To_Self/Wow Claire changed clothes.", "C:/Users/Claire/To_Player/Have you seen Brad?", "C:/Users/Player/To_Claire/Wow, nice to see you too.", "C:/Users/Claire/To_Player/I don't have time for\ngames. Have you seen him or not?", "C:/Users/Player/To_Claire/Actually we just fought.", "C:/Users/Claire/To_Player/No way you don't even\nlook hurt! And there's no way you would beat him\nin a fight!", "C:/Users/Player/To_Claire/Well I did. Broke that\nlosers nose right at the school entrance.", "C:/Users/Claire/To_Player/YOU JERK. You better\nnot have ruined his face!", "C:/Users/Player/To_Self/I guess it isn't only her\nclothes she changed..."];
+              npc.startX = 1250;
+              npc.startY = 4100;
               npc.state++;
               break;
 
@@ -2850,7 +2888,7 @@ function (_Phaser$Scene) {
 
             case 4:
               this.chats = ["C:/Users/Kyle/To_Player/Hey...", "C:/Users/Player/To_Kyle/You okay. How's Stevie.", "C:/Users/Kyle/To_Player/...great now that she met\nBrad.", "C:/Users/Player/To_Kyle/I don't think he's into her.\nBesides I just beat him up.", "C:/Users/Kyle/To_Player/That's the first good thing\nI've heard in months. Take this exam sheet."];
-              this.dropItem(3, 0, -50, "examsheet");
+              this.dropItem(1, 0, -50, "examsheet");
               npc.state++;
               break;
 
@@ -2937,7 +2975,7 @@ function (_Phaser$Scene) {
               break;
 
             case 4:
-              this.chats = ["C:/Users/Vlad/To_Player/I'm so sorry, I ran out of\nthose exam sheets. You must hate me now.", "C:/Users/Player/To_Vlad/Can this wait? I got to go\nto my exam.", "C:/Users/Vlad/To_Player/Oh god! Now I'm making you\nlate for your exam. You must really hate me!", "C:/Users/Player/To_Vlad/Are you crying?", "C:/Users/Vlad/To_Player/YES! *He won't move*", "C:/Users/oliceN/To_Player/I*nact')ese#mhi!\nsHes'%os^tahpteci!'"]; //Put Vlad into fighting mode
+              this.chats = ["C:/Users/Vlad/To_Player/I'm so sorry, I ran out of\nthose exam sheets. You must hate me now.", "C:/Users/Player/To_Vlad/Can this wait? I got to go\nto my exam.", "C:/Users/Vlad/To_Player/Oh god! Now I'm making\nyou late for your exam. You must really hate me!", "C:/Users/Player/To_Vlad/Are you crying?", "C:/Users/Vlad/To_Player/YES! *He won't move*", "C:/Users/oliceN/To_Player/I*nact')ese#mhi!\nsHes'%os^tahpteci!'"]; //Put Vlad into fighting mode
 
               npc.state = 7;
               break;
@@ -2966,6 +3004,15 @@ function (_Phaser$Scene) {
             case 3:
               this.chats = ["C:/Users/Player/To_Stevie/Wake up!", "C:/Users/Stevie/To_Player/Huh? why? Is that kyle\nguy here yet?", "C:/Users/Player/To_Stevie/Nah just bugging ya.", "C:/Users/Stevie/To_Player/Oh...ZZZzzzZZZzzz"];
               npc.state = 2;
+              break;
+
+            case 4:
+              this.chats = ["C:/Users/Player/To_Stevie/Sup short stuff?", "C:/Users/Stevie/To_Player/Don't talk to me, I heard\nyou hurt Brad!", "C:/Users/Player/To_Stevie/What do you care?", "C:/Users/Stevie/To_Player/We're basically dating.", "C:/Users/Player/To_Stevie/Pretty sure he's dating\nClaire, hate to break it to you.", "C:/Users/Stevie/To_Player/Ugh, just shut up will you?\nYou jerk!"];
+              npc.state++;
+              break;
+
+            case 5:
+              this.chats = ["C:/Users/Stevie/To_Player/Buzz off, Brad hater!"];
               break;
           }
 

@@ -108,6 +108,10 @@ export class LevelManager{
                         //Timer has reset chad state to 5. Have him attack.
                         this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
                         this.spawnProjectile(go.x, go.y -100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+                        this.spawnProjectile(go.x, go.y -100, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+                        this.spawnProjectile(go.x, go.y, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(200);
+                        this.spawnProjectile(go.x, go.y, CST.SPRITE.HOTSTUFF, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(-200);
                         go.play("chadFlex", true);                        
                         //Set flag to 6 so he doesn't attack again.
                         go.state = 6;
@@ -176,9 +180,13 @@ export class LevelManager{
                     }    
                     //Check if chad is currently an enemy and needs to attack the player
                     if(go.state == 5){
-                        //Timer has reset chad state to 5. Have him attack.
-                        this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
-                        this.spawnProjectile(go.x, go.y -100, CST.SPRITE.PATHETIC, 0, 'cry', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        //Timer has reset vlad state to 5. Have him attack.
+                        this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        this.spawnProjectile(go.x, go.y -100, CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(-200);
+                        this.spawnProjectile(go.x, go.y + 100, CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+                        this.spawnProjectile(go.x, go.y -100, CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityX(200);
+                        this.spawnProjectile(go.x, go.y, CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(200);
+                        this.spawnProjectile(go.x, go.y, CST.SPRITE.PATHETIC, 0, 'flex', 1, 2, 0.35, 4000, go).setVelocityY(-200);
                         go.play("VladCry", true);                        
                         //Set flag to 6 so he doesn't attack again.
                         go.state = 6;
@@ -325,22 +333,22 @@ export class LevelManager{
         let anim = "nothing";
         if(go.startY - 50 > go.y){
             //npc below
-            go.setVelocityY(128);
+            go.setVelocityY(256);
             anim = "down";
         }else if (go.startY + 50 < go.y){
             //npc above
-            go.setVelocityY(-128);
+            go.setVelocityY(-256);
             anim = "up";
         }else{
             go.setVelocityY(0);
         }
         if(go.startX - 50 > go.x){
             //npc in front
-            go.setVelocityX(128);
+            go.setVelocityX(256);
             anim = "right";
         }else if (go.startX + 50 < go.x){
             //npc behind
-            go.setVelocityX(-128);
+            go.setVelocityX(-256);
             anim = "left";
         }else{
             go.setVelocityX(0);
@@ -465,6 +473,13 @@ export class LevelManager{
                 if(chad != null){
                     if(chad.state > 4){
                         this.scene.physics.add.collider(ball, chad, ball.ballHitEnemy, null, this.scene);
+                    }
+                }
+                //see if vlad is agro and needs a collider
+                let vlad = this.getNPC("Vlad");
+                if(vlad != null){
+                    if(vlad.state > 4){
+                        this.scene.physics.add.collider(ball, vlad, ball.ballHitEnemy, null, this.scene);
                     }
                 }
                 //delay call by amount of player will power, so lower will power makes throws go less far

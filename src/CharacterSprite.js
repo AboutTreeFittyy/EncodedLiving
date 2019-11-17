@@ -60,7 +60,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             break;
             case "examsheet": //Got Exam Sheet
             //Increase xp and then if its full, level up player
-            player.knowledgeProgress++
+            player.knowledgeProgress++;
             if(player.knowledgeProgress == player.knowledgeNeeded){
                 //Level up player
                 player.knowledgeLevel++;
@@ -111,11 +111,17 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             if(enemy.rep == 0){
                 if(enemy.name == "chad"){                    
                     whip.startNextSemester(whip, enemy);
+                }else if(enemy.name == "Vlad"){                    
+                    whip.endGame(whip, enemy);
                 }
                 enemy.destroy();
             }
             whip.setState(1); //indicate a hit already occured
         }        
+    }
+
+    endGame(weapon, enemy){
+        enemy.scene.sound.removeByKey(CST.AUDIO.VLAD); //Stop chads sound
     }
 
     startNextSemester(weapon, enemy){
@@ -141,6 +147,8 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         if(enemy.rep == 0){            
             if(enemy.name == "chad"){
                 ball.startNextSemester(ball, enemy);
+            }else if(enemy.name == "Vlad"){                    
+                ball.endGame(ball, enemy);
             }
             enemy.destroy();
         }

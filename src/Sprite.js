@@ -44,6 +44,10 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
             npc.scene.sound.play(CST.AUDIO.CHAD, {
                 loop: true
             })
+        }else if(npc.name=="Vlad"){
+            npc.scene.sound.play(CST.AUDIO.VLAD, {
+                loop: true
+            })
         }
     }
 

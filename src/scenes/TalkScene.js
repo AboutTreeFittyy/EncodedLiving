@@ -270,6 +270,8 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Claire/Well I did. Broke that\nlosers nose right at the school entrance.",
 					"C:/Users/Claire/To_Player/YOU JERK. You better\nnot have ruined his face!",
 					"C:/Users/Player/To_Self/I guess it isn't only her\nclothes she changed..."];
+					npc.startX = 1250;
+					npc.startY = 4100;
 					npc.state++;
 				break;
 				case 1:
@@ -347,7 +349,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Kyle/To_Player/...great now that she met\nBrad.",
 					"C:/Users/Player/To_Kyle/I don't think he's into her.\nBesides I just beat him up.",
 					"C:/Users/Kyle/To_Player/That's the first good thing\nI've heard in months. Take this exam sheet."];
-					this.dropItem(3, 0, -50, "examsheet");
+					this.dropItem(1, 0, -50, "examsheet");
 					npc.state++;
 					break;
 				case 5:
@@ -466,7 +468,7 @@ export class TalkScene extends Phaser.Scene{
 					this.chats = [ 
 					"C:/Users/Vlad/To_Player/I'm so sorry, I ran out of\nthose exam sheets. You must hate me now.",
 					"C:/Users/Player/To_Vlad/Can this wait? I got to go\nto my exam.",
-					"C:/Users/Vlad/To_Player/Oh god! Now I'm making you\nlate for your exam. You must really hate me!",
+					"C:/Users/Vlad/To_Player/Oh god! Now I'm making\nyou late for your exam. You must really hate me!",
 					"C:/Users/Player/To_Vlad/Are you crying?",
 					"C:/Users/Vlad/To_Player/YES! *He won't move*",
 					"C:/Users/oliceN/To_Player/I*nact')ese#mhi!\nsHes'%os^tahpteci!'"];
@@ -513,6 +515,20 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Stevie/Nah just bugging ya.", 
 					"C:/Users/Stevie/To_Player/Oh...ZZZzzzZZZzzz"];
 					npc.state=2;
+					break;
+				case 4:
+					this.chats = [ 
+					"C:/Users/Player/To_Stevie/Sup short stuff?", 
+					"C:/Users/Stevie/To_Player/Don't talk to me, I heard\nyou hurt Brad!",
+					"C:/Users/Player/To_Stevie/What do you care?", 
+					"C:/Users/Stevie/To_Player/We're basically dating.",
+					"C:/Users/Player/To_Stevie/Pretty sure he's dating\nClaire, hate to break it to you.", 
+					"C:/Users/Stevie/To_Player/Ugh, just shut up will you?\nYou jerk!"];
+					npc.state++;
+					break;						
+				case 5:
+					this.chats = [
+						"C:/Users/Stevie/To_Player/Buzz off, Brad hater!"];
 					break;
 			}
 			break;

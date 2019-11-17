@@ -140,7 +140,7 @@ export class FirstLevel extends Phaser.Scene{
         let claire2 = this.lm.getNPC("Claire2");
         let kyle = this.lm.getNPC("Kyle");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 2){
+        if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 1){
             //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
             let nicoled = this.lm.getNPC("NicoleD");
             nicoled.state = 2;
@@ -157,20 +157,25 @@ export class FirstLevel extends Phaser.Scene{
     * Stevie again and Vlad before entering as well as being level 4. NicoleD informs player this is ready when the check passes.
     */
     checkProgress4(){
-        /*let stevie = this.lm.getNPC("Stevie");
+        let stevie = this.lm.getNPC("Stevie");
         let vlad = this.lm.getNPC("Vlad");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        //if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4){
-            if(this.finished4 == false && this.player.knowledgeLevel >= 1){
-            //let nicole = this.lm.getNPC("Nicole");
-            //nicole.state = 2;
+        if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 2){
+            //if(this.finished4 == false && this.player.knowledgeLevel >= 1){
+            let nicoled = this.lm.getNPC("NicoleD");
+            nicoled.state = 2;
             //hide blocker and remove their collider
-            this.vladRoom.visible = false;
-            this.physics.world.removeCollider(this.vladRoomCollider);
+            this.examRoom.visible = false;
+            this.physics.world.removeCollider(this.examRoomCollider);
             this.player.scene.keyboard.E.isDown = true;
-            nicole.npcSpeak(this.player, nicole);  
+            nicoled.npcSpeak(this.player, nicoled);  
+            vlad.x = 6600;
+            vlad.y = 4020;
+            vlad.startX = 6600;
+            vlad.startY = 4020;
+            vlad.state = 4; //Fight state
             this.finished4 = true;
-        } */
+        } 
     }
 
     update(){
