@@ -1,6 +1,6 @@
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: November 11, 2019
+ * Last Updated: November 16, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -109,10 +109,24 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             //adjust enemy stats on hit from whip
             enemy.rep--;
             if(enemy.rep == 0){
+                if(enemy.name == "chad"){                    
+                    whip.startNextSemester(whip, enemy);
+                }
                 enemy.destroy();
             }
             whip.setState(1); //indicate a hit already occured
         }        
+    }
+
+    startNextSemester(weapon, enemy){
+        enemy.scene.sound.removeByKey(CST.AUDIO.CHAD); //Stop chads sound
+        //Start next semester
+        let player = weapon.scene.player;
+        let nicole = weapon.scene.lm.getNPC("Nicole");
+        nicole.state = 4; //TalkScene will set this to 5 when done and trigger more in the update sprites function in levelmanager
+        player.scene.keyboard.E.isDown = true;
+        nicole.npcSpeak(player, nicole); 
+        player.scene.scene.pause();
     }
 
     ballHitEnemy(ball, enemy){
@@ -126,7 +140,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         })
         if(enemy.rep == 0){            
             if(enemy.name == "chad"){
-                enemy.scene.sound.removeByKey(CST.AUDIO.CHAD);
+                ball.startNextSemester(ball, enemy);
             }
             enemy.destroy();
         }

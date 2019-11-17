@@ -1,6 +1,6 @@
 /* File Name: EnemySprite.js
  * Author: Mathew Boland
- * Last Updated: November 11, 2019
+ * Last Updated: November 16, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -16,6 +16,7 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         scene.physics.world.enableBody(this);
         this.setImmovable(true);
         this.dmg = dmg;
+        this.state = 0;
         this.rep = rep;
         this.jsons = 5;
         this.name = name;
@@ -98,6 +99,24 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
                 curName.setVelocityX(-90);
                 curName.name = curName.name.slice(0, 5)+"right";
             break;
+            case "nerdgirl":  
+                //make sure it doesn't just keep spawning enemies    
+                if(curName.state == 0){
+                    //Spawn in ten nerds from above without hitboxes for the map
+                    let sprite;
+                    for(var i = -5; i < 5; i++){
+                        sprite = new EnemySprite(curName.scene, curName.x + i * 50, curName.y - 500, CST.SPRITE.NERD1, 0, "nerd1down", 5, 3);
+                        sprite.body.setSize(22,44);
+                        sprite.setScale(2);
+                        sprite.body.setOffset(16,16);
+                        curName.scene.enemyCont.add(sprite);
+                        curName.scene.physics.add.collider(curName.scene.player, sprite, sprite.enemyCollide, null, curName.scene);
+                    }
+                    //Set timer cooldown so that it doesn't keep spawning them 
+                    curName.scene.time.delayedCall(4000, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
+                    curName.state = 1;
+                }
+            break;
         }
         //Now store the temp variable back into the game object
         if(player.name != ''){
@@ -105,5 +124,10 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         }else{
             enemy.name = curName.name;
         }  
+    }
+
+    nerdGirlCoolDown(player, enemy){
+        //enemy.name = "nerdgirl"; // Reset their name to be the same as the one that can spawn enemies again
+        enemy.state = 0;
     }
 }

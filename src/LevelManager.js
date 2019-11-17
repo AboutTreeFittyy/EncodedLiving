@@ -22,7 +22,7 @@ export class LevelManager{
 
     //returns the npc from the container of the given name
     getNPC(name){
-        for(let i = 0; i < this.scene.npcCont.count('visible', true); i++){
+        for(let i = 0; i < this.scene.npcCont.list.length; i++){
             if(this.scene.npcCont.list[i].name == name){
                 return this.scene.npcCont.list[i];
             }
@@ -47,17 +47,48 @@ export class LevelManager{
             let go = this.scene.npcCont.list[i];
             switch(go.name){
                 case "Nicole":
+                    if(go.state == 5){
+                        //Start new semester, move sprites to new positions
+                        //Player back to start
+                        this.scene.player.x = 1200;
+                        this.scene.player.y = 4110;
+                        //Stevie to vlad room
+                        let stevie = this.scene.lm.getNPC("Stevie");
+                        stevie.x = 5800;
+                        stevie.y = 6820;
+                        stevie.startX = 5800;
+                        stevie.startY = 6820;
+                        //Kyle to chad room
+                        let kyle = this.scene.lm.getNPC("Kyle");
+                        kyle.x = 1680;
+                        kyle.y = 6220;
+                        kyle.startX = 1680;
+                        kyle.startY = 6220;
+                        //Brad in front of player
+                        let brad = this.scene.lm.getNPC("Brad");
+                        brad.x = 1350;
+                        brad.y = 4100;
+                        brad.startX = 1400;
+                        brad.startY = 4100;
+                        //Delete Claire1 by sending her into oblivion
+                        let claire1 = this.scene.lm.getNPC("Claire1");
+                        claire1.x = 0;
+                        claire1.y = 0;
+                        claire1.startX = 0;
+                        claire1.startY = 0;
+                        //turn off this flag
+                        go.state = 6;
+                        go.setVisible(false);
+                        go.disableBody();
+                        //Start Brad convo
+                        brad.state = 2;
+                        this.scene.keyboard.E.isDown = true;
+                        brad.npcSpeak(this.scene.player, brad); 
+                        this.scene.scene.pause(); 
+                    }
                 case "NicoleD":
                     this.followPlayer(go);
-                    break;
-                case "Kyle":
-                case "Claire1":
-                case "Claire2":
-                case "Brad":
-                case "Prof":
-                case "Stevie":       
-                    //Now check if they've been pushed from their origin and make them face the player
-                    this.watchPlayer(go, go.down, go.up, go.right, go.left);
+                    break;              
                 case "chad":                   
                     if(go.state < 5){
                         //Now check if they've been pushed from their origin and make them face the player
@@ -94,6 +125,36 @@ export class LevelManager{
                         }
                     }
                     break
+                    case "Brad":
+                        //See if i should agro Brad into a jason    
+                        if(go.state == 3){
+                            let sprite = new EnemySprite(this.scene, go.x, go.y, CST.SPRITE.NPC_LOT, 5, "jason", 5, 0);
+                            sprite.body.setSize(22,44);
+                            sprite.setScale(1.5);
+                            sprite.body.setOffset(16,16);
+                            this.scene.enemySet.add(sprite);
+                            this.scene.enemyCont.add(sprite);
+                            sprite.setCollideWorldBounds(true);
+                            //This triggers when enemy hits player, npc, furnishings or the toplayer/borders of the game
+                            this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
+                            this.scene.physics.add.collider(this.scene.npcSet, sprite, sprite.enemyCollide, null, this);
+                            this.scene.physics.add.collider(this.scene.furnishing, sprite, sprite.enemyCollide, null, this);
+                            this.scene.physics.add.collider(this.scene.topLayer, sprite, sprite.enemyCollide, null, this);
+                            //Now move brad to Claire1 in oblivion and get rid of this flag so it doesn't spawn more jasons
+                            go.x = 0;
+                            go.y = 0;
+                            go.startX = 0;
+                            go.startY = 0;
+                            go.state = 4;
+                        }
+                    case "Kyle":
+                    case "Claire1":
+                    case "Claire2":                    
+                    case "Prof":
+                    case "Stevie":       
+                        //Now check if they've been pushed from their origin and make them face the player
+                        this.watchPlayer(go, go.down, go.up, go.right, go.left);
+                    break;
                     case "Vlad":                 
                     if(go.state < 5){
                         //Now check if they've been pushed from their origin and make them face the player
@@ -454,11 +515,8 @@ export class LevelManager{
         this.scene.npcSet = this.scene.physics.add.group();
         //make npcs from map
         //add the collider for all the npcs
-        this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
-        
+        this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);        
         this.scene.npcCont = this.scene.add.container();
-        this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
-        //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
         this.createNPCS(4704, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
         this.createNPCS(5096, CST.SPRITE.NPCS, 6, CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
         this.createNPCS(512, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
@@ -467,6 +525,8 @@ export class LevelManager{
         this.createNPCS(4741, CST.SPRITE.NPCS, 6, CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
         this.createNPCS(4756, CST.SPRITE.NPCS, 6, CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
         this.createNPCS(4792, CST.SPRITE.NPCS, 6, CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
+        //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+        this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
         //make enemies group and container to handle them with*/
         this.scene.enemySet = this.scene.physics.add.group();
         this.scene.enemyCont = this.scene.add.container();

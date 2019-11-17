@@ -589,6 +589,7 @@ function (_Phaser$Physics$Arcad) {
     _this.setImmovable(true);
 
     _this.dmg = dmg;
+    _this.state = 0;
     _this.rep = rep;
     _this.jsons = 5;
     _this.name = name;
@@ -684,6 +685,28 @@ function (_Phaser$Physics$Arcad) {
           curName.setVelocityX(-90);
           curName.name = curName.name.slice(0, 5) + "right";
           break;
+
+        case "nerdgirl":
+          //make sure it doesn't just keep spawning enemies    
+          if (curName.state == 0) {
+            //Spawn in ten nerds from above without hitboxes for the map
+            var sprite;
+
+            for (var i = -5; i < 5; i++) {
+              sprite = new EnemySprite(curName.scene, curName.x + i * 50, curName.y - 500, _CST.CST.SPRITE.NERD1, 0, "nerd1down", 5, 3);
+              sprite.body.setSize(22, 44);
+              sprite.setScale(2);
+              sprite.body.setOffset(16, 16);
+              curName.scene.enemyCont.add(sprite);
+              curName.scene.physics.add.collider(curName.scene.player, sprite, sprite.enemyCollide, null, curName.scene);
+            } //Set timer cooldown so that it doesn't keep spawning them 
+
+
+            curName.scene.time.delayedCall(4000, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
+            curName.state = 1;
+          }
+
+          break;
       } //Now store the temp variable back into the game object
 
 
@@ -692,6 +715,12 @@ function (_Phaser$Physics$Arcad) {
       } else {
         enemy.name = curName.name;
       }
+    }
+  }, {
+    key: "nerdGirlCoolDown",
+    value: function nerdGirlCoolDown(player, enemy) {
+      //enemy.name = "nerdgirl"; // Reset their name to be the same as the one that can spawn enemies again
+      enemy.state = 0;
     }
   }]);
 
@@ -866,11 +895,29 @@ function (_Phaser$Physics$Arcad) {
         enemy.rep--;
 
         if (enemy.rep == 0) {
+          if (enemy.name == "chad") {
+            whip.startNextSemester(whip, enemy);
+          }
+
           enemy.destroy();
         }
 
         whip.setState(1); //indicate a hit already occured
       }
+    }
+  }, {
+    key: "startNextSemester",
+    value: function startNextSemester(weapon, enemy) {
+      enemy.scene.sound.removeByKey(_CST.CST.AUDIO.CHAD); //Stop chads sound
+      //Start next semester
+
+      var player = weapon.scene.player;
+      var nicole = weapon.scene.lm.getNPC("Nicole");
+      nicole.state = 4; //TalkScene will set this to 5 when done and trigger more in the update sprites function in levelmanager
+
+      player.scene.keyboard.E.isDown = true;
+      nicole.npcSpeak(player, nicole);
+      player.scene.scene.pause();
     }
   }, {
     key: "ballHitEnemy",
@@ -886,7 +933,7 @@ function (_Phaser$Physics$Arcad) {
 
       if (enemy.rep == 0) {
         if (enemy.name == "chad") {
-          enemy.scene.sound.removeByKey(_CST.CST.AUDIO.CHAD);
+          ball.startNextSemester(ball, enemy);
         }
 
         enemy.destroy();
@@ -1039,7 +1086,7 @@ function () {
   _createClass(LevelManager, [{
     key: "getNPC",
     value: function getNPC(name) {
-      for (var i = 0; i < this.scene.npcCont.count('visible', true); i++) {
+      for (var i = 0; i < this.scene.npcCont.list.length; i++) {
         if (this.scene.npcCont.list[i].name == name) {
           return this.scene.npcCont.list[i];
         }
@@ -1068,18 +1115,49 @@ function () {
 
         switch (go.name) {
           case "Nicole":
+            if (go.state == 5) {
+              //Start new semester, move sprites to new positions
+              //Player back to start
+              this.scene.player.x = 1200;
+              this.scene.player.y = 4110; //Stevie to vlad room
+
+              var stevie = this.scene.lm.getNPC("Stevie");
+              stevie.x = 5800;
+              stevie.y = 6820;
+              stevie.startX = 5800;
+              stevie.startY = 6820; //Kyle to chad room
+
+              var kyle = this.scene.lm.getNPC("Kyle");
+              kyle.x = 1680;
+              kyle.y = 6220;
+              kyle.startX = 1680;
+              kyle.startY = 6220; //Brad in front of player
+
+              var brad = this.scene.lm.getNPC("Brad");
+              brad.x = 1350;
+              brad.y = 4100;
+              brad.startX = 1400;
+              brad.startY = 4100; //Delete Claire1 by sending her into oblivion
+
+              var claire1 = this.scene.lm.getNPC("Claire1");
+              claire1.x = 0;
+              claire1.y = 0;
+              claire1.startX = 0;
+              claire1.startY = 0; //turn off this flag
+
+              go.state = 6;
+              go.setVisible(false);
+              go.disableBody(); //Start Brad convo
+
+              brad.state = 2;
+              this.scene.keyboard.E.isDown = true;
+              brad.npcSpeak(this.scene.player, brad);
+              this.scene.scene.pause();
+            }
+
           case "NicoleD":
             this.followPlayer(go);
             break;
-
-          case "Kyle":
-          case "Claire1":
-          case "Claire2":
-          case "Brad":
-          case "Prof":
-          case "Stevie":
-            //Now check if they've been pushed from their origin and make them face the player
-            this.watchPlayer(go, go.down, go.up, go.right, go.left);
 
           case "chad":
             if (go.state < 5) {
@@ -1119,6 +1197,38 @@ function () {
               }
             }
 
+            break;
+
+          case "Brad":
+            //See if i should agro Brad into a jason    
+            if (go.state == 3) {
+              var sprite = new _EnemySprite.EnemySprite(this.scene, go.x, go.y, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 0);
+              sprite.body.setSize(22, 44);
+              sprite.setScale(1.5);
+              sprite.body.setOffset(16, 16);
+              this.scene.enemySet.add(sprite);
+              this.scene.enemyCont.add(sprite);
+              sprite.setCollideWorldBounds(true); //This triggers when enemy hits player, npc, furnishings or the toplayer/borders of the game
+
+              this.scene.physics.add.collider(this.scene.player, sprite, sprite.enemyCollide, null, this);
+              this.scene.physics.add.collider(this.scene.npcSet, sprite, sprite.enemyCollide, null, this);
+              this.scene.physics.add.collider(this.scene.furnishing, sprite, sprite.enemyCollide, null, this);
+              this.scene.physics.add.collider(this.scene.topLayer, sprite, sprite.enemyCollide, null, this); //Now move brad to Claire1 in oblivion and get rid of this flag so it doesn't spawn more jasons
+
+              go.x = 0;
+              go.y = 0;
+              go.startX = 0;
+              go.startY = 0;
+              go.state = 4;
+            }
+
+          case "Kyle":
+          case "Claire1":
+          case "Claire2":
+          case "Prof":
+          case "Stevie":
+            //Now check if they've been pushed from their origin and make them face the player
+            this.watchPlayer(go, go.down, go.up, go.right, go.left);
             break;
 
           case "Vlad":
@@ -1580,8 +1690,6 @@ function () {
 
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
       this.scene.npcCont = this.scene.add.container();
-      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-
       this.createNPCS(4704, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
       this.createNPCS(5096, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
       this.createNPCS(512, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
@@ -1589,7 +1697,9 @@ function () {
       this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
       this.createNPCS(4741, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
       this.createNPCS(4756, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
-      this.createNPCS(4792, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie"); //make enemies group and container to handle them with*/
+      this.createNPCS(4792, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie"); //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+
+      this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //make enemies group and container to handle them with*/
 
       this.scene.enemySet = this.scene.physics.add.group();
       this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
@@ -2004,7 +2114,8 @@ function (_Phaser$Scene) {
         chad.y = 4020;
         chad.startX = 6600;
         chad.startY = 4020;
-        chad.state = 4;
+        chad.state = 4; //Fight state
+
         this.finished2 = true;
       }
     }
@@ -2015,22 +2126,22 @@ function (_Phaser$Scene) {
 
   }, {
     key: "checkProgress3",
-    value: function checkProgress3() {
-      var claire2 = this.lm.getNPC("Claire2");
-      var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
-      //if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
-
-      if (this.finished3 == false && this.player.knowledgeLevel >= 1) {
-        var nicole = this.lm.getNPC("Nicole");
-        nicole.state = 2; //hide blocker and remove their collider
-
+    value: function checkProgress3() {}
+    /*let claire2 = this.lm.getNPC("Claire2");
+    let kyle = this.lm.getNPC("Kyle");
+    //See if this has been done already, check that all needed conversations are done and player level is high enough
+    //if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
+        if(this.finished3 == false && this.player.knowledgeLevel >= 1){
+        let nicole = this.lm.getNPC("Nicole");
+        nicole.state = 2;
+        //hide blocker and remove their collider
         this.chadRoom.visible = false;
         this.physics.world.removeCollider(this.chadRoomCollider);
         this.player.scene.keyboard.E.isDown = true;
-        nicole.npcSpeak(this.player, nicole);
+        nicole.npcSpeak(this.player, nicole);  
         this.finished3 = true;
-      }
-    }
+    } */
+
     /*This progress check is for unlocking the final exam and boss fight with Vlad. This makes sure you have talked to 
     * Stevie again and Vlad before entering as well as being level 4. NicoleD informs player this is ready when the check passes.
     */
@@ -2038,20 +2149,20 @@ function (_Phaser$Scene) {
   }, {
     key: "checkProgress4",
     value: function checkProgress4() {
-      var stevie = this.lm.getNPC("Stevie");
-      var vlad = this.lm.getNPC("Vlad"); //See if this has been done already, check that all needed conversations are done and player level is high enough
+      /*let stevie = this.lm.getNPC("Stevie");
+      let vlad = this.lm.getNPC("Vlad");
+      //See if this has been done already, check that all needed conversations are done and player level is high enough
       //if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 4){
-
-      if (this.finished4 == false && this.player.knowledgeLevel >= 1) {
-        var nicole = this.lm.getNPC("Nicole");
-        nicole.state = 2; //hide blocker and remove their collider
-
-        this.vladRoom.visible = false;
-        this.physics.world.removeCollider(this.vladRoomCollider);
-        this.player.scene.keyboard.E.isDown = true;
-        nicole.npcSpeak(this.player, nicole);
-        this.finished4 = true;
-      }
+          if(this.finished4 == false && this.player.knowledgeLevel >= 1){
+          //let nicole = this.lm.getNPC("Nicole");
+          //nicole.state = 2;
+          //hide blocker and remove their collider
+          this.vladRoom.visible = false;
+          this.physics.world.removeCollider(this.vladRoomCollider);
+          this.player.scene.keyboard.E.isDown = true;
+          nicole.npcSpeak(this.player, nicole);  
+          this.finished4 = true;
+      } */
     }
   }, {
     key: "update",
@@ -2446,11 +2557,11 @@ function (_Phaser$Scene) {
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
       hoverSprite.setVisible(false); //make space resume game as well
 
-      this.input.keyboard.on('keyup-SPACE', function () {
+      this.input.keyboard.on('keyup-R', function () {
         _this.acceptInput();
       }); //make e exit conversation as well
 
-      this.input.keyboard.on('keyup-F', function () {
+      this.input.keyboard.on('keyup-C', function () {
         //go through all inputs
         while (_this.chatsDone < _this.chats.length) {
           _this.acceptInput();
@@ -2610,6 +2721,11 @@ function (_Phaser$Scene) {
             case 3:
               this.chats = ["C:/Users/Nicole/To_Player/That's enough cooking.\nI think we're ready to take our exams now.", "C:/Users/Player/To_Nicole/I agree."];
               break;
+
+            case 4:
+              this.chats = ["C:/Users/Nicole/To_Player/Good job! Now we can\ntake our exams and be done with this semester.", "C:/Users/Player/To_Nicole/Yeah, what a relief."];
+              npc.state++;
+              break;
           }
 
           break;
@@ -2756,17 +2872,12 @@ function (_Phaser$Scene) {
               break;
 
             case 1:
-              this.chats = ["C:/Users/Player/To_Brad/", "C:/Users/Brad/To_Player/"];
-              npc.state++;
+              this.chats = ["C:/Users/Player/To_Brad/Hey.", "C:/Users/Brad/To_Player/Can't talk dude, busy\nmirin Chads instagram."];
               break;
 
             case 2:
-              this.chats = ["C:/Users/Player/To_Brad/", "C:/Users/Brad/To_Player/"];
+              this.chats = ["C:/Users/Player/To_Brad/Hey man long time no see.", "C:/Users/Brad/To_Player/Yeah dude."];
               npc.state++;
-              break;
-
-            case 3:
-              this.chats = ["C:/Users/Player/To_Brad/", "C:/Users/Brad/To_Player/"];
               break;
           }
 

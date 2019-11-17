@@ -28,11 +28,11 @@ export class TalkScene extends Phaser.Scene{
 		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
 		hoverSprite.setVisible(false);
         //make space resume game as well
-        this.input.keyboard.on('keyup-SPACE', ()=>{
+        this.input.keyboard.on('keyup-R', ()=>{
 			this.acceptInput();
 		})
 		//make e exit conversation as well
-        this.input.keyboard.on('keyup-F', ()=>{
+        this.input.keyboard.on('keyup-C', ()=>{
 			//go through all inputs
 			while(this.chatsDone < this.chats.length){
 				this.acceptInput();
@@ -205,6 +205,12 @@ export class TalkScene extends Phaser.Scene{
 					this.chats = [
 						"C:/Users/Nicole/To_Player/That's enough cooking.\nI think we're ready to take our exams now.",
 						"C:/Users/Player/To_Nicole/I agree."];
+				break;
+				case 4:
+					this.chats = [
+						"C:/Users/Nicole/To_Player/Good job! Now we can\ntake our exams and be done with this semester.",
+						"C:/Users/Player/To_Nicole/Yeah, what a relief."];
+					npc.state++;
 				break;
 			}				
             break;
@@ -398,21 +404,15 @@ export class TalkScene extends Phaser.Scene{
 					break;
 				case 1:
 					this.chats = [
-					"C:/Users/Player/To_Brad/", 
-					"C:/Users/Brad/To_Player/"];
-					npc.state++;
+					"C:/Users/Player/To_Brad/Hey.", 
+					"C:/Users/Brad/To_Player/Can't talk dude, busy\nmirin Chads instagram."];
 					break;
 				case 2:
 					this.chats = [
-					"C:/Users/Player/To_Brad/", 
-					"C:/Users/Brad/To_Player/"];
+					"C:/Users/Player/To_Brad/Hey man long time no see.", 
+					"C:/Users/Brad/To_Player/Yeah dude."];
 					npc.state++;
 					break;						
-				case 3:
-					this.chats = [
-					"C:/Users/Player/To_Brad/", 
-					"C:/Users/Brad/To_Player/"];
-					break;
 			}
             break;
             case "Vlad":
