@@ -742,6 +742,8 @@ exports.CharacterSprite = void 0;
 
 var _CST = require("./CST");
 
+var _Sprite = require("./Sprite");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -887,6 +889,27 @@ function (_Phaser$Physics$Arcad) {
       this.scene.cmd1Text.text = invBuffer;
     }
   }, {
+    key: "dropLoot",
+    value: function dropLoot(enemy) {
+      var rand = enemy.scene.lm.randomNum(0, 3);
+      var name = '';
+
+      if (rand == 0) {
+        name = "dvd";
+      } else if (rand == 1) {
+        name = "examsheet";
+      } else if (rand == 2) {
+        name = "money";
+      } else if (rand == 3) {
+        name = "energy";
+      }
+
+      var sprite = new _Sprite.Sprite(enemy.scene, enemy.x, enemy.y, _CST.CST.SPRITE.ITEM, 0, 0, rand, 0, name);
+      enemy.scene.lm.itemSet.add(sprite);
+      sprite.setSize(32, 32);
+      sprite.body.setOffset(0, 0);
+    }
+  }, {
     key: "whipHitEnemy",
     value: function whipHitEnemy(whip, enemy) {
       //check if already got hit this animation
@@ -905,6 +928,7 @@ function (_Phaser$Physics$Arcad) {
             whip.endGame(whip, enemy);
           }
 
+          whip.dropLoot(enemy);
           enemy.destroy();
         }
 
@@ -949,6 +973,7 @@ function (_Phaser$Physics$Arcad) {
           ball.endGame(ball, enemy);
         }
 
+        ball.dropLoot(enemy);
         enemy.destroy();
       }
 
@@ -1058,7 +1083,7 @@ function (_Phaser$Physics$Arcad) {
 }(Phaser.Physics.Arcade.Sprite);
 
 exports.CharacterSprite = CharacterSprite;
-},{"./CST":"src/CST.js"}],"src/LevelManager.js":[function(require,module,exports) {
+},{"./CST":"src/CST.js","./Sprite":"src/Sprite.js"}],"src/LevelManager.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

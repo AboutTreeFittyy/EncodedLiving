@@ -6,6 +6,7 @@
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
 import {CST} from "./CST";
+import {Sprite} from "./Sprite";
 export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     
     constructor(scene, x, y, texture, frame) {
@@ -99,6 +100,24 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.scene.cmd1Text.text = invBuffer;
     }
 
+    dropLoot(enemy){
+        let rand = enemy.scene.lm.randomNum(0, 3);
+        let name= '';
+        if(rand == 0){
+            name = "dvd";
+        }else if(rand == 1){
+            name = "examsheet";
+        }else if(rand == 2){
+            name = "money";
+        }else if(rand == 3){
+            name = "energy";
+        }
+        let sprite = new Sprite(enemy.scene, enemy.x, enemy.y, CST.SPRITE.ITEM, 0, 0, rand, 0, name);
+		enemy.scene.lm.itemSet.add(sprite);
+		sprite.setSize(32,32);
+		sprite.body.setOffset(0,0);
+    }
+
     whipHitEnemy(whip, enemy){
         //check if already got hit this animation
         if(!whip.state){
@@ -114,6 +133,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                 }else if(enemy.name == "Vlad"){                    
                     whip.endGame(whip, enemy);
                 }
+                whip.dropLoot(enemy);
                 enemy.destroy();
             }
             whip.setState(1); //indicate a hit already occured
@@ -150,6 +170,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             }else if(enemy.name == "Vlad"){                    
                 ball.endGame(ball, enemy);
             }
+            ball.dropLoot(enemy);
             enemy.destroy();
         }
         ball.destroy();
