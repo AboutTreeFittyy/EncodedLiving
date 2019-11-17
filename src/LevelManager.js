@@ -58,12 +58,14 @@ export class LevelManager{
                         stevie.y = 6820;
                         stevie.startX = 5800;
                         stevie.startY = 6820;
+                        stevie.state = 4;
                         //Kyle to chad room
                         let kyle = this.scene.lm.getNPC("Kyle");
                         kyle.x = 1680;
                         kyle.y = 6220;
                         kyle.startX = 1680;
                         kyle.startY = 6220;
+                        kyle.state = 4;
                         //Brad in front of player
                         let brad = this.scene.lm.getNPC("Brad");
                         brad.x = 1350;
@@ -76,6 +78,9 @@ export class LevelManager{
                         claire1.y = 0;
                         claire1.startX = 0;
                         claire1.startY = 0;
+                        //Make NicoleD visible
+                        let nicoled = this.scene.lm.getNPC("NicoleD");
+                        nicoled.state = 0;
                         //turn off this flag
                         go.state = 6;
                         go.setVisible(false);
@@ -86,8 +91,12 @@ export class LevelManager{
                         brad.npcSpeak(this.scene.player, brad); 
                         this.scene.scene.pause(); 
                     }
-                case "NicoleD":
                     this.followPlayer(go);
+                    break;
+                case "NicoleD":
+                    if(go.state != 10){
+                        this.followPlayer(go);
+                    }
                     break;              
                 case "chad":                   
                     if(go.state < 5){
@@ -146,6 +155,11 @@ export class LevelManager{
                             go.startX = 0;
                             go.startY = 0;
                             go.state = 4;
+                            //Unblock the chad room
+                            this.scene.chadRoom.visible = false;
+                            this.scene.physics.world.removeCollider(this.scene.chadRoomCollider);
+                            this.scene.examRoomCollider = this.scene.physics.add.collider(this.scene.player, this.scene.examRoom, this.scene.player.examBlocked, null, this.scene);
+                            this.scene.examRoom.visible = true;
                         }
                     case "Kyle":
                     case "Claire1":
@@ -525,7 +539,7 @@ export class LevelManager{
         this.createNPCS(4741, CST.SPRITE.NPCS, 6, CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
         this.createNPCS(4756, CST.SPRITE.NPCS, 6, CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
         this.createNPCS(4792, CST.SPRITE.NPCS, 6, CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
-        //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+        this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
         this.createNPCS(470, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
         //make enemies group and container to handle them with*/
         this.scene.enemySet = this.scene.physics.add.group();

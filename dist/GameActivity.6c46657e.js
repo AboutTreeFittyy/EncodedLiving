@@ -1125,13 +1125,15 @@ function () {
               stevie.x = 5800;
               stevie.y = 6820;
               stevie.startX = 5800;
-              stevie.startY = 6820; //Kyle to chad room
+              stevie.startY = 6820;
+              stevie.state = 4; //Kyle to chad room
 
               var kyle = this.scene.lm.getNPC("Kyle");
               kyle.x = 1680;
               kyle.y = 6220;
               kyle.startX = 1680;
-              kyle.startY = 6220; //Brad in front of player
+              kyle.startY = 6220;
+              kyle.state = 4; //Brad in front of player
 
               var brad = this.scene.lm.getNPC("Brad");
               brad.x = 1350;
@@ -1143,7 +1145,10 @@ function () {
               claire1.x = 0;
               claire1.y = 0;
               claire1.startX = 0;
-              claire1.startY = 0; //turn off this flag
+              claire1.startY = 0; //Make NicoleD visible
+
+              var nicoled = this.scene.lm.getNPC("NicoleD");
+              nicoled.state = 0; //turn off this flag
 
               go.state = 6;
               go.setVisible(false);
@@ -1155,8 +1160,14 @@ function () {
               this.scene.scene.pause();
             }
 
-          case "NicoleD":
             this.followPlayer(go);
+            break;
+
+          case "NicoleD":
+            if (go.state != 10) {
+              this.followPlayer(go);
+            }
+
             break;
 
           case "chad":
@@ -1219,7 +1230,12 @@ function () {
               go.y = 0;
               go.startX = 0;
               go.startY = 0;
-              go.state = 4;
+              go.state = 4; //Unblock the chad room
+
+              this.scene.chadRoom.visible = false;
+              this.scene.physics.world.removeCollider(this.scene.chadRoomCollider);
+              this.scene.examRoomCollider = this.scene.physics.add.collider(this.scene.player, this.scene.examRoom, this.scene.player.examBlocked, null, this.scene);
+              this.scene.examRoom.visible = true;
             }
 
           case "Kyle":
@@ -1697,8 +1713,8 @@ function () {
       this.createNPCS(515, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
       this.createNPCS(4741, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
       this.createNPCS(4756, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
-      this.createNPCS(4792, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie"); //this.createNPCS(593, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-
+      this.createNPCS(4792, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
+      this.createNPCS(593, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
       this.createNPCS(470, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //make enemies group and container to handle them with*/
 
       this.scene.enemySet = this.scene.physics.add.group();
@@ -2051,7 +2067,10 @@ function (_Phaser$Scene) {
       this.shopLayer.setCollisionByProperty({
         collides: true
       });
-      this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this); //start talk with nicole
+      this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this); //Set Nicoled flag to be invisible
+
+      var nicoled = this.lm.getNPC("NicoleD");
+      nicoled.state = 10; //start talk with nicole
 
       var nicole = this.lm.getNPC("Nicole");
       this.player.scene.keyboard.E.isDown = true;
@@ -2126,22 +2145,22 @@ function (_Phaser$Scene) {
 
   }, {
     key: "checkProgress3",
-    value: function checkProgress3() {}
-    /*let claire2 = this.lm.getNPC("Claire2");
-    let kyle = this.lm.getNPC("Kyle");
-    //See if this has been done already, check that all needed conversations are done and player level is high enough
-    //if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
-        if(this.finished3 == false && this.player.knowledgeLevel >= 1){
-        let nicole = this.lm.getNPC("Nicole");
-        nicole.state = 2;
-        //hide blocker and remove their collider
-        this.chadRoom.visible = false;
-        this.physics.world.removeCollider(this.chadRoomCollider);
-        this.player.scene.keyboard.E.isDown = true;
-        nicole.npcSpeak(this.player, nicole);  
-        this.finished3 = true;
-    } */
+    value: function checkProgress3() {
+      var claire2 = this.lm.getNPC("Claire2");
+      var kyle = this.lm.getNPC("Kyle"); //See if this has been done already, check that all needed conversations are done and player level is high enough
 
+      if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 2) {
+        //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
+        var nicoled = this.lm.getNPC("NicoleD");
+        nicoled.state = 2; //hide blocker and remove their collider
+
+        this.vladRoom.visible = false;
+        this.physics.world.removeCollider(this.vladRoomCollider);
+        this.player.scene.keyboard.E.isDown = true;
+        nicoled.npcSpeak(this.player, nicoled);
+        this.finished3 = true;
+      }
+    }
     /*This progress check is for unlocking the final exam and boss fight with Vlad. This makes sure you have talked to 
     * Stevie again and Vlad before entering as well as being level 4. NicoleD informs player this is ready when the check passes.
     */
@@ -2827,6 +2846,16 @@ function (_Phaser$Scene) {
             case 3:
               this.chats = ["C:/Users/Kyle/To_Player/How's this opener:\nWant to see my... No never mind it sucks.", "C:/Users/Player/To_Kyle/You'll get it. Keep trying."];
               npc.state = 2;
+              break;
+
+            case 4:
+              this.chats = ["C:/Users/Kyle/To_Player/Hey...", "C:/Users/Player/To_Kyle/You okay. How's Stevie.", "C:/Users/Kyle/To_Player/...great now that she met\nBrad.", "C:/Users/Player/To_Kyle/I don't think he's into her.\nBesides I just beat him up.", "C:/Users/Kyle/To_Player/That's the first good thing\nI've heard in months. Take this exam sheet."];
+              this.dropItem(3, 0, -50, "examsheet");
+              npc.state++;
+              break;
+
+            case 5:
+              this.chats = ["C:/Users/Kyle/To_Player/Sorry I'd rather not talk\nright now, kinda bummed out.", "C:/Users/Player/To_Kyle/Take care of yourself, man."];
               break;
           }
 

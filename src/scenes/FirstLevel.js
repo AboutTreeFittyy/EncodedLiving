@@ -67,6 +67,9 @@ export class FirstLevel extends Phaser.Scene{
         //Set collider handler for the shop entrance
         this.shopLayer.setCollisionByProperty({collides:true});
         this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this);
+        //Set Nicoled flag to be invisible
+        let nicoled = this.lm.getNPC("NicoleD");
+        nicoled.state = 10;
         //start talk with nicole
         let nicole = this.lm.getNPC("Nicole");
         this.player.scene.keyboard.E.isDown = true;
@@ -134,20 +137,20 @@ export class FirstLevel extends Phaser.Scene{
     * NicoleD informs the player this is available when the check passes.
     */
     checkProgress3(){
-        /*let claire2 = this.lm.getNPC("Claire2");
+        let claire2 = this.lm.getNPC("Claire2");
         let kyle = this.lm.getNPC("Kyle");
         //See if this has been done already, check that all needed conversations are done and player level is high enough
-        //if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 3){
-            if(this.finished3 == false && this.player.knowledgeLevel >= 1){
-            let nicole = this.lm.getNPC("Nicole");
-            nicole.state = 2;
+        if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 2){
+            //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
+            let nicoled = this.lm.getNPC("NicoleD");
+            nicoled.state = 2;
             //hide blocker and remove their collider
-            this.chadRoom.visible = false;
-            this.physics.world.removeCollider(this.chadRoomCollider);
+            this.vladRoom.visible = false;
+            this.physics.world.removeCollider(this.vladRoomCollider);
             this.player.scene.keyboard.E.isDown = true;
-            nicole.npcSpeak(this.player, nicole);  
+            nicoled.npcSpeak(this.player, nicoled);  
             this.finished3 = true;
-        } */
+        } 
     }
 
     /*This progress check is for unlocking the final exam and boss fight with Vlad. This makes sure you have talked to 

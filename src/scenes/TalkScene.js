@@ -340,6 +340,21 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Kyle/You'll get it. Keep trying."];
 					npc.state=2;
 					break;
+				case 4:
+					this.chats = [
+					"C:/Users/Kyle/To_Player/Hey...",
+					"C:/Users/Player/To_Kyle/You okay. How's Stevie.",
+					"C:/Users/Kyle/To_Player/...great now that she met\nBrad.",
+					"C:/Users/Player/To_Kyle/I don't think he's into her.\nBesides I just beat him up.",
+					"C:/Users/Kyle/To_Player/That's the first good thing\nI've heard in months. Take this exam sheet."];
+					this.dropItem(3, 0, -50, "examsheet");
+					npc.state++;
+					break;
+				case 5:
+					this.chats = [
+					"C:/Users/Kyle/To_Player/Sorry I'd rather not talk\nright now, kinda bummed out.",
+					"C:/Users/Player/To_Kyle/Take care of yourself, man."];
+					break;
 			}
             break;
             case "chad":
