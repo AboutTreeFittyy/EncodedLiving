@@ -87,7 +87,6 @@ export class LoadScene extends Phaser.Scene{
 		this.loadImages();
 		this.loadAudio();
 		this.loadSprites();
-
 		let loadingBar = this.add.graphics({
 			fillStyle:{
 				color: 0xffffff

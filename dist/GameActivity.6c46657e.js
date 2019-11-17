@@ -390,8 +390,8 @@ function (_Phaser$Scene) {
       this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.ENCODEDLIVING).setDepth(1);
       var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
       title.setY(title.height / 2);
-      var startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.STARTNEWGAME).setDepth(1);
-      var loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, _CST.CST.IMAGE.LOADGAME).setDepth(1); //create sprites
+      var startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.STARTNEWGAME).setDepth(1); //let loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 +100, CST.IMAGE.LOADGAME).setDepth(1);
+      //create sprites
 
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
       hoverSprite.setVisible(false); //animate sprites
@@ -410,7 +410,7 @@ function (_Phaser$Scene) {
       /*this.sound.play(CST.AUDIO.TITLE, {
       	loop: true
       })*/
-      //make buttons interactive
+      //make start button interactive
 
       startButton.setInteractive();
       startButton.on("pointerover", function () {
@@ -426,22 +426,23 @@ function (_Phaser$Scene) {
         _this.sound.pauseAll();
 
         _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL);
-      });
-      loadButton.setInteractive();
-      loadButton.on("pointerover", function () {
-        hoverSprite.setVisible(true);
-        hoverSprite.play("walk");
-        hoverSprite.x = loadButton.x - loadButton.width / 2 - 50;
-        hoverSprite.y = loadButton.y;
-      });
-      loadButton.on("pointerout", function () {
-        hoverSprite.setVisible(false);
-      });
-      loadButton.on("pointerup", function () {
-        _this.sound.pauseAll();
+      }); //Make load button interactive (currently no load capability in this version so commented out)
 
-        _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL);
-      });
+      /*
+      loadButton.setInteractive();
+      loadButton.on("pointerover", ()=>{
+      	hoverSprite.setVisible(true);
+      	hoverSprite.play("walk");
+      	hoverSprite.x = loadButton.x - loadButton.width / 2 - 50;
+      	hoverSprite.y = loadButton.y;
+      })
+      loadButton.on("pointerout", ()=>{
+      	hoverSprite.setVisible(false);
+      })
+      loadButton.on("pointerup", ()=>{
+      	this.sound.pauseAll();
+      	this.scene.start(CST.SCENES.FIRSTLEVEL);
+      })*/
     }
   }]);
 

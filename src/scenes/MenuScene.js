@@ -19,7 +19,7 @@ export class MenuScene extends Phaser.Scene{
 		let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
 		title.setY(title.height/2);
 		let startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, CST.IMAGE.STARTNEWGAME).setDepth(1);
-		let loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 +100, CST.IMAGE.LOADGAME).setDepth(1);
+		//let loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 +100, CST.IMAGE.LOADGAME).setDepth(1);
 		//create sprites
 		let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
 		hoverSprite.setVisible(false);
@@ -38,7 +38,7 @@ export class MenuScene extends Phaser.Scene{
 		/*this.sound.play(CST.AUDIO.TITLE, {
 			loop: true
 		})*/
-		//make buttons interactive
+		//make start button interactive
 		startButton.setInteractive();
 
 		startButton.on("pointerover", ()=>{
@@ -54,6 +54,8 @@ export class MenuScene extends Phaser.Scene{
 			this.sound.pauseAll();
 			this.scene.start(CST.SCENES.FIRSTLEVEL);
 		})
+		//Make load button interactive (currently no load capability in this version so commented out)
+		/*
 		loadButton.setInteractive();
 		loadButton.on("pointerover", ()=>{
 			hoverSprite.setVisible(true);
@@ -67,6 +69,6 @@ export class MenuScene extends Phaser.Scene{
 		loadButton.on("pointerup", ()=>{
 			this.sound.pauseAll();
 			this.scene.start(CST.SCENES.FIRSTLEVEL);
-		})
+		})*/
 	}
 }
