@@ -24,6 +24,18 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         this.startY = y;
     }
 
+    failPlayer(player){
+        //Play death sound effect
+        player.visible = false;
+        player.scene.sound.play(CST.AUDIO.DEATH, {
+            volume: 0.5,
+            loop: false
+        })
+        //Enter the game over scene (LoseScene)
+        player.scene.scene.pause();
+        player.scene.scene.launch(CST.SCENES.LOSE, player.scene);
+    }
+
     projectileHitPlayer(player, projectile){
         //adjust inventory and player stats on hit from projectile
         player.rep -= projectile.dmg;
@@ -35,7 +47,7 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         }       
         player.displayInventory();
         if(player.rep <= 0){
-            //player.destroy();
+            projectile.failPlayer(player);//Player loses
         }
         projectile.destroy();
     }
@@ -68,7 +80,7 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
                 player.rep -= curName.dmg;
                 player.displayInventory();
                 if(player.rep <= 0){
-                    //player.destroy();
+                    curName.failPlayer(player); //Player loses
                 }
                 if(curName.dmg > 0){
                     //Play player hit sound effect
@@ -111,6 +123,7 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
                         sprite.body.setSize(22,44);
                         sprite.setScale(2);
                         sprite.body.setOffset(16,16);
+                        curName.scene.enemySet.add(sprite);
                         curName.scene.enemyCont.add(sprite);
                         curName.scene.physics.add.collider(curName.scene.player, sprite, sprite.enemyCollide, null, curName.scene);
                     }
@@ -124,12 +137,12 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
                 enemy.name = curName.name;
             }
             curName.state = 1; //Set a timer to make enemies only be affected by collisions at most once per second
-            curName.scene.time.delayedCall(coolTime, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
+            curName.scene.time.delayedCall(coolTime, curName.coolDown, [this.scene.player, curName], this.scene);
         }  
     }
 
-    nerdGirlCoolDown(player, enemy){
-        //enemy.name = "nerdgirl"; // Reset their name to be the same as the one that can spawn enemies again
+    coolDown(player, enemy){
+        //Set active hitting state
         enemy.state = 0;
     }
 }

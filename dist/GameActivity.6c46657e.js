@@ -140,20 +140,24 @@ var CST = {
     MENU: "MENU",
     PAUSE: "PAUSE",
     SHOP: "SHOP",
-    TALK: "TALK"
+    TALK: "TALK",
+    LOSE: "LOSE"
   },
   IMAGE: {
     ENCODEDLIVING: "encodedliving.png",
     LOADGAME: "loadgame.png",
     STARTNEWGAME: "startnewgame.png",
-    TITLE: "title_bg.jpg",
+    TITLE: "title.jpg",
     PAUSED: "paused.png",
     RESUME: "resume.png",
+    RESTART: "restart.png",
     CMD: "cmd.png",
     SHOP: "shop.png",
     FIDDY: "fiddy.png",
     EXIT: "exit.png",
     CONTINUE: "continue.png",
+    DROPPED: "droppedout.png",
+    MENU: "mainmenu.png",
     ENERGY: "energy.png",
     DVD: "dvd.png",
     EXAM: "examSheet.png"
@@ -164,6 +168,7 @@ var CST = {
     JSON: "json.mp3",
     CHAD: "chadFlex.mp3",
     VLAD: "vladCry.mp3",
+    DEATH: "death.mp3",
     PLAYERHIT: "playerHit.mp3",
     BALLHIT: "ballHit.mp3",
     WHIPHIT: "whipHit.mp3",
@@ -603,6 +608,19 @@ function (_Phaser$Physics$Arcad) {
   }
 
   _createClass(EnemySprite, [{
+    key: "failPlayer",
+    value: function failPlayer(player) {
+      //Play death sound effect
+      player.visible = false;
+      player.scene.sound.play(_CST.CST.AUDIO.DEATH, {
+        volume: 0.5,
+        loop: false
+      }); //Enter the game over scene (LoseScene)
+
+      player.scene.scene.pause();
+      player.scene.scene.launch(_CST.CST.SCENES.LOSE, player.scene);
+    }
+  }, {
     key: "projectileHitPlayer",
     value: function projectileHitPlayer(player, projectile) {
       //adjust inventory and player stats on hit from projectile
@@ -616,7 +634,8 @@ function (_Phaser$Physics$Arcad) {
 
       player.displayInventory();
 
-      if (player.rep <= 0) {//player.destroy();
+      if (player.rep <= 0) {
+        projectile.failPlayer(player); //Player loses
       }
 
       projectile.destroy();
@@ -653,7 +672,8 @@ function (_Phaser$Physics$Arcad) {
           player.rep -= curName.dmg;
           player.displayInventory();
 
-          if (player.rep <= 0) {//player.destroy();
+          if (player.rep <= 0) {
+            curName.failPlayer(player); //Player loses
           }
 
           if (curName.dmg > 0) {
@@ -704,6 +724,7 @@ function (_Phaser$Physics$Arcad) {
               sprite.body.setSize(22, 44);
               sprite.setScale(2);
               sprite.body.setOffset(16, 16);
+              curName.scene.enemySet.add(sprite);
               curName.scene.enemyCont.add(sprite);
               curName.scene.physics.add.collider(curName.scene.player, sprite, sprite.enemyCollide, null, curName.scene);
             }
@@ -722,13 +743,13 @@ function (_Phaser$Physics$Arcad) {
 
         curName.state = 1; //Set a timer to make enemies only be affected by collisions at most once per second
 
-        curName.scene.time.delayedCall(coolTime, curName.nerdGirlCoolDown, [this.scene.player, curName], this.scene);
+        curName.scene.time.delayedCall(coolTime, curName.coolDown, [this.scene.player, curName], this.scene);
       }
     }
   }, {
-    key: "nerdGirlCoolDown",
-    value: function nerdGirlCoolDown(player, enemy) {
-      //enemy.name = "nerdgirl"; // Reset their name to be the same as the one that can spawn enemies again
+    key: "coolDown",
+    value: function coolDown(player, enemy) {
+      //Set active hitting state
       enemy.state = 0;
     }
   }]);
@@ -1982,7 +2003,9 @@ function () {
       this.createAnimation("left", 10, _CST.CST.SPRITE.PLAYER, 117, 125, false);
       this.createAnimation("right", 10, _CST.CST.SPRITE.PLAYER, 143, 151, false);
       this.createAnimation("up", 10, _CST.CST.SPRITE.PLAYER, 104, 112, false);
-      this.createAnimation("down", 10, _CST.CST.SPRITE.PLAYER, 130, 138, false);
+      this.createAnimation("down", 10, _CST.CST.SPRITE.PLAYER, 130, 138, false); //Player death animation
+
+      this.createAnimation("die", 10, _CST.CST.SPRITE.PLAYER, 260, 265, false);
     }
   }, {
     key: "createAnimation",
@@ -2376,17 +2399,10 @@ function (_Phaser$Scene) {
       var _this = this;
 
       //add in assets
-      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1); //let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
-      //title.setY(title.height/2);
-
+      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1);
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
-      hoverSprite.setVisible(false); //create sounds for menu and pause!
-
-      /*this.sound.play(CST.AUDIO.TITLE, {
-      	loop: true
-            })*/
-      //make p resume game as well
+      hoverSprite.setVisible(false); //make p resume game as well
 
       this.input.keyboard.on('keyup-P', function () {
         _this.sound.pauseAll();
@@ -2414,9 +2430,6 @@ function (_Phaser$Scene) {
         _this.scene.stop();
       });
     }
-  }, {
-    key: "preload",
-    value: function preload() {}
   }]);
 
   return PauseScene;
@@ -3078,7 +3091,112 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.TalkScene = TalkScene;
-},{"../CST":"src/CST.js","../Sprite":"src/Sprite.js"}],"src/GameActivity.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../Sprite":"src/Sprite.js"}],"src/scenes/LoseScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LoseScene = void 0;
+
+var _CST = require("../CST");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var LoseScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(LoseScene, _Phaser$Scene);
+
+  function LoseScene() {
+    _classCallCheck(this, LoseScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(LoseScene).call(this, {
+      key: _CST.CST.SCENES.LOSE
+    }));
+  }
+
+  _createClass(LoseScene, [{
+    key: "create",
+    value: function create() {
+      var _this = this;
+
+      //add in assets
+      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.DROPPED).setDepth(1);
+      var restart = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.7, _CST.CST.IMAGE.RESTART).setDepth(1);
+      var menu = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.8, _CST.CST.IMAGE.MENU).setDepth(1);
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT); //Make death animation for player
+
+      var deathSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.PLAYER);
+      deathSprite.x = this.game.renderer.width / 2;
+      deathSprite.y = this.game.renderer.height / 2;
+      deathSprite.setScale(2);
+      deathSprite.play("die");
+      hoverSprite.setVisible(false); //make restart button interactive
+
+      restart.setInteractive();
+      restart.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = restart.x - restart.width / 2 - 50;
+        hoverSprite.y = restart.y;
+      });
+      restart.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      restart.on("pointerup", function () {
+        _this.data.scene.restart();
+
+        _this.scene.stop();
+      }); //Make menu button interactive
+
+      menu.setInteractive();
+      menu.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = menu.x - menu.width / 2 - 50;
+        hoverSprite.y = menu.y;
+      });
+      menu.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      menu.on("pointerup", function () {
+        _this.scene.stop(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.run(_CST.CST.SCENES.MENU);
+
+        _this.scene.stop();
+      });
+    }
+  }, {
+    key: "init",
+    value: function init(data) {
+      //Get data from Level scene to work with in this scene
+      this.data = data;
+    }
+  }]);
+
+  return LoseScene;
+}(Phaser.Scene);
+
+exports.LoseScene = LoseScene;
+},{"../CST":"src/CST.js"}],"src/GameActivity.js":[function(require,module,exports) {
 "use strict";
 
 var _LoadScene = require("./scenes/LoadScene");
@@ -3093,6 +3211,8 @@ var _ShopScene = require("./scenes/ShopScene");
 
 var _TalkScene = require("./scenes/TalkScene");
 
+var _LoseScene = require("./scenes/LoseScene");
+
 /* File Name: GameActivity.js
  * Author: Mathew Boland
  * Last Updated: September 30, 2019
@@ -3105,7 +3225,7 @@ var game = new Phaser.Game({
   width: 1600,
   height: 675,
   parent: 'my-canvas',
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene, _ShopScene.ShopScene, _TalkScene.TalkScene],
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene, _ShopScene.ShopScene, _TalkScene.TalkScene, _LoseScene.LoseScene],
   render: {
     pixelArt: true
   },
@@ -3119,7 +3239,7 @@ var game = new Phaser.Game({
     mode: Phaser.Scale.FIT
   }
 });
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js","./scenes/ShopScene":"src/scenes/ShopScene.js","./scenes/TalkScene":"src/scenes/TalkScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js","./scenes/ShopScene":"src/scenes/ShopScene.js","./scenes/TalkScene":"src/scenes/TalkScene.js","./scenes/LoseScene":"src/scenes/LoseScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
