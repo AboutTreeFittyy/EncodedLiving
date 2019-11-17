@@ -166,10 +166,17 @@ export class LevelManager{
                             this.scene.examRoom.visible = true;
                         }
                     case "Kyle":
-                    case "Claire1":
-                    case "Claire2":                    
+                    case "Claire1":                    
                     case "Prof":
                     case "Stevie":       
+                        //Now check if they've been pushed from their origin and make them face the player
+                        this.watchPlayer(go, go.down, go.up, go.right, go.left);
+                    break;
+                    case "Claire2":
+                        //Check for final game conversation state
+                        if(go.state == 6){
+                            this.scene.player.winGame(this.scene.player);
+                        }
                         //Now check if they've been pushed from their origin and make them face the player
                         this.watchPlayer(go, go.down, go.up, go.right, go.left);
                     break;

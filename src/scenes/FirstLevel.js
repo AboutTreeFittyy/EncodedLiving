@@ -143,7 +143,7 @@ export class FirstLevel extends Phaser.Scene{
         if(this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 1){
             //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
             let nicoled = this.lm.getNPC("NicoleD");
-            nicoled.state = 2;
+            nicoled.state = 3;
             //hide blocker and remove their collider
             this.vladRoom.visible = false;
             this.physics.world.removeCollider(this.vladRoomCollider);
@@ -163,7 +163,7 @@ export class FirstLevel extends Phaser.Scene{
         if(this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 2){
             //if(this.finished4 == false && this.player.knowledgeLevel >= 1){
             let nicoled = this.lm.getNPC("NicoleD");
-            nicoled.state = 2;
+            nicoled.state = 4;
             //hide blocker and remove their collider
             this.examRoom.visible = false;
             this.physics.world.removeCollider(this.examRoomCollider);

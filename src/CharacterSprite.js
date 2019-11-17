@@ -141,7 +141,26 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     }
 
     endGame(weapon, enemy){
-        enemy.scene.sound.removeByKey(CST.AUDIO.VLAD); //Stop chads sound
+        enemy.scene.sound.removeByKey(CST.AUDIO.VLAD); //Stop vlads sound
+        //Start convo with nicoled
+        let nicoled = enemy.scene.lm.getNPC("NicoleD");
+        nicoled.state = 5;
+        enemy.scene.keyboard.E.isDown = true;
+        nicoled.npcSpeak(enemy.scene.player, nicoled);
+        //Change claire2 to final playing state to end game convo
+        enemy.scene.lm.getNPC("Claire2").state = 5;
+    }
+
+    winGame(player){
+        //Play death sound effect
+        player.visible = false;
+        player.scene.sound.play(CST.AUDIO.WIN, {
+            volume: 0.5,
+            loop: false
+        })
+        //Enter the game over scene (LoseScene)
+        player.scene.scene.pause();
+        player.scene.scene.launch(CST.SCENES.WIN, player.scene);
     }
 
     startNextSemester(weapon, enemy){

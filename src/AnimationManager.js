@@ -102,6 +102,8 @@ export class AnimationManager{
         this.createAnimation("down", 10, CST.SPRITE.PLAYER, 130, 138, false);
         //Player death animation
         this.createAnimation("die", 10, CST.SPRITE.PLAYER, 260, 265, false);
+        //Player death animation
+        this.createAnimation("win", 10, CST.SPRITE.PLAYER, 26, 32, false);
     }
 
     createAnimation(k, fr, cst, st, fin, hide){

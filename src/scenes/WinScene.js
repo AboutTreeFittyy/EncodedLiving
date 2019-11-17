@@ -1,29 +1,29 @@
-/* File Name: LoseScene.js
+/* File Name: WinScene.js
  * Author: Mathew Boland
  * Last Updated: November 17, 2019
- * Description: This class creates a lose scene to stop the game and allow the player to return
+ * Description: This class creates a winning scene to stop the game and allow the player to return
  * to the main menu or restart.
 */
 import {CST} from "../CST";
-export class LoseScene extends Phaser.Scene{
+export class WinScene extends Phaser.Scene{
 	constructor(){
 		super({
-			key: CST.SCENES.LOSE
+			key: CST.SCENES.WIN
 		})
 	}
 
 	create(){
 		//add in assets
-		this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, CST.IMAGE.DROPPED).setDepth(1);
+		this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, CST.IMAGE.GRADUATED).setDepth(1);
         let restart = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.7, CST.IMAGE.RESTART).setDepth(1);
         let menu = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.8, CST.IMAGE.MENU).setDepth(1);
         let hoverSprite = this.add.sprite(100,100,CST.SPRITE.FAT);
         //Make death animation for player
-        let deathSprite = this.add.sprite(100,100,CST.SPRITE.PLAYER);
-        deathSprite.x = this.game.renderer.width / 2;
-        deathSprite.y = this.game.renderer.height / 2;
-        deathSprite.setScale(2);
-        deathSprite.play("die");
+        let winSprite = this.add.sprite(100,100,CST.SPRITE.PLAYER);
+        winSprite.x = this.game.renderer.width / 2;
+        winSprite.y = this.game.renderer.height / 2;
+        winSprite.setScale(2);
+        winSprite.play("win");
 		hoverSprite.setVisible(false);
 		//make restart button interactive
 		restart.setInteractive();

@@ -14,7 +14,8 @@ export const CST = {
 		PAUSE: "PAUSE",
 		SHOP: "SHOP",
 		TALK: "TALK",
-		LOSE: "LOSE"	
+		LOSE: "LOSE",
+		WIN: "WIN"	
 	},
 	IMAGE: {
 		ENCODEDLIVING: "encodedliving.png",
@@ -29,6 +30,7 @@ export const CST = {
 		FIDDY: "fiddy.png",
 		EXIT: "exit.png",
 		CONTINUE: "continue.png",
+		GRADUATED: "graduated.png",
 		DROPPED: "droppedout.png",
 		MENU: "mainmenu.png",
 		ENERGY: "energy.png",
@@ -42,6 +44,7 @@ export const CST = {
 		CHAD: "chadFlex.mp3",
 		VLAD: "vladCry.mp3",
 		DEATH: "death.mp3",
+		WIN: "win.mp3",
 		PLAYERHIT: "playerHit.mp3",
 		BALLHIT: "ballHit.mp3",
 		WHIPHIT: "whipHit.mp3",

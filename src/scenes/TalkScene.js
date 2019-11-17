@@ -228,6 +228,19 @@ export class TalkScene extends Phaser.Scene{
 					this.chats = ["C:/Users/oliceN/To_Player/eAr^uyo+neistling?"];
 					npc.state = 0; //restart
 				break;
+				case 3:
+					this.chats = ["C:/Users/oliceN/To_Player/lasePe$leph%em!"];
+					npc.state = 0; //restart
+				break;
+				case 4:
+					this.chats = [
+					"C:/Users/oliceN/To_Player/odoG#uckl%no@oruy\nxeam!"];
+				break;
+				case 5:
+					this.chats = [
+					"C:/Users/oliceN/To_Player/m'I#os rodpu^!$oYu\nta$eslat)amde$ti...",
+					"C:/Users/Player/To_Self/Guess I should leave now...\nShould probably talk to Claire first though, wonder\nif she's still mad."];
+				break;
 			}
             break;
             case "Claire1":
@@ -303,6 +316,23 @@ export class TalkScene extends Phaser.Scene{
 					this.chats = [ 
 					"C:/Users/Claire/To_Player/I hate you."];
 					npc.state = 2;
+				break;
+				case 5:
+					this.chats = [ 
+					"C:/Users/Player/To_Self/I wonder if Claire is still\nmad at me.", 
+					"C:/Users/Claire/To_Player/Hey! How are you doing?\nJust finished school?",
+					"C:/Users/Player/To_Claire/Yeah, it's been interesting\nto say the least.",
+					"C:/Users/Claire/To_Player/Lucky, I'm going to have\nto take another year because of all the time I wasted\nat parties with Brad.",
+					"C:/Users/Player/To_Claire/Well that's too bad...",
+					"C:/Users/Claire/To_Player/Yeah... Hey, look. I'm\nsorry about before. You were right. Brad is a jerk.\nI'm glad you put him in his place.",
+					"C:/Users/Player/To_Claire/Wow really? I thought\nyou two were going strong together.",
+					"C:/Users/Claire/To_Player/Oh no. Seeing him like\nthat after you... well... it made me rethink just how\ncool he really was.",
+					"C:/Users/Player/To_Claire/Glad you came to your\nsenses.",
+					"C:/Users/Claire/To_Player/Me too, thanks for that\nwake up call. Say you want to go get something to eat\nlater?",
+					"C:/Users/Player/To_Claire/Well... sure why not.",
+					"C:/Users/oliceN/To_Player/odGo eyb.",
+					"C:/Users/Player/To_Self/What else am I gonna do?"];
+					npc.state = 6;
 				break;
 			}
             break;
@@ -523,7 +553,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Stevie/What do you care?", 
 					"C:/Users/Stevie/To_Player/We're basically dating.",
 					"C:/Users/Player/To_Stevie/Pretty sure he's dating\nClaire, hate to break it to you.", 
-					"C:/Users/Stevie/To_Player/Ugh, just shut up will you?\nYou jerk!"];
+					"C:/Users/Stevie/To_Player/Ugh, just shutup will you?\nYou jerk!"];
 					npc.state++;
 					break;						
 				case 5:

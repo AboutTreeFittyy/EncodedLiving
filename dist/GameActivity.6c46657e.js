@@ -141,7 +141,8 @@ var CST = {
     PAUSE: "PAUSE",
     SHOP: "SHOP",
     TALK: "TALK",
-    LOSE: "LOSE"
+    LOSE: "LOSE",
+    WIN: "WIN"
   },
   IMAGE: {
     ENCODEDLIVING: "encodedliving.png",
@@ -156,6 +157,7 @@ var CST = {
     FIDDY: "fiddy.png",
     EXIT: "exit.png",
     CONTINUE: "continue.png",
+    GRADUATED: "graduated.png",
     DROPPED: "droppedout.png",
     MENU: "mainmenu.png",
     ENERGY: "energy.png",
@@ -169,6 +171,7 @@ var CST = {
     CHAD: "chadFlex.mp3",
     VLAD: "vladCry.mp3",
     DEATH: "death.mp3",
+    WIN: "win.mp3",
     PLAYERHIT: "playerHit.mp3",
     BALLHIT: "ballHit.mp3",
     WHIPHIT: "whipHit.mp3",
@@ -965,7 +968,28 @@ function (_Phaser$Physics$Arcad) {
   }, {
     key: "endGame",
     value: function endGame(weapon, enemy) {
-      enemy.scene.sound.removeByKey(_CST.CST.AUDIO.VLAD); //Stop chads sound
+      enemy.scene.sound.removeByKey(_CST.CST.AUDIO.VLAD); //Stop vlads sound
+      //Start convo with nicoled
+
+      var nicoled = enemy.scene.lm.getNPC("NicoleD");
+      nicoled.state = 5;
+      enemy.scene.keyboard.E.isDown = true;
+      nicoled.npcSpeak(enemy.scene.player, nicoled); //Change claire2 to final playing state to end game convo
+
+      enemy.scene.lm.getNPC("Claire2").state = 5;
+    }
+  }, {
+    key: "winGame",
+    value: function winGame(player) {
+      //Play death sound effect
+      player.visible = false;
+      player.scene.sound.play(_CST.CST.AUDIO.WIN, {
+        volume: 0.5,
+        loop: false
+      }); //Enter the game over scene (LoseScene)
+
+      player.scene.scene.pause();
+      player.scene.scene.launch(_CST.CST.SCENES.WIN, player.scene);
     }
   }, {
     key: "startNextSemester",
@@ -1309,10 +1333,19 @@ function () {
 
           case "Kyle":
           case "Claire1":
-          case "Claire2":
           case "Prof":
           case "Stevie":
             //Now check if they've been pushed from their origin and make them face the player
+            this.watchPlayer(go, go.down, go.up, go.right, go.left);
+            break;
+
+          case "Claire2":
+            //Check for final game conversation state
+            if (go.state == 6) {
+              this.scene.player.winGame(this.scene.player);
+            } //Now check if they've been pushed from their origin and make them face the player
+
+
             this.watchPlayer(go, go.down, go.up, go.right, go.left);
             break;
 
@@ -2006,7 +2039,9 @@ function () {
       this.createAnimation("up", 10, _CST.CST.SPRITE.PLAYER, 104, 112, false);
       this.createAnimation("down", 10, _CST.CST.SPRITE.PLAYER, 130, 138, false); //Player death animation
 
-      this.createAnimation("die", 10, _CST.CST.SPRITE.PLAYER, 260, 265, false);
+      this.createAnimation("die", 10, _CST.CST.SPRITE.PLAYER, 260, 265, false); //Player death animation
+
+      this.createAnimation("win", 10, _CST.CST.SPRITE.PLAYER, 26, 32, false);
     }
   }, {
     key: "createAnimation",
@@ -2236,7 +2271,7 @@ function (_Phaser$Scene) {
       if (this.finished3 == false && kyle.state > 4 && claire2.state > 1 && this.player.knowledgeLevel >= 1) {
         //if(this.finished3 == false && this.player.knowledgeLevel >= 2){
         var nicoled = this.lm.getNPC("NicoleD");
-        nicoled.state = 2; //hide blocker and remove their collider
+        nicoled.state = 3; //hide blocker and remove their collider
 
         this.vladRoom.visible = false;
         this.physics.world.removeCollider(this.vladRoomCollider);
@@ -2258,7 +2293,7 @@ function (_Phaser$Scene) {
       if (this.finished4 == false && stevie.state > 4 && vlad.state > 0 && this.player.knowledgeLevel >= 2) {
         //if(this.finished4 == false && this.player.knowledgeLevel >= 1){
         var nicoled = this.lm.getNPC("NicoleD");
-        nicoled.state = 2; //hide blocker and remove their collider
+        nicoled.state = 4; //hide blocker and remove their collider
 
         this.examRoom.visible = false;
         this.physics.world.removeCollider(this.examRoomCollider);
@@ -2846,6 +2881,20 @@ function (_Phaser$Scene) {
               npc.state = 0; //restart
 
               break;
+
+            case 3:
+              this.chats = ["C:/Users/oliceN/To_Player/lasePe$leph%em!"];
+              npc.state = 0; //restart
+
+              break;
+
+            case 4:
+              this.chats = ["C:/Users/oliceN/To_Player/odoG#uckl%no@oruy\nxeam!"];
+              break;
+
+            case 5:
+              this.chats = ["C:/Users/oliceN/To_Player/m'I#os rodpu^!$oYu\nta$eslat)amde$ti...", "C:/Users/Player/To_Self/Guess I should leave now...\nShould probably talk to Claire first though, wonder\nif she's still mad."];
+              break;
           }
 
           break;
@@ -2902,6 +2951,11 @@ function (_Phaser$Scene) {
             case 4:
               this.chats = ["C:/Users/Claire/To_Player/I hate you."];
               npc.state = 2;
+              break;
+
+            case 5:
+              this.chats = ["C:/Users/Player/To_Self/I wonder if Claire is still\nmad at me.", "C:/Users/Claire/To_Player/Hey! How are you doing?\nJust finished school?", "C:/Users/Player/To_Claire/Yeah, it's been interesting\nto say the least.", "C:/Users/Claire/To_Player/Lucky, I'm going to have\nto take another year because of all the time I wasted\nat parties with Brad.", "C:/Users/Player/To_Claire/Well that's too bad...", "C:/Users/Claire/To_Player/Yeah... Hey, look. I'm\nsorry about before. You were right. Brad is a jerk.\nI'm glad you put him in his place.", "C:/Users/Player/To_Claire/Wow really? I thought\nyou two were going strong together.", "C:/Users/Claire/To_Player/Oh no. Seeing him like\nthat after you... well... it made me rethink just how\ncool he really was.", "C:/Users/Player/To_Claire/Glad you came to your\nsenses.", "C:/Users/Claire/To_Player/Me too, thanks for that\nwake up call. Say you want to go get something to eat\nlater?", "C:/Users/Player/To_Claire/Well... sure why not.", "C:/Users/oliceN/To_Player/odGo eyb.", "C:/Users/Player/To_Self/What else am I gonna do?"];
+              npc.state = 6;
               break;
           }
 
@@ -3051,7 +3105,7 @@ function (_Phaser$Scene) {
               break;
 
             case 4:
-              this.chats = ["C:/Users/Player/To_Stevie/Sup short stuff?", "C:/Users/Stevie/To_Player/Don't talk to me, I heard\nyou hurt Brad!", "C:/Users/Player/To_Stevie/What do you care?", "C:/Users/Stevie/To_Player/We're basically dating.", "C:/Users/Player/To_Stevie/Pretty sure he's dating\nClaire, hate to break it to you.", "C:/Users/Stevie/To_Player/Ugh, just shut up will you?\nYou jerk!"];
+              this.chats = ["C:/Users/Player/To_Stevie/Sup short stuff?", "C:/Users/Stevie/To_Player/Don't talk to me, I heard\nyou hurt Brad!", "C:/Users/Player/To_Stevie/What do you care?", "C:/Users/Stevie/To_Player/We're basically dating.", "C:/Users/Player/To_Stevie/Pretty sure he's dating\nClaire, hate to break it to you.", "C:/Users/Stevie/To_Player/Ugh, just shutup will you?\nYou jerk!"];
               npc.state++;
               break;
 
@@ -3197,6 +3251,111 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.LoseScene = LoseScene;
+},{"../CST":"src/CST.js"}],"src/scenes/WinScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WinScene = void 0;
+
+var _CST = require("../CST");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var WinScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(WinScene, _Phaser$Scene);
+
+  function WinScene() {
+    _classCallCheck(this, WinScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(WinScene).call(this, {
+      key: _CST.CST.SCENES.WIN
+    }));
+  }
+
+  _createClass(WinScene, [{
+    key: "create",
+    value: function create() {
+      var _this = this;
+
+      //add in assets
+      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.GRADUATED).setDepth(1);
+      var restart = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.7, _CST.CST.IMAGE.RESTART).setDepth(1);
+      var menu = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.8, _CST.CST.IMAGE.MENU).setDepth(1);
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT); //Make death animation for player
+
+      var winSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.PLAYER);
+      winSprite.x = this.game.renderer.width / 2;
+      winSprite.y = this.game.renderer.height / 2;
+      winSprite.setScale(2);
+      winSprite.play("win");
+      hoverSprite.setVisible(false); //make restart button interactive
+
+      restart.setInteractive();
+      restart.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = restart.x - restart.width / 2 - 50;
+        hoverSprite.y = restart.y;
+      });
+      restart.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      restart.on("pointerup", function () {
+        _this.data.scene.restart();
+
+        _this.scene.stop();
+      }); //Make menu button interactive
+
+      menu.setInteractive();
+      menu.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = menu.x - menu.width / 2 - 50;
+        hoverSprite.y = menu.y;
+      });
+      menu.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      menu.on("pointerup", function () {
+        _this.scene.stop(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.run(_CST.CST.SCENES.MENU);
+
+        _this.scene.stop();
+      });
+    }
+  }, {
+    key: "init",
+    value: function init(data) {
+      //Get data from Level scene to work with in this scene
+      this.data = data;
+    }
+  }]);
+
+  return WinScene;
+}(Phaser.Scene);
+
+exports.WinScene = WinScene;
 },{"../CST":"src/CST.js"}],"src/GameActivity.js":[function(require,module,exports) {
 "use strict";
 
@@ -3214,6 +3373,8 @@ var _TalkScene = require("./scenes/TalkScene");
 
 var _LoseScene = require("./scenes/LoseScene");
 
+var _WinScene = require("./scenes/WinScene");
+
 /* File Name: GameActivity.js
  * Author: Mathew Boland
  * Last Updated: September 30, 2019
@@ -3226,7 +3387,7 @@ var game = new Phaser.Game({
   width: 1600,
   height: 675,
   parent: 'my-canvas',
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene, _ShopScene.ShopScene, _TalkScene.TalkScene, _LoseScene.LoseScene],
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _FirstLevel.FirstLevel, _PauseScene.PauseScene, _ShopScene.ShopScene, _TalkScene.TalkScene, _LoseScene.LoseScene, _WinScene.WinScene],
   render: {
     pixelArt: true
   },
@@ -3240,7 +3401,7 @@ var game = new Phaser.Game({
     mode: Phaser.Scale.FIT
   }
 });
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js","./scenes/ShopScene":"src/scenes/ShopScene.js","./scenes/TalkScene":"src/scenes/TalkScene.js","./scenes/LoseScene":"src/scenes/LoseScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/FirstLevel":"src/scenes/FirstLevel.js","./scenes/PauseScene":"src/scenes/PauseScene.js","./scenes/ShopScene":"src/scenes/ShopScene.js","./scenes/TalkScene":"src/scenes/TalkScene.js","./scenes/LoseScene":"src/scenes/LoseScene.js","./scenes/WinScene":"src/scenes/WinScene.js"}],"../../../../../Users/Mathew/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
