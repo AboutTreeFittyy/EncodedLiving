@@ -565,10 +565,10 @@ export class LevelManager{
         this.createEnemies(564, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 1, 2);
         this.createEnemies(568, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 1, 2);
         this.createEnemies(572, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 1, 2);
-        this.createEnemies(576, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 1, 2);
+        this.createEnemies(577, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 1, 2);
         this.createEnemies(588, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 1, 2);
         this.createEnemies(580, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 1, 2);
-        this.createEnemies(584, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 1, 2);
+        this.createEnemies(581, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 1, 2);
         this.createEnemies(467, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
         this.createEnemies(4724, CST.SPRITE.NPCS, 6, CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
         this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
