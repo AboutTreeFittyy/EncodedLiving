@@ -1,6 +1,6 @@
 /* File Name: GameActivity.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 17, 2019
  * Description: JavaScript file used to manage the phaser 3 game
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */

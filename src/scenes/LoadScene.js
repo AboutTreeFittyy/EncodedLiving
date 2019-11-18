@@ -31,7 +31,7 @@ export class LoadScene extends Phaser.Scene{
 
 	loadSprites(){
 		this.load.setPath("./assets/sprite");
-		//load all sprites in CST sprites
+		//load all sprites in CST sprites, if statements switch on which image is meant to be a certain size
 		for(let prop in CST.SPRITE){
 			if(CST.SPRITE[prop] == CST.SPRITE.PLAYER){
 				this.load.spritesheet(CST.SPRITE[prop], CST.SPRITE[prop], {

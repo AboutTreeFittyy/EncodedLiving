@@ -127,7 +127,7 @@ exports.CST = void 0;
 
 /* File Name: CST.js
  * Author: Mathew Boland
- * Last Updated: November 4, 2019
+ * Last Updated: November 17, 2019
  * Description: A constant array to hold values for easy access and 
  * interchangability of important commonly used values in the game
  * that can change often in development.
@@ -263,7 +263,7 @@ function (_Phaser$Scene) {
   }, {
     key: "loadSprites",
     value: function loadSprites() {
-      this.load.setPath("./assets/sprite"); //load all sprites in CST sprites
+      this.load.setPath("./assets/sprite"); //load all sprites in CST sprites, if statements switch on which image is meant to be a certain size
 
       for (var prop in _CST.CST.SPRITE) {
         if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.PLAYER) {
@@ -410,10 +410,10 @@ function (_Phaser$Scene) {
         })
       }); //create sounds for menu... commented out for the time being as its annoying
 
-      /*this.sound.play(CST.AUDIO.TITLE, {
-      	loop: true
-      })*/
-      //make start button interactive
+      this.sound.play(_CST.CST.AUDIO.TITLE, {
+        volume: 0.25,
+        loop: true
+      }); //make start button interactive
 
       startButton.setInteractive();
       startButton.on("pointerover", function () {
@@ -505,7 +505,8 @@ function (_Phaser$Physics$Arcad) {
     _this.name = name;
     _this.state = 0;
     return _this;
-  }
+  } //Starts a conversation in the TalkScene when a player collides with an NPC and presses E
+
 
   _createClass(Sprite, [{
     key: "npcSpeak",
@@ -524,12 +525,13 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
       }
-    }
+    } //Makes an NPC have enemy traits like health, attack sounds and a collider for player weapons
+
   }, {
     key: "makeNPCAgro",
     value: function makeNPCAgro(player, npc) {
       //Make Chad destroyable
-      this.rep = 10;
+      this.rep = 30;
       player.scene.physics.add.collider(player.scene.whip, npc, player.scene.whip.whipHitEnemy, null, this);
 
       if (npc.name == "chad") {
@@ -610,13 +612,15 @@ function (_Phaser$Physics$Arcad) {
     _this.startX = x;
     _this.startY = y;
     return _this;
-  }
+  } //Trigger losing screen for player
+
 
   _createClass(EnemySprite, [{
     key: "failPlayer",
     value: function failPlayer(player) {
       //Play death sound effect
       player.visible = false;
+      player.scene.sound.pauseAll();
       player.scene.sound.play(_CST.CST.AUDIO.DEATH, {
         volume: 0.5,
         loop: false
@@ -624,7 +628,8 @@ function (_Phaser$Physics$Arcad) {
 
       player.scene.scene.pause();
       player.scene.scene.launch(_CST.CST.SCENES.LOSE, player.scene);
-    }
+    } //Decrement players health and destroy the projectile that hit the player
+
   }, {
     key: "projectileHitPlayer",
     value: function projectileHitPlayer(player, projectile) {
@@ -644,7 +649,8 @@ function (_Phaser$Physics$Arcad) {
       }
 
       projectile.destroy();
-    }
+    } //Destroys the projectile that hit the wall
+
   }, {
     key: "projectileHitWall",
     value: function projectileHitWall(projectile, wall) {
@@ -653,7 +659,8 @@ function (_Phaser$Physics$Arcad) {
         projectile.jsons++;
         projectile.destroy();
       }
-    }
+    } //Destroys the projectile when the timer calls this function
+
   }, {
     key: "projectileTimeOut",
     value: function projectileTimeOut(projectile, enemy) {
@@ -662,7 +669,11 @@ function (_Phaser$Physics$Arcad) {
         enemy.jsons++;
         projectile.destroy();
       }
-    }
+    } //This function checks enemy collisions to see what to do.
+    //Nerd girls spawn nerds every 4 seconds max but deal no damage themself
+    //Nerds deal damage and switch directions
+    //JSONS deal no damage
+
   }, {
     key: "enemyCollide",
     value: function enemyCollide(player, enemy) {
@@ -698,25 +709,25 @@ function (_Phaser$Physics$Arcad) {
           //For nerds just switch their current direction, slice their name so that it keeps the same variation number
           case "nerd1up":
           case "nerd2up":
-            curName.setVelocityY(-90);
+            curName.setVelocityY(-256);
             curName.name = curName.name.slice(0, 5) + "down";
             break;
 
           case "nerd1down":
           case "nerd2down":
-            curName.setVelocityY(90);
+            curName.setVelocityY(256);
             curName.name = curName.name.slice(0, 5) + "up";
             break;
 
           case "nerd1right":
           case "nerd2right":
-            curName.setVelocityX(90);
+            curName.setVelocityX(256);
             curName.name = curName.name.slice(0, 5) + "left";
             break;
 
           case "nerd1left":
           case "nerd2left":
-            curName.setVelocityX(-90);
+            curName.setVelocityX(-256);
             curName.name = curName.name.slice(0, 5) + "right";
             break;
 
@@ -732,6 +743,7 @@ function (_Phaser$Physics$Arcad) {
               curName.scene.enemySet.add(sprite);
               curName.scene.enemyCont.add(sprite);
               curName.scene.physics.add.collider(curName.scene.player, sprite, sprite.enemyCollide, null, curName.scene);
+              curName.scene.time.delayedCall(10000, sprite.destroySelf, [this.scene.player, sprite], this.scene);
             }
 
             coolTime = 4000; //Have longer cooldown delay for spawning nerds
@@ -750,7 +762,14 @@ function (_Phaser$Physics$Arcad) {
 
         curName.scene.time.delayedCall(coolTime, curName.coolDown, [this.scene.player, curName], this.scene);
       }
-    }
+    } //Function for nerds female nerd spawns to destroy themselves with on timer callback
+
+  }, {
+    key: "destroySelf",
+    value: function destroySelf(player, enemy) {
+      enemy.destroy();
+    } //Callback function for enemy hit detection cooldown timer
+
   }, {
     key: "coolDown",
     value: function coolDown(player, enemy) {
@@ -819,9 +838,9 @@ function (_Phaser$Physics$Arcad) {
     _this.maxBalls = 3; //Max player can have
     //Player stats
 
-    _this.rep = 10; //DVDs increase this as player health
+    _this.rep = 20; //DVDs increase this as player health
 
-    _this.repMax = 10;
+    _this.repMax = 20;
     _this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
 
     _this.knowledgeProgress = 0;
@@ -831,12 +850,13 @@ function (_Phaser$Physics$Arcad) {
     _this.willMax = 10;
     _this.money = 0;
     return _this;
-  }
+  } //Enters the shop scene when player collides with it and presses E
+
 
   _createClass(CharacterSprite, [{
     key: "enterShop",
     value: function enterShop(player) {
-      //If the r button is pressed then begin chat scene
+      //If the e button is pressed then begin shop scene
       if (player.scene.keyboard.E.isDown) {
         player.scene.scene.launch(_CST.CST.SCENES.SHOP, player);
         player.scene.scene.pause(); //Reset buttons so they don't get stuck when resuming
@@ -847,7 +867,8 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
       }
-    }
+    } //Collider for items to have them be collected and destroyed
+
   }, {
     key: "collectItem",
     value: function collectItem(player, item) {
@@ -855,7 +876,9 @@ function (_Phaser$Physics$Arcad) {
 
       item.setVisible(false);
       item.destroy(item.body);
-    }
+    } //Adds the given item to the inventory 
+    //Chad mask items make this change around teh games states so that all stages are available
+
   }, {
     key: "addItem",
     value: function addItem(player, name) {
@@ -937,7 +960,8 @@ function (_Phaser$Physics$Arcad) {
       }
 
       player.displayInventory();
-    }
+    } //Updates the inventory cmd with current stats
+
   }, {
     key: "displayInventory",
     value: function displayInventory() {
@@ -950,7 +974,8 @@ function (_Phaser$Physics$Arcad) {
       invBuffer += "\n\n    <MONEY>                $" + this.money;
       invBuffer += "\n\n    <PINGPONGS>           " + this.balls + "/" + this.maxBalls;
       this.scene.cmd1Text.text = invBuffer;
-    }
+    } //Drops a random item (excluding chad mask) where enemy died
+
   }, {
     key: "dropLoot",
     value: function dropLoot(enemy) {
@@ -971,7 +996,8 @@ function (_Phaser$Physics$Arcad) {
       enemy.scene.lm.itemSet.add(sprite);
       sprite.setSize(32, 32);
       sprite.body.setOffset(0, 0);
-    }
+    } //Decreases enemy health and destroys them if they run out 
+
   }, {
     key: "whipHitEnemy",
     value: function whipHitEnemy(whip, enemy) {
@@ -989,20 +1015,25 @@ function (_Phaser$Physics$Arcad) {
             whip.startNextSemester(whip, enemy);
           } else if (enemy.name == "Vlad") {
             whip.endGame(whip, enemy);
+          } else {
+            whip.dropLoot(enemy);
+            enemy.destroy();
           }
-
-          whip.dropLoot(enemy);
-          enemy.destroy();
         }
 
         whip.setState(1); //indicate a hit already occured
       }
-    }
+    } //This triggers the final dialogue with NicoleD and puts Claire2 into game end state
+
   }, {
     key: "endGame",
     value: function endGame(weapon, enemy) {
       enemy.scene.sound.removeByKey(_CST.CST.AUDIO.VLAD); //Stop vlads sound
-      //Start convo with nicoled
+
+      enemy.x = 0;
+      enemy.y = 0;
+      enemy.startX = 0;
+      enemy.startY = 0; //Start convo with nicoled
 
       var nicoled = enemy.scene.lm.getNPC("NicoleD");
       nicoled.state = 5;
@@ -1010,12 +1041,14 @@ function (_Phaser$Physics$Arcad) {
       nicoled.npcSpeak(enemy.scene.player, nicoled); //Change claire2 to final playing state to end game convo
 
       enemy.scene.lm.getNPC("Claire2").state = 5;
-    }
+    } //This pauses the scene and starts up the winning scene after Claire2 is talked to in state 5
+
   }, {
     key: "winGame",
     value: function winGame(player) {
       //Play death sound effect
       player.visible = false;
+      player.scene.sound.pauseAll();
       player.scene.sound.play(_CST.CST.AUDIO.WIN, {
         volume: 0.5,
         loop: false
@@ -1023,12 +1056,17 @@ function (_Phaser$Physics$Arcad) {
 
       player.scene.scene.pause();
       player.scene.scene.launch(_CST.CST.SCENES.WIN, player.scene);
-    }
+    } //This begins the next semester and third stage by setting Nicole into her final state
+
   }, {
     key: "startNextSemester",
     value: function startNextSemester(weapon, enemy) {
       enemy.scene.sound.removeByKey(_CST.CST.AUDIO.CHAD); //Stop chads sound
-      //Start next semester
+
+      enemy.x = 0;
+      enemy.y = 0;
+      enemy.startX = 0;
+      enemy.startY = 0; //Start next semester
 
       var player = weapon.scene.player;
       var nicole = weapon.scene.lm.getNPC("Nicole");
@@ -1037,7 +1075,8 @@ function (_Phaser$Physics$Arcad) {
       player.scene.keyboard.E.isDown = true;
       nicole.npcSpeak(player, nicole);
       player.scene.scene.pause();
-    }
+    } //This decrements enemy health or destroys them if they run out
+
   }, {
     key: "ballHitEnemy",
     value: function ballHitEnemy(ball, enemy) {
@@ -1055,14 +1094,15 @@ function (_Phaser$Physics$Arcad) {
           ball.startNextSemester(ball, enemy);
         } else if (enemy.name == "Vlad") {
           ball.endGame(ball, enemy);
+        } else {
+          ball.dropLoot(enemy);
+          enemy.destroy();
         }
-
-        ball.dropLoot(enemy);
-        enemy.destroy();
       }
 
       ball.destroy();
-    }
+    } //This destroys the ball when it hits a wall or if the timer runs out
+
   }, {
     key: "ballHitWall",
     value: function ballHitWall(ball, wall) {
@@ -1072,7 +1112,8 @@ function (_Phaser$Physics$Arcad) {
         ball.scene.player.displayInventory();
         ball.destroy();
       }
-    }
+    } //This triggers the dialogue with extra large chick when the claire room is blocked
+
   }, {
     key: "claireBlocked",
     value: function claireBlocked(player, fat) {
@@ -1091,7 +1132,8 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
       }
-    }
+    } //This triggers the dialogue with the skinny chick when the chad room is blocked
+
   }, {
     key: "chadBlocked",
     value: function chadBlocked(player, fat) {
@@ -1110,7 +1152,8 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
       }
-    }
+    } //This triggers the large chicks dialogue when the vlad room is blocked
+
   }, {
     key: "vladBlocked",
     value: function vladBlocked(player, fat) {
@@ -1129,7 +1172,8 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
       }
-    }
+    } //This triggers the medium chick dialogue when the exam room is blocked
+
   }, {
     key: "examBlocked",
     value: function examBlocked(player, fat) {
@@ -1148,7 +1192,8 @@ function (_Phaser$Physics$Arcad) {
         player.scene.keyboard.S.reset();
         player.scene.keyboard.D.reset();
       }
-    }
+    } //This decreases the players will when the timer triggers it, then makes another timer to do the same
+
   }, {
     key: "decrementWill",
     value: function decrementWill(player) {
@@ -1215,7 +1260,8 @@ function () {
       }
 
       return null;
-    }
+    } //Spawns a projectile sprite at the given coordinates
+
   }, {
     key: "spawnProjectile",
     value: function spawnProjectile(x, y, cst, st, name, rep, dmg, size, time, sprite) {
@@ -1227,7 +1273,9 @@ function () {
 
       this.scene.time.delayedCall(time, projectile.projectileTimeOut, [projectile, sprite], this.scene);
       return projectile;
-    }
+    } //Updates sprite values for enemies and NPCs.
+    //2 giant switch statements that update things like sprite velocity, direction or states
+
   }, {
     key: "updateSprites",
     value: function updateSprites() {
@@ -1439,56 +1487,56 @@ function () {
           case "nerd1down":
             _go.play("nerd1down", true);
 
-            _go.setVelocityY(90);
+            _go.setVelocityY(256);
 
             break;
 
           case "nerd1up":
             _go.play("nerd1up", true);
 
-            _go.setVelocityY(-90);
+            _go.setVelocityY(-256);
 
             break;
 
           case "nerd1left":
             _go.play("nerd1left", true);
 
-            _go.setVelocityX(-90);
+            _go.setVelocityX(-256);
 
             break;
 
           case "nerd1right":
             _go.play("nerd1right", true);
 
-            _go.setVelocityX(90);
+            _go.setVelocityX(256);
 
             break;
 
           case "nerd2down":
             _go.play("nerd2down", true);
 
-            _go.setVelocityY(90);
+            _go.setVelocityY(256);
 
             break;
 
           case "nerd2up":
             _go.play("nerd2up", true);
 
-            _go.setVelocityY(-90);
+            _go.setVelocityY(-256);
 
             break;
 
           case "nerd2left":
             _go.play("nerd2left", true);
 
-            _go.setVelocityX(-90);
+            _go.setVelocityX(-256);
 
             break;
 
           case "nerd2right":
             _go.play("nerd2right", true);
 
-            _go.setVelocityX(90);
+            _go.setVelocityX(256);
 
             break;
 
@@ -1535,13 +1583,15 @@ function () {
             break;
         }
       }
-    }
+    } //Return random number inbetween min and max
+
   }, {
     key: "randomNum",
     value: function randomNum(min, max) {
       // min and max included 
       return Math.floor(Math.random() * (max - min + 1) + min);
-    }
+    } //Have gameobject follow player
+
   }, {
     key: "followPlayer",
     value: function followPlayer(go) {
@@ -1549,11 +1599,11 @@ function () {
 
       if (this.scene.player.y - 150 > go.y) {
         //player below
-        go.setVelocityY(256);
+        go.setVelocityY(512);
         anim = "down";
       } else if (this.scene.player.y + 150 < go.y) {
         //player above
-        go.setVelocityY(-256);
+        go.setVelocityY(-512);
         anim = "up";
       } else {
         go.setVelocityY(0);
@@ -1561,11 +1611,11 @@ function () {
 
       if (this.scene.player.x - 150 > go.x) {
         //player in front
-        go.setVelocityX(256);
+        go.setVelocityX(512);
         anim = "right";
       } else if (this.scene.player.x + 150 < go.x) {
         //player behind
-        go.setVelocityX(-256);
+        go.setVelocityX(-512);
         anim = "left";
       } else {
         go.setVelocityX(0);
@@ -1574,7 +1624,9 @@ function () {
       if (anim != "nothing") {
         go.play(go.name + anim, true);
       }
-    }
+    } //Have sprite watch the player by moving their idle frame to face the player
+    //Also makes the sprite walk back to their starting position if they get too far from it somehow
+
   }, {
     key: "watchPlayer",
     value: function watchPlayer(go, down, up, right, left) {
@@ -1622,7 +1674,8 @@ function () {
           go.setFrame(left);
         }
       }
-    }
+    } //Sets up important data for the player
+
   }, {
     key: "setPlayer",
     value: function setPlayer() {
@@ -1640,7 +1693,8 @@ function () {
       this.scene.player.setPosition(this.scene.player.x, this.scene.player.y); //Set timer to decrement willpower by 1 every 15 seconds
 
       this.scene.time.delayedCall(15000, this.scene.player.decrementWill, [this.scene.player], this.scene);
-    }
+    } //Creates the CMD stat screens
+
   }, {
     key: "setCMDS",
     value: function setCMDS() {
@@ -1662,7 +1716,8 @@ function () {
 
       this.scene.cmd1Lines = 1;
       this.scene.cmd2Lines = 1;
-    }
+    } //Creates all the input handlers for the game
+
   }, {
     key: "setInputs",
     value: function setInputs() {
@@ -1813,7 +1868,8 @@ function () {
           }
         }
       });
-    }
+    } //Changes player state to not attacking and moves the whip out of view 
+
   }, {
     key: "toggleAttack",
     value: function toggleAttack() {
@@ -1824,7 +1880,8 @@ function () {
 
       this.scene.whip.x = 0;
       this.scene.whip.y = 0;
-    }
+    } //Sets up the three cameras for the games display
+
   }, {
     key: "setCameras",
     value: function setCameras() {
@@ -1838,7 +1895,8 @@ function () {
       cam2.centerOn(-1000, 1000);
       this.scene.cameras.main.startFollow(this.scene.player);
       this.scene.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-    }
+    } //Creates all the game objects for the NPCs, items and enemies as well as their bodies and groups
+
   }, {
     key: "setObjects",
     value: function setObjects() {
@@ -1884,7 +1942,8 @@ function () {
       this.createEnemies(468, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
       this.createEnemies(4725, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
       this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
-    }
+    } //Generic item making function
+
   }, {
     key: "createItems",
     value: function createItems(key, frame, name) {
@@ -1902,7 +1961,8 @@ function () {
         sprite.setSize(32, 32);
         sprite.body.setOffset(0, 0);
       });
-    }
+    } //Generic NPC creating function
+
   }, {
     key: "createNPCS",
     value: function createNPCS(key, cst1, frame, cst2, down, up, left, right, name) {
@@ -1924,7 +1984,8 @@ function () {
 
         _this3.scene.physics.add.collider(_this3.scene.player, sprite, sprite.npcSpeak, null, _this3);
       });
-    }
+    } //Generic enemy creating function
+
   }, {
     key: "createEnemies",
     value: function createEnemies(key, cst1, frame, cst2, st, name, rep, dmg, size) {
@@ -1983,7 +2044,8 @@ function () {
     _classCallCheck(this, AnimationManager);
 
     this.scene = scene;
-  }
+  } //Create all the animations for all the sprites in the game
+
 
   _createClass(AnimationManager, [{
     key: "setAnimations",
@@ -2162,11 +2224,11 @@ function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       //start up the theme for level, commenting out now cause its annoying 
+      this.sound.play(_CST.CST.AUDIO.THEME1, {
+        volume: 0.25,
+        loop: true
+      }); //Set up tiled map
 
-      /*this.sound.play(CST.AUDIO.THEME1, {
-      	loop: true
-            })*/
-      //Set up tiled map
       var mappy = this.add.tilemap("FirstLevel");
       var terrain1 = mappy.addTilesetImage("ground1");
       var terrain2 = mappy.addTilesetImage("ground2");
@@ -2566,12 +2628,7 @@ function (_Phaser$Scene) {
 
       var exam = this.add.image(this.game.renderer.width / 2 + 250, this.game.renderer.height * 0.7, _CST.CST.IMAGE.EXAM).setDepth(1);
       var dvd = this.add.image(this.game.renderer.width / 2 + 400, this.game.renderer.height * 0.7, _CST.CST.IMAGE.DVD).setDepth(1);
-      var energy = this.add.image(this.game.renderer.width / 2 + 100, this.game.renderer.height * 0.7, _CST.CST.IMAGE.ENERGY).setDepth(1); //create sounds for menu and pause!
-
-      /*this.sound.play(CST.AUDIO.TITLE, {
-      	loop: true
-            })*/
-      //make p resume game as well
+      var energy = this.add.image(this.game.renderer.width / 2 + 100, this.game.renderer.height * 0.7, _CST.CST.IMAGE.ENERGY).setDepth(1); //make space resume game as well
 
       this.input.keyboard.on('keyup-SPACE', function () {
         _this.sound.pauseAll();
@@ -2756,7 +2813,8 @@ function (_Phaser$Scene) {
       contin.on("pointerup", function () {
         _this.acceptInput();
       });
-    }
+    } //This takes the item of a given name and frame and creates a sprite for it at the x,y coordinates given
+
   }, {
     key: "dropItem",
     value: function dropItem(frame, x, y, name) {
@@ -2764,7 +2822,8 @@ function (_Phaser$Scene) {
       this.player.scene.lm.itemSet.add(sprite);
       sprite.setSize(32, 32);
       sprite.body.setOffset(0, 0);
-    }
+    } //This adds the text from a dialogue to the dialogue cmd prompt
+
   }, {
     key: "addCMD2Text",
     value: function addCMD2Text(text, player) {
@@ -2780,7 +2839,8 @@ function (_Phaser$Scene) {
       }
 
       player.scene.cmd2Text.text += text + "\n";
-    }
+    } //This makes the scene wait for player input before continuing with more dialogue or exiting
+
   }, {
     key: "acceptInput",
     value: function acceptInput() {
@@ -2793,7 +2853,8 @@ function (_Phaser$Scene) {
         this.addCMD2Text(this.chats[this.chatsDone], this.player);
         this.chatsDone++;
       }
-    }
+    } //This is the giant dialogue switch. It determines and updates what should be the next dialogue from characters depending on their current states
+
   }, {
     key: "selectDialogue",
     value: function selectDialogue(player, npc) {
@@ -3449,7 +3510,7 @@ var _WinScene = require("./scenes/WinScene");
 
 /* File Name: GameActivity.js
  * Author: Mathew Boland
- * Last Updated: September 30, 2019
+ * Last Updated: November 17, 2019
  * Description: JavaScript file used to manage the phaser 3 game
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
@@ -3501,7 +3562,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51166" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55663" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -24,11 +24,7 @@ export class ShopScene extends Phaser.Scene{
 		let exam = this.add.image(this.game.renderer.width / 2 + 250, this.game.renderer.height * 0.7, CST.IMAGE.EXAM).setDepth(1);
 		let dvd = this.add.image(this.game.renderer.width / 2 + 400, this.game.renderer.height * 0.7, CST.IMAGE.DVD).setDepth(1);
 		let energy = this.add.image(this.game.renderer.width / 2 + 100, this.game.renderer.height * 0.7, CST.IMAGE.ENERGY).setDepth(1);
-		//create sounds for menu and pause!
-		/*this.sound.play(CST.AUDIO.TITLE, {
-			loop: true
-        })*/
-        //make p resume game as well
+        //make space resume game as well
         this.input.keyboard.on('keyup-SPACE', ()=>{
             this.sound.pauseAll();
             this.scene.resume(CST.SCENES.FIRSTLEVEL);

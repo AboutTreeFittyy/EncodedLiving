@@ -1,6 +1,6 @@
 /* File Name: FirstLevel.js
  * Author: Mathew Boland
- * Last Updated: November 11, 2019
+ * Last Updated: November 17, 2019
  * Description: This class is used to create the scene for the first level of the game.
  * With the help of other classes it creates the user interface, keybindings, map, saves 
  * progress and makes animations. 
@@ -20,9 +20,10 @@ export class FirstLevel extends Phaser.Scene{
     
 	create(){
         //start up the theme for level, commenting out now cause its annoying 
-		/*this.sound.play(CST.AUDIO.THEME1, {
-			loop: true
-        })*/       
+		this.sound.play(CST.AUDIO.THEME1, {
+            volume: 0.25,
+            loop: true
+        })       
         //Set up tiled map
         let mappy = this.add.tilemap("FirstLevel");
         let terrain1 = mappy.addTilesetImage("ground1");

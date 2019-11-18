@@ -1,6 +1,6 @@
 /* File Name: PauseScene.js
  * Author: Mathew Boland
- * Last Updated: November 4, 2019
+ * Last Updated: November 17, 2019
  * Description: This class creates a pause menu to display stats and pause the game
  * until the resume button is selected.
 */

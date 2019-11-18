@@ -1,6 +1,6 @@
 /* File Name: CST.js
  * Author: Mathew Boland
- * Last Updated: November 4, 2019
+ * Last Updated: November 17, 2019
  * Description: A constant array to hold values for easy access and 
  * interchangability of important commonly used values in the game
  * that can change often in development.

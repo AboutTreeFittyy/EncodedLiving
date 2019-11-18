@@ -1,6 +1,6 @@
 /* File Name: TalkScene.js
  * Author: Mathew Boland
- * Last Updated: November 10, 2019
+ * Last Updated: November 17, 2019
  * Description: This class creates a scene to listen for continue input and display
  * the continue icon. This helps keep speech flow between the player and NPCs.
 */
@@ -55,6 +55,7 @@ export class TalkScene extends Phaser.Scene{
 		})
 	}
 
+	//This takes the item of a given name and frame and creates a sprite for it at the x,y coordinates given
 	dropItem(frame, x, y, name){
 		let sprite = new Sprite(this.player.scene, this.player.x + x, this.player.y + y, CST.SPRITE.ITEM, 0, 0, frame, 0, name);
 		this.player.scene.lm.itemSet.add(sprite);
@@ -62,6 +63,7 @@ export class TalkScene extends Phaser.Scene{
 		sprite.body.setOffset(0,0);
 	}
 
+	//This adds the text from a dialogue to the dialogue cmd prompt
 	addCMD2Text(text, player){
 		//If the command prompt has more than 34 lines, delete the first one before adding another
         if(text.split(/\r\n|\r|\n/).length + player.scene.cmd2Lines >= 35){
@@ -76,6 +78,7 @@ export class TalkScene extends Phaser.Scene{
 		player.scene.cmd2Text.text += text+"\n";
 	}
 	
+	//This makes the scene wait for player input before continuing with more dialogue or exiting
 	acceptInput(){		
 		if(this.chatsDone >= this.chats.length){
 			//Return to game, no more dialogue now
@@ -88,6 +91,7 @@ export class TalkScene extends Phaser.Scene{
 		}		
 	}
 
+	//This is the giant dialogue switch. It determines and updates what should be the next dialogue from characters depending on their current states
 	selectDialogue(player, npc){
 		//Append new text to chats array based on npc name for acceptInputs function to print
         switch(npc.name){

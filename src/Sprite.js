@@ -22,6 +22,7 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
         this.state = 0;
     }
 
+    //Starts a conversation in the TalkScene when a player collides with an NPC and presses E
     npcSpeak(player, npc){
         //If the r button is pressed then begin chat scene
         if (player.scene.keyboard.E.isDown) {
@@ -36,9 +37,10 @@ export class Sprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    //Makes an NPC have enemy traits like health, attack sounds and a collider for player weapons
     makeNPCAgro(player, npc){
         //Make Chad destroyable
-        this.rep = 10;
+        this.rep = 30;
         player.scene.physics.add.collider(player.scene.whip, npc, player.scene.whip.whipHitEnemy, null, this);
         if(npc.name=="chad"){
             npc.scene.sound.play(CST.AUDIO.CHAD, {

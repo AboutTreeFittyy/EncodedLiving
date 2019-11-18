@@ -1,6 +1,6 @@
 /* File Name: MenuScene.js
  * Author: Mathew Boland
- * Last Updated: November 10, 2019
+ * Last Updated: November 17, 2019
  * Description: This class creates the menu scene for the game. Using the sprites,
  * audio and images loaded in LoadScene. It displays them and controls the players
  * selection to move to other scenes.
@@ -35,9 +35,10 @@ export class MenuScene extends Phaser.Scene{
 			})
 		})
 		//create sounds for menu... commented out for the time being as its annoying
-		/*this.sound.play(CST.AUDIO.TITLE, {
+		this.sound.play(CST.AUDIO.TITLE, {
+			volume: 0.25,
 			loop: true
-		})*/
+		})
 		//make start button interactive
 		startButton.setInteractive();
 

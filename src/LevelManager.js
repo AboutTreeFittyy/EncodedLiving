@@ -30,6 +30,7 @@ export class LevelManager{
         return null;
     }
 
+    //Spawns a projectile sprite at the given coordinates
     spawnProjectile(x, y, cst, st, name, rep, dmg, size, time, sprite){
         let projectile = new EnemySprite(this.scene, x, y, cst, st, name, rep, dmg).setDepth(5);
         //Make projectile hit walls and players.
@@ -41,6 +42,8 @@ export class LevelManager{
         return projectile;
     }
 
+    //Updates sprite values for enemies and NPCs.
+    //2 giant switch statements that update things like sprite velocity, direction or states
     updateSprites(){
         //Scan through all the NPCs to update them
         for(let i = 0; i < this.scene.npcCont.count('visible', true); i++){
@@ -231,35 +234,35 @@ export class LevelManager{
             switch(go.name){
                 case "nerd1down":
                     go.play("nerd1down", true);
-                    go.setVelocityY(90);
+                    go.setVelocityY(256);
                     break;
                 case "nerd1up":
                     go.play("nerd1up", true);
-                    go.setVelocityY(-90);
+                    go.setVelocityY(-256);
                     break;
                 case "nerd1left":
                         go.play("nerd1left", true);
-                        go.setVelocityX(-90);
+                        go.setVelocityX(-256);
                         break;
                 case "nerd1right":
                         go.play("nerd1right", true);
-                        go.setVelocityX(90);
+                        go.setVelocityX(256);
                         break;
                 case "nerd2down":
                     go.play("nerd2down", true);
-                    go.setVelocityY(90);
+                    go.setVelocityY(256);
                     break;
                 case "nerd2up":
                     go.play("nerd2up", true);
-                    go.setVelocityY(-90);
+                    go.setVelocityY(-256);
                     break;
                 case "nerd2left":
                         go.play("nerd2left", true);
-                        go.setVelocityX(-90);
+                        go.setVelocityX(-256);
                         break;
                 case "nerd2right":
                         go.play("nerd2right", true);
-                        go.setVelocityX(90);
+                        go.setVelocityX(256);
                         break;
                 case "jason":
                     //Now check if they've been pushed from their origin
@@ -305,31 +308,33 @@ export class LevelManager{
         } 
     }
 
+    //Return random number inbetween min and max
     randomNum(min, max) { // min and max included 
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
+    //Have gameobject follow player
     followPlayer(go){
         let anim = 'nothing';
         //Have her follow the player around                                      
         if(this.scene.player.y - 150 > go.y){
             //player below
-            go.setVelocityY(256);
+            go.setVelocityY(512);
             anim = "down";
         }else if (this.scene.player.y + 150 < go.y){
             //player above
-            go.setVelocityY(-256);
+            go.setVelocityY(-512);
             anim = "up";
         }else{
             go.setVelocityY(0);
         }
         if(this.scene.player.x - 150 > go.x){
             //player in front
-            go.setVelocityX(256);
+            go.setVelocityX(512);
             anim = "right";
         }else if (this.scene.player.x + 150 < go.x){
             //player behind
-            go.setVelocityX(-256);
+            go.setVelocityX(-512);
             anim = "left";
         }else{
             go.setVelocityX(0);
@@ -339,6 +344,8 @@ export class LevelManager{
         }
     }
 
+    //Have sprite watch the player by moving their idle frame to face the player
+    //Also makes the sprite walk back to their starting position if they get too far from it somehow
     watchPlayer(go, down, up, right, left){
         let anim = "nothing";
         if(go.startY - 50 > go.y){
@@ -383,6 +390,7 @@ export class LevelManager{
         }
     }
 
+    //Sets up important data for the player
     setPlayer(){
         //add game sprites              
         this.scene.player = new CharacterSprite(this.scene, 700, 4100, CST.SPRITE.PLAYER, 143).setDepth(1);
@@ -400,6 +408,7 @@ export class LevelManager{
         this.scene.time.delayedCall(15000, this.scene.player.decrementWill, [this.scene.player], this.scene);
     }
 
+    //Creates the CMD stat screens
     setCMDS(){
         //create info cmd prompts on sides
         this.scene.cmd1 = this.scene.add.image(-1000, -1000, CST.IMAGE.CMD).setDepth(1);
@@ -417,6 +426,7 @@ export class LevelManager{
         this.scene.cmd2Lines = 1;
     }
 
+    //Creates all the input handlers for the game
     setInputs(){
         //set up keyboard controls
         this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, E");
@@ -517,6 +527,7 @@ export class LevelManager{
         })
     }
 
+    //Changes player state to not attacking and moves the whip out of view 
     toggleAttack(){
         //this flag checks if the player can move or not
         this.scene.player.setState(0);
@@ -527,6 +538,7 @@ export class LevelManager{
         this.scene.whip.y = 0;
     }
 
+    //Sets up the three cameras for the games display
     setCameras(){
         //have camera follow player around
         this.scene.cameras.add( 0, 0, this.scene.cmd1.displayWidth, this.scene.game.renderer.height, false, "cmd1");
@@ -540,6 +552,7 @@ export class LevelManager{
         this.scene.physics.world.setBounds(0,0, this.map.widthInPixels, this.map.heightInPixels);
     }
 
+    //Creates all the game objects for the NPCs, items and enemies as well as their bodies and groups
     setObjects(){
         //Make item physcis group
         this.itemSet = this.scene.physics.add.group();
@@ -585,6 +598,7 @@ export class LevelManager{
         this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
 
+    //Generic item making function
     createItems(key, frame, name){
         this.map.createFromObjects("items", key, {key: CST.SPRITE.ITEM, frame: frame}).map((sprite)=>{            
             //enable body for the items to interact with player collision
@@ -595,6 +609,7 @@ export class LevelManager{
         });
     }
 
+    //Generic NPC creating function
     createNPCS(key, cst1, frame, cst2, down, up, left, right, name){
         this.map.createFromObjects("npcs", key, {key: cst1, frame: frame}).map((sprite)=>{
             sprite = new Sprite(this.scene, sprite.x, sprite.y, cst2, down, up, left, right, name);
@@ -608,6 +623,7 @@ export class LevelManager{
         });
     }
 
+    //Generic enemy creating function
     createEnemies(key, cst1, frame, cst2, st, name, rep, dmg, size){
         this.map.createFromObjects("enemies", key, {key: cst1, frame: frame}).map((sprite)=>{
             sprite = new EnemySprite(this.scene, sprite.x, sprite.y, cst2, st, name, rep, dmg);

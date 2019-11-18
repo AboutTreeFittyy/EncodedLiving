@@ -12,6 +12,7 @@ export class AnimationManager{
         this.scene = scene;
     }
 
+    //Create all the animations for all the sprites in the game
     setAnimations(){
         //Chad sprites animation
         this.createAnimation("chadleft", 10, CST.SPRITE.CHAD, 0, 3, false);

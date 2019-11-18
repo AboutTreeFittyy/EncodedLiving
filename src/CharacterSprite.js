@@ -20,8 +20,8 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.balls = 3; // Current number of balls available
         this.maxBalls = 3; //Max player can have
         //Player stats
-        this.rep = 10; //DVDs increase this as player health
-        this.repMax = 10;
+        this.rep = 20; //DVDs increase this as player health
+        this.repMax = 20;
         this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
         this.knowledgeProgress = 0;
         this.knowledgeLevel = 0;
@@ -30,8 +30,9 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.money = 0;
     }
 
+    //Enters the shop scene when player collides with it and presses E
     enterShop(player){
-        //If the r button is pressed then begin chat scene
+        //If the e button is pressed then begin shop scene
         if (player.scene.keyboard.E.isDown) {
             player.scene.scene.launch(CST.SCENES.SHOP, player);
             player.scene.scene.pause();
@@ -44,6 +45,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    //Collider for items to have them be collected and destroyed
     collectItem(player, item){
         player.addItem(player, item.name);
         //Picked up so destroy it
@@ -51,6 +53,8 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         item.destroy(item.body);        
     }
 
+    //Adds the given item to the inventory 
+    //Chad mask items make this change around teh games states so that all stages are available
     addItem(player, name){
         //Find out which item was grabbed
         switch(name){
@@ -117,6 +121,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         player.displayInventory();
     }
 
+    //Updates the inventory cmd with current stats
     displayInventory(){
         let invBuffer = '';
         invBuffer = "C:/Users/Player/Stats/";
@@ -129,6 +134,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.scene.cmd1Text.text = invBuffer;
     }
 
+    //Drops a random item (excluding chad mask) where enemy died
     dropLoot(enemy){
         let rand = enemy.scene.lm.randomNum(0, 3);
         let name= '';
@@ -147,6 +153,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 		sprite.body.setOffset(0,0);
     }
 
+    //Decreases enemy health and destroys them if they run out 
     whipHitEnemy(whip, enemy){
         //check if already got hit this animation
         if(!whip.state){
@@ -161,16 +168,22 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                     whip.startNextSemester(whip, enemy);
                 }else if(enemy.name == "Vlad"){                    
                     whip.endGame(whip, enemy);
-                }
-                whip.dropLoot(enemy);
-                enemy.destroy();
+                }else{
+                    whip.dropLoot(enemy);
+                    enemy.destroy();
+                }                
             }
             whip.setState(1); //indicate a hit already occured
         }        
     }
 
+    //This triggers the final dialogue with NicoleD and puts Claire2 into game end state
     endGame(weapon, enemy){
         enemy.scene.sound.removeByKey(CST.AUDIO.VLAD); //Stop vlads sound
+        enemy.x = 0;
+        enemy.y = 0;
+        enemy.startX = 0;
+        enemy.startY = 0;
         //Start convo with nicoled
         let nicoled = enemy.scene.lm.getNPC("NicoleD");
         nicoled.state = 5;
@@ -180,9 +193,11 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         enemy.scene.lm.getNPC("Claire2").state = 5;
     }
 
+    //This pauses the scene and starts up the winning scene after Claire2 is talked to in state 5
     winGame(player){
         //Play death sound effect
         player.visible = false;
+        player.scene.sound.pauseAll();
         player.scene.sound.play(CST.AUDIO.WIN, {
             volume: 0.5,
             loop: false
@@ -192,8 +207,13 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         player.scene.scene.launch(CST.SCENES.WIN, player.scene);
     }
 
+    //This begins the next semester and third stage by setting Nicole into her final state
     startNextSemester(weapon, enemy){
         enemy.scene.sound.removeByKey(CST.AUDIO.CHAD); //Stop chads sound
+        enemy.x = 0;
+        enemy.y = 0;
+        enemy.startX = 0;
+        enemy.startY = 0;
         //Start next semester
         let player = weapon.scene.player;
         let nicole = weapon.scene.lm.getNPC("Nicole");
@@ -203,6 +223,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         player.scene.scene.pause();
     }
 
+    //This decrements enemy health or destroys them if they run out
     ballHitEnemy(ball, enemy){
         //adjust inventory and enemy stats on hit from ball
         enemy.scene.player.balls++;
@@ -217,13 +238,15 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                 ball.startNextSemester(ball, enemy);
             }else if(enemy.name == "Vlad"){                    
                 ball.endGame(ball, enemy);
-            }
-            ball.dropLoot(enemy);
-            enemy.destroy();
+            }else{
+                ball.dropLoot(enemy);
+                enemy.destroy();
+            }            
         }
         ball.destroy();
     }
 
+    //This destroys the ball when it hits a wall or if the timer runs out
     ballHitWall(ball, wall){
         //timer calls this even if its been deleted so make sure it still exists
         if(ball.scene != null){            
@@ -233,6 +256,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }        
     }
 
+    //This triggers the dialogue with extra large chick when the claire room is blocked
     claireBlocked(player, fat){
         //If the r button is pressed then begin chat scene
         if (player.scene.keyboard.E.isDown) {
@@ -248,6 +272,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    //This triggers the dialogue with the skinny chick when the chad room is blocked
     chadBlocked(player, fat){
         //If the r button is pressed then begin chat scene
         if (player.scene.keyboard.E.isDown) {
@@ -263,6 +288,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    //This triggers the large chicks dialogue when the vlad room is blocked
     vladBlocked(player, fat){
         //If the r button is pressed then begin chat scene
         if (player.scene.keyboard.E.isDown) {
@@ -278,6 +304,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    //This triggers the medium chick dialogue when the exam room is blocked
     examBlocked(player, fat){
         //If the r button is pressed then begin chat scene
         if (player.scene.keyboard.E.isDown) {
@@ -293,6 +320,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    //This decreases the players will when the timer triggers it, then makes another timer to do the same
     decrementWill(player){
         //Make sure there is some will to lose before decrementing 
         if(player.will > 0){
