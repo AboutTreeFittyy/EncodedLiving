@@ -209,14 +209,17 @@ export class TalkScene extends Phaser.Scene{
 				case 4:
 					this.chats = [
 						"C:/Users/Nicole/To_Player/Good job! Now we can\ntake our exams and be done with this semester.",
-						"C:/Users/Player/To_Nicole/Yeah, what a relief."];
+						"C:/Users/Player/To_Nicole/Yeah, what a relief.\nGuess I'm gonna skip Chads party after this debacle.",
+						"C:/Users/Nicole/To_Player/Yeah, I can't go either.\nI'll be stuck in class until it's almost over.",
+						"C:/Users/Player/To_Nicole/Oh well, guess we'll\nhave to have our own party next year!",
+						"C:/Users/Nicole/To_Player/Haha, yeah I'll be\nlooking forward to it!"];
 					npc.state++;
 				break;
 				case 10:
-					//Unlock all rooms get mask
+					//Unlock all rooms got mask
 					this.chats = [
 					"C:/Users/Nicole/To_Player/Wow I think this will\nget rid of the girls blocking your way!",
-					"C:/Users/Player/To_Self/Huh, neat."];
+					"C:/Users/Player/To_Self/Huh, neat. Girls will let\nme go anywhere with the Chad mask."];
 					//See what state to reset to
 					if(npc.scene.finished2){
 						npc.state = 3;
@@ -232,27 +235,32 @@ export class TalkScene extends Phaser.Scene{
 			switch(npc.state){
 				case 0:
 					this.chats = [
-					"C:/Users/oliceN/To_Player/Hwy$ddi%sith(paphen?"];
+					"C:/Users/oliceN/To_Player/Hwy$ddi%sith(paphen?",
+					"C:/Users/Player/To_Self/I can't believe Chad killed\nNicole."];
 					npc.state++;
 				break;
 				case 1:
 					this.chats = [
-					"C:/Users/oliceN/To_Player/mI'[os*rosry."];
+					"C:/Users/oliceN/To_Player/mI'[os*rosry.",
+					"C:/Users/Player/To_Self/I wish Nicole never had\nthose late classes so she'd still be here..."];
 					npc.state++;
 				break;
 				case 2:
 					this.chats = [
-					"C:/Users/oliceN/To_Player/eAr^uyo+neistling?"];
+					"C:/Users/oliceN/To_Player/eAr^uyo+neistling?",
+					"C:/Users/Player/To_Self/I miss Nicole."];
 					npc.state = 0; //restart
 				break;
 				case 3:
 					this.chats = [
-					"C:/Users/oliceN/To_Player/lasePe$leph%em!"];
+					"C:/Users/oliceN/To_Player/lasePe$leph%em!",
+					"C:/Users/Player/To_Self/I should go to the study room.\nNasty brown, who would colour something that?"];
 					npc.state = 0; //restart
 				break;
 				case 4:
 					this.chats = [
-					"C:/Users/oliceN/To_Player/odoG#uckl%no@oruy\nxeam!"];
+					"C:/Users/oliceN/To_Player/odoG#uckl%no@oruy\nxeam!",
+					"C:/Users/Player/To_Self/Time for my last exam."];
 				break;
 				case 5:
 					this.chats = [
@@ -263,7 +271,7 @@ export class TalkScene extends Phaser.Scene{
 					//Unlock all rooms get mask
 					this.chats = [
 					"C:/Users/oliceN/To_Player/oWw,$I%hinkt#hatt$iwll\netg$dir#fo%het#rilgs#lbcokngi@uory#ayw!",
-					"C:/Users/Player/To_Self/Huh, neat."];
+					"C:/Users/Player/To_Self/Huh, neat. Girls will let\nme go anywhere with the Chad mask."];
 					//See what state to reset to
 					if(npc.scene.finished4){
 						npc.state = 4;
@@ -282,7 +290,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Claire/Introducing myself, I\nalways liked it when a friend cooks.",
 					"C:/Users/Claire/To_Player/Well I guess we'll get\nalong great then! Oh by the way, I have exam answers\nfrom last year on this sheet. You can have it. It'll\nimprove your knowledge. *WINKS*",];
 					npc.state++;
-					this.dropItem(1, 0, -200, "examsheet");
+					this.dropItem(1, 0, -50, "examsheet");
 				break;
 				case 1:
 					this.chats = [
@@ -311,7 +319,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Claire/Actually we just fought.",
 					"C:/Users/Claire/To_Player/No way you don't even\nlook hurt! And there's no way you would beat him\nin a fight!",
 					"C:/Users/Player/To_Claire/Well I did. Broke that\nlosers nose right at the school entrance.",
-					"C:/Users/Claire/To_Player/YOU JERK. You better\nnot have ruined his face!",
+					"C:/Users/Claire/To_Player/YOU JERK. You better\nnot have ruined his face! I'm going to see him.",
 					"C:/Users/Player/To_Self/I guess it isn't only her\nclothes she changed..."];
 					npc.startX = 1250;
 					npc.startY = 4100;
@@ -360,7 +368,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Claire/Glad you came to your\nsenses.",
 					"C:/Users/Claire/To_Player/Me too, thanks for that\nwake up call. Say you want to go get something to eat\nlater?",
 					"C:/Users/Player/To_Claire/Well... sure why not.",
-					"C:/Users/oliceN/To_Player/odGo eyb.",
+					"C:/Users/oliceN/To_Player/odGo^eyb.",
 					"C:/Users/Player/To_Self/What else am I gonna do?"];
 					npc.state = 6;
 				break;
@@ -380,6 +388,10 @@ export class TalkScene extends Phaser.Scene{
 			switch(npc.state){
 				case 0:
 					this.chats = [
+					"C:/Users/Nicole/To_Player/Ugh, these mouth\nbreathers are really annoying to listen to. All they\never talk about is JSON.",
+					"C:/Users/Player/To_Nicole/Yep, they're pretty\nannoying, I feel lame just being around them.",
+					"C:/Users/Nicole/To_Player/Can we leave then?",
+					"C:/Users/Player/To_Nicole/No wait this guy seems\nnormal.",
 					"C:/Users/Player/To_Kyle/How's the weather down\nthere?", 
 					"C:/Users/Kyle/To_Player/Amazing! I'm so pumped to\nbe here!",
 					"C:/Users/Player/To_Kyle/Good, someone who isn't\neasily offended.",
@@ -391,7 +403,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Kyle/To_Player/Ha, perfect I love em short.\nThanks pal. You want the rest of this energy drink?",
 					"C:/Users/Player/To_Kyle/Sure *Grabs drink* Why is\nit still full?", 
 					"C:/Users/Kyle/To_Player/People my size don't need\nmuch of that. Enjoy the drink, I'll see you around."];
-					this.dropItem(3, 0, -200, "energy");
+					this.dropItem(3, 0, -50, "energy");
 					npc.state++;
 				break;
 				case 1:
@@ -443,7 +455,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Chad/To_Nicole/Well the offers there if you\nchange your mind.",
 					"C:/Users/Chad/To_Player/Hey, before you go I got\nsome exam sheets you can have.",
 					"C:/Users/Player/To_Chad/Thanks, you're the best!."];
-					this.dropItem(1, 0, -200, "examsheet");
+					this.dropItem(1, 0, -50, "examsheet");
 				npc.state++;
 				break;
 				case 1:
@@ -469,7 +481,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Chad/Can this wait? I got to go\nto my exam.",
 					"C:/Users/Chad/To_Player/No way you can't miss out\non this chick man! I won't let you.",
 					"C:/Users/Player/To_Chad/Sorry but I'm going to go\nto my exam.",
-					"C:/Users/Chad/To_Player/Just try to get through!",
+					"C:/Users/Chad/To_Player/Just try to resist me!",
 					"C:/Users/Nicole/To_Player/Oh my god don't look!\nThat's some HOT STUFF!!!"];
 					//Put Chad into fighting mode
 					npc.state = 7;
@@ -481,13 +493,13 @@ export class TalkScene extends Phaser.Scene{
 				case 0:
 					this.chats = [
 					"C:/Users/Player/To_Brad/Hey are you going to\nChads party?", 
-					"C:/Users/Brad/To_Player/Of course! Everyones\ngoing to that!",
+					"C:/Users/Brad/To_Player/Of course! Everyones\ngoing to that! Chad's the coolest!",
 					"C:/Users/Player/To_Brad/Cool man, I'll see you\nthere then.", 
 					"C:/Users/Brad/To_Player/Oh could you get some\nbooze?",
 					"C:/Users/Player/To_Brad/I would but I'm broke.", 
 					"C:/Users/Brad/To_Player/Here take this cash then."];
 					npc.state++;
-					this.dropItem(2, 0, -200, "money");
+					this.dropItem(2, 0, -50, "money");
 					break;
 				case 1:
 					this.chats = [
@@ -497,7 +509,15 @@ export class TalkScene extends Phaser.Scene{
 				case 2:
 					this.chats = [
 					"C:/Users/Player/To_Brad/Hey man long time no see.", 
-					"C:/Users/Brad/To_Player/Yeah dude."];
+					"C:/Users/Brad/To_Player/Yeah dude. Been a bummer\nsince Chad isn't here anymore.",
+					"C:/Users/Player/To_Brad/He didn't graduate,\nwhere'd he go?", 
+					"C:/Users/Brad/To_Player/Got locked up, it's\nridiculous. We ran out of booze at the party since\nChad did a world record keg stand it was sick!\nThen he wasn't gonna let the party dry up on his\nwatch so he drove to the store to get more.",
+					"C:/Users/Player/To_Brad/He was caught drunk\ndriving?", 
+					"C:/Users/Brad/To_Player/Not just that, your friend\nthere... whats her name... Nicole. She must not have\nbeen watching out cause he hit her when he left\nthe dorm and she died.",
+					"C:/Users/Player/To_Brad/Oh my god... no. You're\nmessing with me, right?", 
+					"C:/Users/Brad/To_Player/I know it's terrible bro.\nNo more partying with Chad.",
+					"C:/Users/Player/To_Brad/Shutup, I mean Nicole.\nShe's really dead?", 
+					"C:/Users/Brad/To_Player/Yeah but who cares! It's\nher fault Chad got locked up! Say have you heard\nof JSON... JSON..."];
 					npc.state++;
 					break;						
 			}
@@ -510,7 +530,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Vlad/To_Player/You can see me! Most\npeople who can see me just stare.",
 					"C:/Users/Player/To_Vlad/...",
 					"C:/Users/Vlad/To_Player/Oh, okay. Here's some\nanswers to the exams. I'll just fail anyway."];
-					this.dropItem(1, 0, -200, "examsheet");
+					this.dropItem(1, 0, -50, "examsheet");
 					npc.state++;
 				break;
 				case 1:
@@ -519,7 +539,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Vlad/To_Player/Sure do!",
 					"C:/Users/Player/To_Vlad/Thanks Vlad. I cancount\non you for these sheets.",
 					"C:/Users/Vlad/To_Player/It's the only thing anyone\ncan count on me for.",];
-					this.dropItem(1, 0, -200, "examsheet");
+					this.dropItem(1, 0, -50, "examsheet");
 					npc.state++;
 				break;
 				case 2:
@@ -527,7 +547,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Vlad/Can I have another sheet?", 
 					"C:/Users/Vlad/To_Player/This is my last one.\nGOD why didn't I print more! I'm so pathetic!",
 					"C:/Users/Player/To_Vlad/Uhh, okay."];
-					this.dropItem(1, 0, -200, "examsheet");
+					this.dropItem(1, 0, -50, "examsheet");
 					npc.state++;
 					break;						
 				case 3:
@@ -562,7 +582,7 @@ export class TalkScene extends Phaser.Scene{
 					"C:/Users/Player/To_Stevie/This guy we met that you\nshould hit on. He said he'll hit on you though, so\nfeel free to just wait.", 
 					"C:/Users/Stevie/To_Player/Yeah, I'll just nap. Well\nthis energy drinks no use then. Here take it.",
 					"C:/Users/Nicole/To_Stevie/Aw you're both so similar,\n enjoy the nap."];
-					this.dropItem(3, 0, -200, "energy");
+					this.dropItem(3, 0, -50, "energy");
 					npc.state++;
 					break;
 				case 1:
