@@ -20,7 +20,6 @@ export class PauseScene extends Phaser.Scene{
 		hoverSprite.setVisible(false);
         //make p resume game as well
         this.input.keyboard.on('keyup-P', ()=>{
-            this.sound.pauseAll();
             this.scene.resume(CST.SCENES.FIRSTLEVEL);
             this.scene.stop();
 		})
@@ -36,7 +35,6 @@ export class PauseScene extends Phaser.Scene{
 			hoverSprite.setVisible(false);
 		})
 		resume.on("pointerup", ()=>{
-			this.sound.pauseAll();
             this.scene.resume(CST.SCENES.FIRSTLEVEL);
             this.scene.stop();
 		})

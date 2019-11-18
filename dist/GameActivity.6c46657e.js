@@ -2541,8 +2541,6 @@ function (_Phaser$Scene) {
       hoverSprite.setVisible(false); //make p resume game as well
 
       this.input.keyboard.on('keyup-P', function () {
-        _this.sound.pauseAll();
-
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
@@ -2559,8 +2557,6 @@ function (_Phaser$Scene) {
         hoverSprite.setVisible(false);
       });
       resume.on("pointerup", function () {
-        _this.sound.pauseAll();
-
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
@@ -2631,8 +2627,6 @@ function (_Phaser$Scene) {
       var energy = this.add.image(this.game.renderer.width / 2 + 100, this.game.renderer.height * 0.7, _CST.CST.IMAGE.ENERGY).setDepth(1); //make space resume game as well
 
       this.input.keyboard.on('keyup-SPACE', function () {
-        _this.sound.pauseAll();
-
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
@@ -2649,8 +2643,6 @@ function (_Phaser$Scene) {
         hoverSprite.setVisible(false);
       });
       resume.on("pointerup", function () {
-        _this.sound.pauseAll();
-
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
@@ -3562,7 +3554,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55663" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57966" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

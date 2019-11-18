@@ -26,7 +26,6 @@ export class ShopScene extends Phaser.Scene{
 		let energy = this.add.image(this.game.renderer.width / 2 + 100, this.game.renderer.height * 0.7, CST.IMAGE.ENERGY).setDepth(1);
         //make space resume game as well
         this.input.keyboard.on('keyup-SPACE', ()=>{
-            this.sound.pauseAll();
             this.scene.resume(CST.SCENES.FIRSTLEVEL);
             this.scene.stop();
 		})
@@ -42,7 +41,6 @@ export class ShopScene extends Phaser.Scene{
 			hoverSprite.setVisible(false);
 		})
 		resume.on("pointerup", ()=>{
-			this.sound.pauseAll();
             this.scene.resume(CST.SCENES.FIRSTLEVEL);
             this.scene.stop();
 		})
