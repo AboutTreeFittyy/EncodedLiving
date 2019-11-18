@@ -70,6 +70,10 @@ export class FirstLevel extends Phaser.Scene{
         //Set Nicoled flag to be invisible
         let nicoled = this.lm.getNPC("NicoleD");
         nicoled.state = 9;
+        //this makes sure if claire2 hasn't been talked to yet then give her new dialogue so it doesn't throw sequence 
+        //out of order totally. Also she'll drop exams endlessly so the player can speed through the game when you have chad mask
+        let claire2 = this.lm.getNPC("Claire2");
+        claire2.state = 7;
         //start talk with nicole
         let nicole = this.lm.getNPC("Nicole");
         this.player.scene.keyboard.E.isDown = true;

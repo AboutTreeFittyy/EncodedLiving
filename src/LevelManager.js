@@ -78,6 +78,9 @@ export class LevelManager{
                         claire1.y = 0;
                         claire1.startX = 0;
                         claire1.startY = 0;
+                        //Make sure claire2 is in state 0 now in case they got the chad mask
+                        let claire2 = this.scene.lm.getNPC("Claire2");
+                        claire2.state = 0;
                         //Make NicoleD visible
                         let nicoled = this.scene.lm.getNPC("NicoleD");
                         nicoled.state = 0;

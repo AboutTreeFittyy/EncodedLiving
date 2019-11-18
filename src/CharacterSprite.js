@@ -85,12 +85,23 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             }
             break;
             case "mask":
-                //Unlock all doors
-
+                //Unlock all doors except exam
+                player.scene.claireRoom.visible = false;
+                player.scene.physics.world.removeCollider(player.scene.claireRoomCollider);
+                player.scene.chadRoom.visible = false;
+                player.scene.physics.world.removeCollider(player.scene.chadRoomCollider);
+                player.scene.vladRoom.visible = false;
+                player.scene.physics.world.removeCollider(player.scene.vladRoomCollider);
+                //Hide Claire in case they haven't progressed far enough for her to anyway
+                let claire1 = player.scene.lm.getNPC("Claire1");
+                claire1.x = 0;
+                claire1.y = 0;
+                claire1.startX = 0;
+                claire1.startY = 0;
+                claire1.state = 2; //This way they can still fight chad if they want                
                 //Have Nicole/NicoleD tell you what it does
                 let nicole = player.scene.lm.getNPC("Nicole");
                 //Have Nicole tell player is shes active/visible
-                console.log("fore"+JSON.stringify(nicole));
                 if(nicole.visible){
                     nicole.state = 10;
                     player.scene.keyboard.E.isDown = true;
@@ -98,7 +109,6 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                 }else{
                     //Have NicoleD tell player because Nicole is done
                     let nicoled = player.scene.lm.getNPC("NicoleD");
-                    console.log("asd"+JSON.stringify(nicoled));
                     nicoled.state = 10;
                     player.scene.keyboard.E.isDown = true;
                     nicoled.npcSpeak(player, nicoled);

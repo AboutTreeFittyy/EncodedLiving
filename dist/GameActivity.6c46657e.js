@@ -904,11 +904,23 @@ function (_Phaser$Physics$Arcad) {
           break;
 
         case "mask":
-          //Unlock all doors
-          //Have Nicole/NicoleD tell you what it does
-          var nicole = player.scene.lm.getNPC("Nicole"); //Have Nicole tell player is shes active/visible
+          //Unlock all doors except exam
+          player.scene.claireRoom.visible = false;
+          player.scene.physics.world.removeCollider(player.scene.claireRoomCollider);
+          player.scene.chadRoom.visible = false;
+          player.scene.physics.world.removeCollider(player.scene.chadRoomCollider);
+          player.scene.vladRoom.visible = false;
+          player.scene.physics.world.removeCollider(player.scene.vladRoomCollider); //Hide Claire in case they haven't progressed far enough for her to anyway
 
-          console.log("fore" + JSON.stringify(nicole));
+          var claire1 = player.scene.lm.getNPC("Claire1");
+          claire1.x = 0;
+          claire1.y = 0;
+          claire1.startX = 0;
+          claire1.startY = 0;
+          claire1.state = 2; //This way they can still fight chad if they want                
+          //Have Nicole/NicoleD tell you what it does
+
+          var nicole = player.scene.lm.getNPC("Nicole"); //Have Nicole tell player is shes active/visible
 
           if (nicole.visible) {
             nicole.state = 10;
@@ -917,7 +929,6 @@ function (_Phaser$Physics$Arcad) {
           } else {
             //Have NicoleD tell player because Nicole is done
             var nicoled = player.scene.lm.getNPC("NicoleD");
-            console.log("asd" + JSON.stringify(nicoled));
             nicoled.state = 10;
             player.scene.keyboard.E.isDown = true;
             nicoled.npcSpeak(player, nicoled);
@@ -1256,7 +1267,10 @@ function () {
               claire1.x = 0;
               claire1.y = 0;
               claire1.startX = 0;
-              claire1.startY = 0; //Make NicoleD visible
+              claire1.startY = 0; //Make sure claire2 is in state 0 now in case they got the chad mask
+
+              var claire2 = this.scene.lm.getNPC("Claire2");
+              claire2.state = 0; //Make NicoleD visible
 
               var nicoled = this.scene.lm.getNPC("NicoleD");
               nicoled.state = 0; //turn off this flag
@@ -2212,7 +2226,11 @@ function (_Phaser$Scene) {
       this.physics.add.collider(this.player, this.shopLayer, this.player.enterShop, null, this); //Set Nicoled flag to be invisible
 
       var nicoled = this.lm.getNPC("NicoleD");
-      nicoled.state = 9; //start talk with nicole
+      nicoled.state = 9; //this makes sure if claire2 hasn't been talked to yet then give her new dialogue so it doesn't throw sequence 
+      //out of order totally. Also she'll drop exams endlessly so the player can speed through the game when you have chad mask
+
+      var claire2 = this.lm.getNPC("Claire2");
+      claire2.state = 7; //start talk with nicole
 
       var nicole = this.lm.getNPC("Nicole");
       this.player.scene.keyboard.E.isDown = true;
@@ -3002,6 +3020,14 @@ function (_Phaser$Scene) {
             case 5:
               this.chats = ["C:/Users/Player/To_Self/I wonder if Claire is still\nmad at me.", "C:/Users/Claire/To_Player/Hey! How are you doing?\nJust finished school?", "C:/Users/Player/To_Claire/Yeah, it's been interesting\nto say the least.", "C:/Users/Claire/To_Player/Lucky, I'm going to have\nto take another year because of all the time I wasted\nat parties with Brad.", "C:/Users/Player/To_Claire/Well that's too bad...", "C:/Users/Claire/To_Player/Yeah... Hey, look. I'm\nsorry about before. You were right. Brad is a jerk.\nI'm glad you put him in his place.", "C:/Users/Player/To_Claire/Wow really? I thought\nyou two were going strong together.", "C:/Users/Claire/To_Player/Oh no. Seeing him like\nthat after you... well... it made me rethink just how\ncool he really was.", "C:/Users/Player/To_Claire/Glad you came to your\nsenses.", "C:/Users/Claire/To_Player/Me too, thanks for that\nwake up call. Say you want to go get something to eat\nlater?", "C:/Users/Player/To_Claire/Well... sure why not.", "C:/Users/oliceN/To_Player/odGo eyb.", "C:/Users/Player/To_Self/What else am I gonna do?"];
               npc.state = 6;
+              break;
+
+            case 7:
+              this.chats = ["C:/Users/Claire/To_Player/Hey.", "C:/Users/Player/To_Claire/Oh, hi there.", "C:/Users/Claire/To_Player/I like your mask here's\na bunch of exam sheets."];
+              this.dropItem(1, 0, 50, "examsheet");
+              this.dropItem(1, 0, -50, "examsheet");
+              this.dropItem(1, 50, 0, "examsheet");
+              this.dropItem(1, -50, 0, "examsheet");
               break;
           }
 
