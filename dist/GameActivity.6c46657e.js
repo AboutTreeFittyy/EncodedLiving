@@ -162,7 +162,8 @@ var CST = {
     MENU: "mainmenu.png",
     ENERGY: "energy.png",
     DVD: "dvd.png",
-    EXAM: "examSheet.png"
+    EXAM: "examSheet.png",
+    DECREASE: "gradedecreased.png"
   },
   AUDIO: {
     THEME1: "level_1_theme.mp3",
@@ -410,10 +411,11 @@ function (_Phaser$Scene) {
         })
       }); //create sounds for menu... commented out for the time being as its annoying
 
-      this.sound.play(_CST.CST.AUDIO.TITLE, {
-        volume: 0.25,
-        loop: true
-      }); //make start button interactive
+      /*this.sound.play(CST.AUDIO.TITLE, {
+      	volume: 0.25,
+      	loop: true
+      })*/
+      //make start button interactive
 
       startButton.setInteractive();
       startButton.on("pointerover", function () {
@@ -612,7 +614,7 @@ function (_Phaser$Physics$Arcad) {
     _this.startX = x;
     _this.startY = y;
     return _this;
-  } //Trigger losing screen for player
+  } //Trigger losing screen for player losing game or life when they die
 
 
   _createClass(EnemySprite, [{
@@ -624,7 +626,9 @@ function (_Phaser$Physics$Arcad) {
       player.scene.sound.play(_CST.CST.AUDIO.DEATH, {
         volume: 0.5,
         loop: false
-      }); //Enter the game over scene (LoseScene)
+      });
+      player.lives--; //Decrease number of lives before calling lose scene
+      //Enter the game over scene (LoseScene)
 
       player.scene.scene.pause();
       player.scene.scene.launch(_CST.CST.SCENES.LOSE, player.scene);
@@ -849,6 +853,8 @@ function (_Phaser$Physics$Arcad) {
 
     _this.willMax = 10;
     _this.money = 0;
+    _this.lives = 4; //Lives to be displayed as grades
+
     return _this;
   } //Enters the shop scene when player collides with it and presses E
 
@@ -967,6 +973,25 @@ function (_Phaser$Physics$Arcad) {
     value: function displayInventory() {
       var invBuffer = '';
       invBuffer = "C:/Users/Player/Stats/";
+
+      switch (this.lives) {
+        case 1:
+          invBuffer += "\n\n    <GRADE>                   D";
+          break;
+
+        case 2:
+          invBuffer += "\n\n    <GRADE>                   C";
+          break;
+
+        case 3:
+          invBuffer += "\n\n    <GRADE>                   B";
+          break;
+
+        case 4:
+          invBuffer += "\n\n    <GRADE>                   A";
+          break;
+      }
+
       invBuffer += "\n\n    <LEVEL>                   " + this.knowledgeLevel;
       invBuffer += "\n\n    <KNOWLEDGE>      " + this.knowledgeProgress + " / " + this.knowledgeNeeded;
       invBuffer += "\n\n    <WILLPOWER>      " + this.will + " / " + this.willMax;
@@ -3317,10 +3342,6 @@ function (_Phaser$Scene) {
     value: function create() {
       var _this = this;
 
-      //add in assets
-      this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.DROPPED).setDepth(1);
-      var restart = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.7, _CST.CST.IMAGE.RESTART).setDepth(1);
-      var menu = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.8, _CST.CST.IMAGE.MENU).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT); //Make death animation for player
 
       var deathSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.PLAYER);
@@ -3328,41 +3349,120 @@ function (_Phaser$Scene) {
       deathSprite.y = this.game.renderer.height / 2;
       deathSprite.setScale(2);
       deathSprite.play("die");
-      hoverSprite.setVisible(false); //make restart button interactive
+      hoverSprite.setVisible(false); //Check if this is game over or just a lost life
 
-      restart.setInteractive();
-      restart.on("pointerover", function () {
-        hoverSprite.setVisible(true);
-        hoverSprite.play("walk");
-        hoverSprite.x = restart.x - restart.width / 2 - 50;
-        hoverSprite.y = restart.y;
-      });
-      restart.on("pointerout", function () {
-        hoverSprite.setVisible(false);
-      });
-      restart.on("pointerup", function () {
-        _this.data.scene.restart();
+      if (this.data.player.lives <= 0) {
+        //add in assets for losing the game
+        this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.DROPPED).setDepth(1);
+        var restart = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.7, _CST.CST.IMAGE.RESTART).setDepth(1);
+        var menu = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.8, _CST.CST.IMAGE.MENU).setDepth(1); //make restart button interactive
 
-        _this.scene.stop();
-      }); //Make menu button interactive
+        restart.setInteractive();
+        restart.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = restart.x - restart.width / 2 - 50;
+          hoverSprite.y = restart.y;
+        });
+        restart.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        restart.on("pointerup", function () {
+          _this.data.scene.restart();
 
-      menu.setInteractive();
-      menu.on("pointerover", function () {
-        hoverSprite.setVisible(true);
-        hoverSprite.play("walk");
-        hoverSprite.x = menu.x - menu.width / 2 - 50;
-        hoverSprite.y = menu.y;
-      });
-      menu.on("pointerout", function () {
-        hoverSprite.setVisible(false);
-      });
-      menu.on("pointerup", function () {
-        _this.scene.stop(_CST.CST.SCENES.FIRSTLEVEL);
+          _this.scene.stop();
+        }); //Make menu button interactive
 
-        _this.scene.run(_CST.CST.SCENES.MENU);
+        menu.setInteractive();
+        menu.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = menu.x - menu.width / 2 - 50;
+          hoverSprite.y = menu.y;
+        });
+        menu.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        menu.on("pointerup", function () {
+          _this.scene.stop(_CST.CST.SCENES.FIRSTLEVEL);
 
-        _this.scene.stop();
-      });
+          _this.scene.run(_CST.CST.SCENES.MENU);
+
+          _this.scene.stop();
+        });
+      } else {
+        //add in assets for losing a life
+        this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.DECREASE).setDepth(1);
+        var contin = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.6, _CST.CST.IMAGE.CONTINUE).setDepth(1);
+
+        var _menu = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.8, _CST.CST.IMAGE.MENU).setDepth(1); //make contin button interactive
+
+
+        contin.setInteractive();
+        contin.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = contin.x - contin.width / 2 - 50;
+          hoverSprite.y = contin.y;
+        });
+        contin.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        contin.on("pointerup", function () {
+          //Move player to start position
+          _this.data.player.x = 700;
+          _this.data.player.y = 4100; //Make player visible again
+
+          _this.data.player.visible = true; //Reset reputation points
+
+          _this.data.player.rep = _this.data.player.repMax; //Refresh the console to display new rep
+
+          _this.data.player.displayInventory(); //Reset all input
+
+
+          _this.data.player.scene.keyboard.E.reset();
+
+          _this.data.player.scene.keyboard.W.reset();
+
+          _this.data.player.scene.keyboard.A.reset();
+
+          _this.data.player.scene.keyboard.S.reset();
+
+          _this.data.player.scene.keyboard.D.reset(); //Resume sound
+
+
+          _this.data.sound.play(_CST.CST.AUDIO.THEME1, {
+            volume: 0.25,
+            loop: true
+          });
+
+          _this.data.scene.resume(); //Resume the game
+
+
+          _this.scene.stop();
+        }); //Make menu button interactive
+
+        _menu.setInteractive();
+
+        _menu.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = _menu.x - _menu.width / 2 - 50;
+          hoverSprite.y = _menu.y;
+        });
+
+        _menu.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+
+        _menu.on("pointerup", function () {
+          _this.scene.stop(_CST.CST.SCENES.FIRSTLEVEL);
+
+          _this.scene.run(_CST.CST.SCENES.MENU);
+
+          _this.scene.stop();
+        });
+      }
     }
   }, {
     key: "init",
@@ -3554,7 +3654,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57966" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54062" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

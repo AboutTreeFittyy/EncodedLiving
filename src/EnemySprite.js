@@ -24,7 +24,7 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
         this.startY = y;
     }
 
-    //Trigger losing screen for player
+    //Trigger losing screen for player losing game or life when they die
     failPlayer(player){
         //Play death sound effect
         player.visible = false;
@@ -33,6 +33,7 @@ export class EnemySprite extends Phaser.Physics.Arcade.Sprite {
             volume: 0.5,
             loop: false
         })
+        player.lives--; //Decrease number of lives before calling lose scene
         //Enter the game over scene (LoseScene)
         player.scene.scene.pause();
         player.scene.scene.launch(CST.SCENES.LOSE, player.scene);

@@ -1,6 +1,6 @@
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: November 16, 2019
+ * Last Updated: December 1, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -28,6 +28,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.will = 10; //Energy Drinks increase this as the players stamina
         this.willMax = 10;
         this.money = 0;
+        this.lives = 4; //Lives to be displayed as grades
     }
 
     //Enters the shop scene when player collides with it and presses E
@@ -125,6 +126,16 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
     displayInventory(){
         let invBuffer = '';
         invBuffer = "C:/Users/Player/Stats/";
+        switch(this.lives){
+            case 1: invBuffer += "\n\n    <GRADE>                   D";
+                break;
+            case 2: invBuffer += "\n\n    <GRADE>                   C";
+                break;
+            case 3: invBuffer += "\n\n    <GRADE>                   B";
+                break;
+            case 4: invBuffer += "\n\n    <GRADE>                   A";
+                break;
+        }        
         invBuffer += "\n\n    <LEVEL>                   "+this.knowledgeLevel;
         invBuffer += "\n\n    <KNOWLEDGE>      "+this.knowledgeProgress+" / "+this.knowledgeNeeded;
         invBuffer += "\n\n    <WILLPOWER>      "+this.will+" / "+this.willMax;

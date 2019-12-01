@@ -35,7 +35,8 @@ export const CST = {
 		MENU: "mainmenu.png",
 		ENERGY: "energy.png",
 		DVD: "dvd.png",
-		EXAM: "examSheet.png"
+		EXAM: "examSheet.png",
+		DECREASE: "gradedecreased.png"
 	},
 	AUDIO:{
 		THEME1: "level_1_theme.mp3",
