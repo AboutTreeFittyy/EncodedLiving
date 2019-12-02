@@ -163,7 +163,10 @@ var CST = {
     ENERGY: "energy.png",
     DVD: "dvd.png",
     EXAM: "examSheet.png",
-    DECREASE: "gradedecreased.png"
+    DECREASE: "gradedecreased.png",
+    WHIPUPGRADE: "whipupgrade.png",
+    SOLDOUT: "soldout.png",
+    DIALOGUE: "talkbubble.png"
   },
   AUDIO: {
     THEME1: "level_1_theme.mp3",
@@ -840,7 +843,9 @@ function (_Phaser$Physics$Arcad) {
     _this.balls = 3; // Current number of balls available
 
     _this.maxBalls = 3; //Max player can have
-    //Player stats
+    //Whip upgrade
+
+    _this.whipUpgrade = 0; //Player stats
 
     _this.rep = 20; //DVDs increase this as player health
 
@@ -852,7 +857,7 @@ function (_Phaser$Physics$Arcad) {
     _this.will = 10; //Energy Drinks increase this as the players stamina
 
     _this.willMax = 10;
-    _this.money = 0;
+    _this.money = 100;
     _this.lives = 4; //Lives to be displayed as grades
 
     return _this;
@@ -1033,7 +1038,11 @@ function (_Phaser$Physics$Arcad) {
           loop: false
         }); //adjust enemy stats on hit from whip
 
-        enemy.rep--;
+        if (wwhip.whipUpgrade > 0) {
+          enemy.rep -= 2;
+        } else {
+          enemy.rep--;
+        }
 
         if (enemy.rep == 0) {
           if (enemy.name == "chad") {
@@ -2644,8 +2653,39 @@ function (_Phaser$Scene) {
       var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.SHOP);
       title.setY(title.height / 2);
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.9, _CST.CST.IMAGE.EXIT).setDepth(1);
-      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
-      hoverSprite.setVisible(false); //Make purchase buttons for items
+      var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT).setScale(0.5);
+      hoverSprite.setVisible(false); //make dialogue box for loch ness monster
+
+      var dialogue = this.add.image(this.game.renderer.width / 2 + 25, this.game.renderer.height * 0.4, _CST.CST.IMAGE.DIALOGUE).setDepth(1); //Add player stats to screen
+
+      this.playerMoney = this.add.text(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.35, '', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2).setScale(1.25);
+      this.playerMoney.setColor("blue");
+      this.playerMoney.text = "$" + this.player.money;
+      this.playerLevel = this.add.text(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.38, '', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2).setScale(1.25);
+      this.playerLevel.setColor("blue");
+      this.playerLevel.text = this.player.knowledgeLevel;
+      this.playerKnowledge = this.add.text(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.41, '', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2).setScale(1.25);
+      this.playerKnowledge.setColor("blue");
+      this.playerKnowledge.text = this.player.knowledgeProgress + "/" + this.player.knowledgeNeeded;
+      this.playerWill = this.add.text(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.44, '', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2).setScale(1.25);
+      this.playerWill.setColor("blue");
+      this.playerWill.text = this.player.will + "/" + this.player.willMax;
+      this.playerRep = this.add.text(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.47, '', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2).setScale(1.25);
+      this.playerRep.setColor("blue");
+      this.playerRep.text = this.player.rep + "/" + this.player.repMax; //Make purchase buttons for upgrades
+
+      var whipUp = this.add.image(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.7, _CST.CST.IMAGE.WHIPUPGRADE).setDepth(1);
+      var ballUp = this.add.image(this.game.renderer.width / 2 - 400, this.game.renderer.height * 0.7, _CST.CST.SPRITE.BALL).setDepth(1).setScale(5); //Make purchase buttons for items
 
       var exam = this.add.image(this.game.renderer.width / 2 + 250, this.game.renderer.height * 0.7, _CST.CST.IMAGE.EXAM).setDepth(1);
       var dvd = this.add.image(this.game.renderer.width / 2 + 400, this.game.renderer.height * 0.7, _CST.CST.IMAGE.DVD).setDepth(1);
@@ -2655,76 +2695,224 @@ function (_Phaser$Scene) {
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
-      }); //make resume button interactive and exit game on click
+      }); //Mark items that are maxed out or upgrades that are already purchased "sold out"
 
-      resume.setInteractive();
-      resume.on("pointerover", function () {
-        hoverSprite.setVisible(true);
-        hoverSprite.play("walk");
-        hoverSprite.x = resume.x - resume.width / 2 - 50;
-        hoverSprite.y = resume.y;
-      });
-      resume.on("pointerout", function () {
-        hoverSprite.setVisible(false);
-      });
-      resume.on("pointerup", function () {
-        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+      if (this.player.will == this.player.willMax) {
+        this.add.image(this.game.renderer.width / 2 + 100, this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+      } else {
+        //Make energy button interactive and purchase energy on click for 1 dollars if player has enough
+        energy.setInteractive();
+        energy.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = energy.x;
+          hoverSprite.y = energy.y - 100;
+        });
+        energy.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        energy.on("pointerup", function () {
+          if (_this.player.money > 1 && _this.player.will != _this.player.willMax) {
+            _this.player.money -= 1;
+            _this.playerMoney.text = "$" + _this.player.money;
 
-        _this.scene.stop();
-      }); //Make exam button interactive and purchase exam sheet on click for 3.5 dollars if player has enough
+            _this.player.addItem(_this.player, "energy");
+
+            _this.playerWill.text = _this.player.will + "/" + _this.player.willMax;
+          } //Make button not work if maxed out
+
+
+          if (_this.player.will == _this.player.willMax) {
+            energy.on("pointerover", function () {
+              hoverSprite.setVisible(false);
+            });
+            energy.on("pointerup", function () {
+              hoverSprite.setVisible(false);
+            });
+            hoverSprite.setVisible(false);
+
+            _this.add.image(_this.game.renderer.width / 2 + 100, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+          }
+        });
+      }
+
+      if (this.player.rep == this.player.repMax) {
+        this.add.image(this.game.renderer.width / 2 + 400, this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+      } else {
+        //Make  button interactive and purchased on click for 2.5 dollars if player has enough
+        dvd.setInteractive();
+        dvd.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = dvd.x;
+          hoverSprite.y = dvd.y - 100;
+        });
+        dvd.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        dvd.on("pointerup", function () {
+          if (_this.player.money > 2.5 && _this.player.rep != _this.player.repMax) {
+            _this.player.money -= 2.5;
+            _this.playerMoney.text = "$" + _this.player.money;
+
+            _this.player.addItem(_this.player, "dvd");
+
+            _this.playerRep.text = _this.player.rep + "/" + _this.player.repMax;
+          } //Make button not work if maxed out
+
+
+          if (_this.player.rep == _this.player.repMax) {
+            dvd.on("pointerover", function () {
+              hoverSprite.setVisible(false);
+            });
+            dvd.on("pointerup", function () {
+              hoverSprite.setVisible(false);
+            });
+            hoverSprite.setVisible(false);
+
+            _this.add.image(_this.game.renderer.width / 2 + 400, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+          }
+        });
+      }
+
+      if (this.player.maxBalls > 3) {
+        this.add.image(this.game.renderer.width / 2 - 400, this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+      } else {
+        //Make  button interactive and purchased on click for 3.5 dollars if player has enough
+        ballUp.setInteractive();
+        ballUp.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = ballUp.x;
+          hoverSprite.y = ballUp.y - 100;
+        });
+        ballUp.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        ballUp.on("pointerup", function () {
+          if (_this.player.money > 7 && _this.player.maxBalls != 4) {
+            _this.player.money -= 7;
+            _this.playerMoney.text = "$" + _this.player.money;
+            _this.player.maxBalls++;
+            _this.player.balls++;
+
+            _this.player.displayInventory(); //Updates the ball count
+            //Make button not work after purchase
+
+
+            ballUp.on("pointerover", function () {
+              hoverSprite.setVisible(false);
+            });
+            ballUp.on("pointerup", function () {
+              hoverSprite.setVisible(false);
+            });
+            hoverSprite.setVisible(false);
+
+            _this.add.image(_this.game.renderer.width / 2 - 400, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+          }
+        });
+      }
+
+      if (this.player.whipUpgrade > 0) {
+        this.add.image(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+      } else {
+        //Make  button interactive and purchased on click for 3.5 dollars if player has enough
+        whipUp.setInteractive();
+        whipUp.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = whipUp.x;
+          hoverSprite.y = whipUp.y - 100;
+        });
+        whipUp.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        whipUp.on("pointerup", function () {
+          if (_this.player.money > 10.5 && _this.player.whipUpgrade == 0) {
+            _this.player.money -= 10.5;
+            _this.playerMoney.text = "$" + _this.player.money;
+            _this.player.whipUpgrade++;
+
+            _this.player.displayInventory(); //Make button not work after purchase
+
+
+            whipUp.on("pointerover", function () {
+              hoverSprite.setVisible(false);
+            });
+            whipUp.on("pointerup", function () {
+              hoverSprite.setVisible(false);
+            });
+            hoverSprite.setVisible(false);
+
+            _this.add.image(_this.game.renderer.width / 2 - 500, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+          }
+        });
+      } //Make exam button interactive and purchase exam sheet on click for 3.5 dollars if player has enough
+
 
       exam.setInteractive();
       exam.on("pointerover", function () {
         hoverSprite.setVisible(true);
         hoverSprite.play("walk");
         hoverSprite.x = exam.x;
-        hoverSprite.y = exam.y - 150;
+        hoverSprite.y = exam.y - 100;
       });
       exam.on("pointerout", function () {
         hoverSprite.setVisible(false);
       });
       exam.on("pointerup", function () {
-        if (_this.player.money > 3) {
+        if (_this.player.money > 3.5) {
           _this.player.money -= 3.5;
+          _this.playerMoney.text = "$" + _this.player.money;
 
           _this.player.addItem(_this.player, "examsheet");
-        }
-      }); //Make energy button interactive and purchase energy on click for 3.5 dollars if player has enough
 
-      energy.setInteractive();
-      energy.on("pointerover", function () {
+          _this.playerRep.text = _this.player.rep + "/" + _this.player.repMax;
+          _this.playerWill.text = _this.player.will + "/" + _this.player.willMax;
+          _this.playerKnowledge.text = _this.player.knowledgeProgress + "/" + _this.player.knowledgeNeeded;
+          _this.playerLevel.text = _this.player.knowledgeLevel;
+        } //This makes other two items unavailable if level up occurs maxing them out
+
+
+        if (_this.player.rep == _this.player.repMax && _this.player.will == _this.player.willMax) {
+          dvd.on("pointerover", function () {
+            hoverSprite.setVisible(false);
+          });
+          dvd.on("pointerup", function () {
+            hoverSprite.setVisible(false);
+          });
+          hoverSprite.setVisible(false);
+
+          _this.add.image(_this.game.renderer.width / 2 + 400, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+
+          energy.on("pointerover", function () {
+            hoverSprite.setVisible(false);
+          });
+          energy.on("pointerup", function () {
+            hoverSprite.setVisible(false);
+          });
+          hoverSprite.setVisible(false);
+
+          _this.add.image(_this.game.renderer.width / 2 + 100, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+        }
+      }); //make resume button interactive and exit game on click
+
+      resume.setInteractive();
+      resume.on("pointerover", function () {
         hoverSprite.setVisible(true);
+        hoverSprite.setScale(1);
         hoverSprite.play("walk");
-        hoverSprite.x = energy.x;
-        hoverSprite.y = energy.y - 150;
+        hoverSprite.x = resume.x - resume.width / 2 - 50;
+        hoverSprite.y = resume.y;
       });
-      energy.on("pointerout", function () {
+      resume.on("pointerout", function () {
         hoverSprite.setVisible(false);
+        hoverSprite.setScale(0.5);
       });
-      energy.on("pointerup", function () {
-        if (_this.player.money > 3) {
-          _this.player.money -= 3.5;
+      resume.on("pointerup", function () {
+        _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
-          _this.player.addItem(_this.player, "energy");
-        }
-      }); //Make  button interactive and purchased on click for 3.5 dollars if player has enough
-
-      dvd.setInteractive();
-      dvd.on("pointerover", function () {
-        hoverSprite.setVisible(true);
-        hoverSprite.play("walk");
-        hoverSprite.x = dvd.x;
-        hoverSprite.y = dvd.y - 150;
-      });
-      dvd.on("pointerout", function () {
-        hoverSprite.setVisible(false);
-      });
-      dvd.on("pointerup", function () {
-        if (_this.player.money > 3) {
-          _this.player.money -= 3.5;
-
-          _this.player.addItem(_this.player, "dvd");
-        }
+        _this.scene.stop();
       });
     }
   }, {
@@ -3654,7 +3842,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54062" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60588" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

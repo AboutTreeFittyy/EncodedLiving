@@ -19,6 +19,8 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         //PingPong weapon stats
         this.balls = 3; // Current number of balls available
         this.maxBalls = 3; //Max player can have
+        //Whip upgrade
+        this.whipUpgrade = 0;
         //Player stats
         this.rep = 20; //DVDs increase this as player health
         this.repMax = 20;
@@ -27,7 +29,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         this.knowledgeLevel = 0;
         this.will = 10; //Energy Drinks increase this as the players stamina
         this.willMax = 10;
-        this.money = 0;
+        this.money = 100;
         this.lives = 4; //Lives to be displayed as grades
     }
 
@@ -173,7 +175,11 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                 loop: false
             })
             //adjust enemy stats on hit from whip
-            enemy.rep--;
+            if(wwhip.whipUpgrade > 0){
+                enemy.rep-=2;
+            }else{
+                enemy.rep--;
+            }
             if(enemy.rep == 0){
                 if(enemy.name == "chad"){                    
                     whip.startNextSemester(whip, enemy);

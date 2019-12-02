@@ -36,7 +36,10 @@ export const CST = {
 		ENERGY: "energy.png",
 		DVD: "dvd.png",
 		EXAM: "examSheet.png",
-		DECREASE: "gradedecreased.png"
+		DECREASE: "gradedecreased.png",
+		WHIPUPGRADE: "whipupgrade.png",
+		SOLDOUT: "soldout.png",
+		DIALOGUE: "talkbubble.png"
 	},
 	AUDIO:{
 		THEME1: "level_1_theme.mp3",
