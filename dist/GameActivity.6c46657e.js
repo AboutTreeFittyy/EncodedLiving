@@ -847,17 +847,17 @@ function (_Phaser$Physics$Arcad) {
 
     _this.whipUpgrade = 0; //Player stats
 
-    _this.rep = 20; //DVDs increase this as player health
+    _this.rep = 18; //DVDs increase this as player health
 
     _this.repMax = 20;
     _this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
 
     _this.knowledgeProgress = 0;
     _this.knowledgeLevel = 0;
-    _this.will = 10; //Energy Drinks increase this as the players stamina
+    _this.will = 8; //Energy Drinks increase this as the players stamina
 
     _this.willMax = 10;
-    _this.money = 100;
+    _this.money = 12;
     _this.lives = 4; //Lives to be displayed as grades
 
     return _this;
@@ -1038,13 +1038,14 @@ function (_Phaser$Physics$Arcad) {
           loop: false
         }); //adjust enemy stats on hit from whip
 
-        if (wwhip.whipUpgrade > 0) {
-          enemy.rep -= 2;
+        if (whip.scene.player.whipUpgrade > 0) {
+          enemy.rep--;
+          enemy.rep--;
         } else {
           enemy.rep--;
         }
 
-        if (enemy.rep == 0) {
+        if (enemy.rep <= 0) {
           if (enemy.name == "chad") {
             whip.startNextSemester(whip, enemy);
           } else if (enemy.name == "Vlad") {
@@ -2682,7 +2683,13 @@ function (_Phaser$Scene) {
         fontFamily: '"Roboto Condensed"'
       }).setDepth(2).setScale(1.25);
       this.playerRep.setColor("blue");
-      this.playerRep.text = this.player.rep + "/" + this.player.repMax; //Make purchase buttons for upgrades
+      this.playerRep.text = this.player.rep + "/" + this.player.repMax; //Make dialogue for loch ness monster
+
+      this.dialogueText = this.add.text(dialogue.x - 100, dialogue.y - 50, '', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2).setScale(2);
+      this.dialogueText.setColor("blue");
+      this.dialogueText.text = "Welcome!\nGot tree fiddy?"; //Make purchase buttons for upgrades
 
       var whipUp = this.add.image(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.7, _CST.CST.IMAGE.WHIPUPGRADE).setDepth(1);
       var ballUp = this.add.image(this.game.renderer.width / 2 - 400, this.game.renderer.height * 0.7, _CST.CST.SPRITE.BALL).setDepth(1).setScale(5); //Make purchase buttons for items
@@ -2707,9 +2714,20 @@ function (_Phaser$Scene) {
           hoverSprite.play("walk");
           hoverSprite.x = energy.x;
           hoverSprite.y = energy.y - 100;
+          dialogue.setVisible(true);
+
+          if (_this.player.money < 1) {
+            _this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+          } else if (_this.player.will == _this.player.willMax) {
+            _this.dialogueText.text = "All out.\nYou don't need\nany anyways...";
+          } else {
+            _this.dialogueText.text = "Cramming?\nThis will keep\nyou up!";
+          }
         });
         energy.on("pointerout", function () {
           hoverSprite.setVisible(false);
+          _this.dialogueText.text = "";
+          dialogue.setVisible(false);
         });
         energy.on("pointerup", function () {
           if (_this.player.money > 1 && _this.player.will != _this.player.willMax) {
@@ -2719,10 +2737,13 @@ function (_Phaser$Scene) {
             _this.player.addItem(_this.player, "energy");
 
             _this.playerWill.text = _this.player.will + "/" + _this.player.willMax;
+            _this.dialogueText.text = "Thanks!\nNeed anything\nelse?";
+          } else if (_this.player.rep != _this.player.repMax) {
+            _this.dialogueText.text = "What are you\ntrying to rob me?";
           } //Make button not work if maxed out
 
 
-          if (_this.player.will == _this.player.willMax) {
+          if (_this.player.will != _this.player.willMax) {
             energy.on("pointerover", function () {
               hoverSprite.setVisible(false);
             });
@@ -2746,9 +2767,20 @@ function (_Phaser$Scene) {
           hoverSprite.play("walk");
           hoverSprite.x = dvd.x;
           hoverSprite.y = dvd.y - 100;
+          dialogue.setVisible(true);
+
+          if (_this.player.money < 2.5) {
+            _this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+          } else if (_this.player.rep == _this.player.repMax) {
+            _this.dialogueText.text = "All out.\nYou don't need\nany anyways...";
+          } else {
+            _this.dialogueText.text = "Want to be more\nrelevant?\nWatch this movie!";
+          }
         });
         dvd.on("pointerout", function () {
           hoverSprite.setVisible(false);
+          _this.dialogueText.text = "";
+          dialogue.setVisible(false);
         });
         dvd.on("pointerup", function () {
           if (_this.player.money > 2.5 && _this.player.rep != _this.player.repMax) {
@@ -2758,6 +2790,9 @@ function (_Phaser$Scene) {
             _this.player.addItem(_this.player, "dvd");
 
             _this.playerRep.text = _this.player.rep + "/" + _this.player.repMax;
+            _this.dialogueText.text = "Thanks!\nNeed anything\nelse?";
+          } else if (_this.player.rep != _this.player.repMax) {
+            _this.dialogueText.text = "What are you\ntrying to rob me?";
           } //Make button not work if maxed out
 
 
@@ -2785,9 +2820,19 @@ function (_Phaser$Scene) {
           hoverSprite.play("walk");
           hoverSprite.x = ballUp.x;
           hoverSprite.y = ballUp.y - 100;
+
+          if (_this.player.money < 7 && _this.player.maxBalls == 3) {
+            _this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+            dialogue.setVisible(true);
+          } else if (_this.player.maxBalls == 3) {
+            _this.dialogueText.text = "Add another\nPing Pong ball\nto your collection!";
+            dialogue.setVisible(true);
+          }
         });
         ballUp.on("pointerout", function () {
           hoverSprite.setVisible(false);
+          _this.dialogueText.text = "";
+          dialogue.setVisible(false);
         });
         ballUp.on("pointerup", function () {
           if (_this.player.money > 7 && _this.player.maxBalls != 4) {
@@ -2807,8 +2852,11 @@ function (_Phaser$Scene) {
               hoverSprite.setVisible(false);
             });
             hoverSprite.setVisible(false);
+            _this.dialogueText.text = "Thanks!\nNeed anything\nelse?";
 
             _this.add.image(_this.game.renderer.width / 2 - 400, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+          } else if (_this.player.maxBalls != 4) {
+            _this.dialogueText.text = "What are you\ntrying to rob me?";
           }
         });
       }
@@ -2823,9 +2871,19 @@ function (_Phaser$Scene) {
           hoverSprite.play("walk");
           hoverSprite.x = whipUp.x;
           hoverSprite.y = whipUp.y - 100;
+
+          if (_this.player.money < 10.5 && _this.player.whipUpgrade == 0) {
+            _this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+            dialogue.setVisible(true);
+          } else if (_this.player.whipUpgrade == 0) {
+            _this.dialogueText.text = "Lose the flimsy\ncable you have.\nThis one hurts\ntwice as much!";
+            dialogue.setVisible(true);
+          }
         });
         whipUp.on("pointerout", function () {
           hoverSprite.setVisible(false);
+          _this.dialogueText.text = "";
+          dialogue.setVisible(false);
         });
         whipUp.on("pointerup", function () {
           if (_this.player.money > 10.5 && _this.player.whipUpgrade == 0) {
@@ -2843,8 +2901,11 @@ function (_Phaser$Scene) {
               hoverSprite.setVisible(false);
             });
             hoverSprite.setVisible(false);
+            _this.dialogueText.text = "Remember! I did\nnot tell you to hit\npeople with this!";
 
             _this.add.image(_this.game.renderer.width / 2 - 500, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+          } else if (_this.player.whipUpgrade == 0) {
+            _this.dialogueText.text = "What are you\ntrying to rob me?";
           }
         });
       } //Make exam button interactive and purchase exam sheet on click for 3.5 dollars if player has enough
@@ -2856,9 +2917,18 @@ function (_Phaser$Scene) {
         hoverSprite.play("walk");
         hoverSprite.x = exam.x;
         hoverSprite.y = exam.y - 100;
+        dialogue.setVisible(true);
+
+        if (_this.player.money < 3.5) {
+          _this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+        } else {
+          _this.dialogueText.text = "Screw studying!\nFor tree fiddy\nthis will increase\nyour knowledge!";
+        }
       });
       exam.on("pointerout", function () {
         hoverSprite.setVisible(false);
+        _this.dialogueText.text = "";
+        dialogue.setVisible(false);
       });
       exam.on("pointerup", function () {
         if (_this.player.money > 3.5) {
@@ -2871,6 +2941,9 @@ function (_Phaser$Scene) {
           _this.playerWill.text = _this.player.will + "/" + _this.player.willMax;
           _this.playerKnowledge.text = _this.player.knowledgeProgress + "/" + _this.player.knowledgeNeeded;
           _this.playerLevel.text = _this.player.knowledgeLevel;
+          _this.dialogueText.text = "Thanks!\nNeed anything\nelse?";
+        } else {
+          _this.dialogueText.text = "What are you\ntrying to rob me?";
         } //This makes other two items unavailable if level up occurs maxing them out
 
 

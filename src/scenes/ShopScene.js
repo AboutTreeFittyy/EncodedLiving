@@ -38,6 +38,10 @@ export class ShopScene extends Phaser.Scene{
 		this.playerRep = this.add.text(this.game.renderer.width/2 - 500, this.game.renderer.height * 0.47, '', { fontFamily: '"Roboto Condensed"' }).setDepth(2).setScale(1.25);
 		this.playerRep.setColor("blue");
 		this.playerRep.text = this.player.rep+"/"+this.player.repMax;
+		//Make dialogue for loch ness monster
+		this.dialogueText = this.add.text(dialogue.x-100, dialogue.y-50, '', { fontFamily: '"Roboto Condensed"' }).setDepth(2).setScale(2);
+		this.dialogueText.setColor("blue");
+		this.dialogueText.text = "Welcome!\nGot tree fiddy?";
 		//Make purchase buttons for upgrades
 		let whipUp = this.add.image(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.7, CST.IMAGE.WHIPUPGRADE).setDepth(1);
 		let ballUp = this.add.image(this.game.renderer.width / 2 - 400, this.game.renderer.height * 0.7, CST.SPRITE.BALL).setDepth(1).setScale(5);
@@ -61,19 +65,32 @@ export class ShopScene extends Phaser.Scene{
 				hoverSprite.play("walk");
 				hoverSprite.x = energy.x;
 				hoverSprite.y = energy.y - 100;
+				dialogue.setVisible(true);
+				if(this.player.money < 1){
+					this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+				}else if(this.player.will == this.player.willMax){
+					this.dialogueText.text = "All out.\nYou don't need\nany anyways...";
+				}else{
+					this.dialogueText.text = "Cramming?\nThis will keep\nyou up!";
+				}
 			})
 			energy.on("pointerout", ()=>{
 				hoverSprite.setVisible(false);
+				this.dialogueText.text = "";
+				dialogue.setVisible(false);
 			})
 			energy.on("pointerup", ()=>{
 				if(this.player.money > 1 && this.player.will != this.player.willMax){
 					this.player.money -= 1;
 					this.playerMoney.text = "$" +this.player.money;
 					this.player.addItem(this.player,"energy");	
-					this.playerWill.text = this.player.will+"/"+this.player.willMax;			
+					this.playerWill.text = this.player.will+"/"+this.player.willMax;
+					this.dialogueText.text = "Thanks!\nNeed anything\nelse?";			
+				}else if(this.player.rep != this.player.repMax){
+					this.dialogueText.text = "What are you\ntrying to rob me?";
 				}
 				//Make button not work if maxed out
-				if(this.player.will == this.player.willMax){
+				if(this.player.will != this.player.willMax){
 					energy.on("pointerover", ()=>{hoverSprite.setVisible(false);})
 					energy.on("pointerup", ()=>{hoverSprite.setVisible(false);})
 					hoverSprite.setVisible(false);
@@ -91,16 +108,29 @@ export class ShopScene extends Phaser.Scene{
 				hoverSprite.play("walk");
 				hoverSprite.x = dvd.x;
 				hoverSprite.y = dvd.y - 100;
+				dialogue.setVisible(true);
+				if(this.player.money < 2.5){
+					this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+				}else if(this.player.rep == this.player.repMax){
+					this.dialogueText.text = "All out.\nYou don't need\nany anyways...";
+				}else{
+					this.dialogueText.text = "Want to be more\nrelevant?\nWatch this movie!";
+				}
 			})
 			dvd.on("pointerout", ()=>{
 				hoverSprite.setVisible(false);
+				this.dialogueText.text = "";
+				dialogue.setVisible(false);
 			})
 			dvd.on("pointerup", ()=>{
 				if(this.player.money > 2.5 && this.player.rep != this.player.repMax){
 					this.player.money -= 2.5;
 					this.playerMoney.text = "$" +this.player.money;
 					this.player.addItem(this.player,"dvd");	
-					this.playerRep.text = this.player.rep+"/"+this.player.repMax;			
+					this.playerRep.text = this.player.rep+"/"+this.player.repMax;
+					this.dialogueText.text = "Thanks!\nNeed anything\nelse?";			
+				}else if(this.player.rep != this.player.repMax){
+					this.dialogueText.text = "What are you\ntrying to rob me?";
 				}
 				//Make button not work if maxed out
 				if(this.player.rep == this.player.repMax){
@@ -120,10 +150,19 @@ export class ShopScene extends Phaser.Scene{
 				hoverSprite.setVisible(true);
 				hoverSprite.play("walk");
 				hoverSprite.x = ballUp.x;
-				hoverSprite.y = ballUp.y - 100;
+				hoverSprite.y = ballUp.y - 100;				
+				if(this.player.money < 7 && this.player.maxBalls == 3){
+					this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+					dialogue.setVisible(true);
+				}else if(this.player.maxBalls == 3){
+					this.dialogueText.text = "Add another\nPing Pong ball\nto your collection!";
+					dialogue.setVisible(true);
+				}
 			})
 			ballUp.on("pointerout", ()=>{
 				hoverSprite.setVisible(false);
+				this.dialogueText.text = "";
+				dialogue.setVisible(false);
 			})
 			ballUp.on("pointerup", ()=>{
 				if(this.player.money > 7 && this.player.maxBalls != 4){
@@ -136,7 +175,10 @@ export class ShopScene extends Phaser.Scene{
 					ballUp.on("pointerover", ()=>{hoverSprite.setVisible(false);})
 					ballUp.on("pointerup", ()=>{hoverSprite.setVisible(false);})
 					hoverSprite.setVisible(false);
+					this.dialogueText.text = "Thanks!\nNeed anything\nelse?";
 					this.add.image(this.game.renderer.width / 2 - 400, this.game.renderer.height * 0.7, CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+				}else if(this.player.maxBalls != 4){
+					this.dialogueText.text = "What are you\ntrying to rob me?";
 				}
 			})
 		}
@@ -149,10 +191,19 @@ export class ShopScene extends Phaser.Scene{
 				hoverSprite.setVisible(true);
 				hoverSprite.play("walk");
 				hoverSprite.x = whipUp.x;
-				hoverSprite.y = whipUp.y - 100;
+				hoverSprite.y = whipUp.y - 100;				
+				if(this.player.money < 10.5 && this.player.whipUpgrade == 0){
+					this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+					dialogue.setVisible(true);
+				}else if(this.player.whipUpgrade == 0){
+					this.dialogueText.text = "Lose the flimsy\ncable you have.\nThis one hurts\ntwice as much!";
+					dialogue.setVisible(true);
+				}
 			})
 			whipUp.on("pointerout", ()=>{
 				hoverSprite.setVisible(false);
+				this.dialogueText.text = "";
+				dialogue.setVisible(false);
 			})
 			whipUp.on("pointerup", ()=>{
 				if(this.player.money > 10.5 && this.player.whipUpgrade == 0){
@@ -164,7 +215,10 @@ export class ShopScene extends Phaser.Scene{
 					whipUp.on("pointerover", ()=>{hoverSprite.setVisible(false);})
 					whipUp.on("pointerup", ()=>{hoverSprite.setVisible(false);})
 					hoverSprite.setVisible(false);
+					this.dialogueText.text = "Remember! I did\nnot tell you to hit\npeople with this!";
 					this.add.image(this.game.renderer.width / 2 - 500, this.game.renderer.height * 0.7, CST.IMAGE.SOLDOUT).setDepth(1).setScale(.25);
+				}else if(this.player.whipUpgrade == 0){
+					this.dialogueText.text = "What are you\ntrying to rob me?";
 				}
 			})
 		}	
@@ -175,9 +229,17 @@ export class ShopScene extends Phaser.Scene{
 			hoverSprite.play("walk");
 			hoverSprite.x = exam.x;
 			hoverSprite.y = exam.y - 100;
+			dialogue.setVisible(true);
+			if(this.player.money < 3.5){
+				this.dialogueText.text = "Don't bother...\nYou can't even\nafford that.";
+			}else{
+				this.dialogueText.text = "Screw studying!\nFor tree fiddy\nthis will increase\nyour knowledge!";
+			}			
 		})
 		exam.on("pointerout", ()=>{
 			hoverSprite.setVisible(false);
+			this.dialogueText.text = "";
+			dialogue.setVisible(false);
 		})
 		exam.on("pointerup", ()=>{
 			if(this.player.money > 3.5){
@@ -187,7 +249,10 @@ export class ShopScene extends Phaser.Scene{
 				this.playerRep.text = this.player.rep+"/"+this.player.repMax;
 				this.playerWill.text = this.player.will+"/"+this.player.willMax;
 				this.playerKnowledge.text = this.player.knowledgeProgress+"/"+this.player.knowledgeNeeded;
-				this.playerLevel.text = this.player.knowledgeLevel;			
+				this.playerLevel.text = this.player.knowledgeLevel;	
+				this.dialogueText.text = "Thanks!\nNeed anything\nelse?";		
+			}else{
+				this.dialogueText.text = "What are you\ntrying to rob me?";
 			}
 			//This makes other two items unavailable if level up occurs maxing them out
 			if(this.player.rep == this.player.repMax && this.player.will == this.player.willMax){

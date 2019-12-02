@@ -22,14 +22,14 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         //Whip upgrade
         this.whipUpgrade = 0;
         //Player stats
-        this.rep = 20; //DVDs increase this as player health
+        this.rep = 18; //DVDs increase this as player health
         this.repMax = 20;
         this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
         this.knowledgeProgress = 0;
         this.knowledgeLevel = 0;
-        this.will = 10; //Energy Drinks increase this as the players stamina
+        this.will = 8; //Energy Drinks increase this as the players stamina
         this.willMax = 10;
-        this.money = 100;
+        this.money = 12;
         this.lives = 4; //Lives to be displayed as grades
     }
 
@@ -175,12 +175,13 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                 loop: false
             })
             //adjust enemy stats on hit from whip
-            if(wwhip.whipUpgrade > 0){
-                enemy.rep-=2;
+            if(whip.scene.player.whipUpgrade > 0){
+                enemy.rep--;
+                enemy.rep--;
             }else{
                 enemy.rep--;
             }
-            if(enemy.rep == 0){
+            if(enemy.rep <= 0){
                 if(enemy.name == "chad"){                    
                     whip.startNextSemester(whip, enemy);
                 }else if(enemy.name == "Vlad"){                    
