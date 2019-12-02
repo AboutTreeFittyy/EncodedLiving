@@ -456,22 +456,26 @@ export class LevelManager{
             this.scene.sound.play(CST.AUDIO.WHIP, {
                 loop: false
             }) 
+            let pre = "";
+            if(this.scene.player.whipUpgrade > 0){
+                pre = "red";
+            }
             switch(this.scene.player.isFacing){
                 case "left":this.scene.whip.setPosition(this.scene.player.x-70,this.scene.player.y+20);
                 this.scene.player.play("attackleft", true);
-                this.scene.whip.play("whip_left", true);                    
+                this.scene.whip.play(pre+"whip_left", true);                    
                 break;
                 case "right": this.scene.whip.setPosition(this.scene.player.x+70,this.scene.player.y);    
                 this.scene.player.play("attackright");
-                this.scene.whip.play("whip_right");
+                this.scene.whip.play(pre+"whip_right");
                 break;
                 case "up":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y-70);
                 this.scene.player.play("attackup");
-                this.scene.whip.play("whip_up");
+                this.scene.whip.play(pre+"whip_up");
                 break;
                 case "down":this.scene.whip.setPosition(this.scene.player.x,this.scene.player.y+70);
                 this.scene.player.play("attackdown");
-                this.scene.whip.play("whip_down");
+                this.scene.whip.play(pre+"whip_down");
                 break;
             }         
         })

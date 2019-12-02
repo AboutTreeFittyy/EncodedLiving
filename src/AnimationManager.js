@@ -91,6 +91,10 @@ export class AnimationManager{
         this.createAnimation("whip_up", 15, CST.SPRITE.WHIP, 8, 11, true);        
         this.createAnimation("whip_right", 15, CST.SPRITE.WHIP, 12, 15, true);
         this.createAnimation("whip_down", 15, CST.SPRITE.WHIP, 0, 4, true);
+        this.createAnimation("redwhip_left", 15, CST.SPRITE.WHIP, 41, 46, true);
+        this.createAnimation("redwhip_up", 15, CST.SPRITE.WHIP, 32, 35, true);        
+        this.createAnimation("redwhip_right", 15, CST.SPRITE.WHIP, 36, 39, true);
+        this.createAnimation("redwhip_down", 15, CST.SPRITE.WHIP, 24, 28, true);
         //Player attacking animation
         this.createAnimation("attackleft", 15, CST.SPRITE.PLAYER, 169, 174, false);
         this.createAnimation("attackup", 15, CST.SPRITE.PLAYER, 156, 161, false);

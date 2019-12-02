@@ -185,6 +185,7 @@ var CST = {
   SPRITE: {
     PLAYER: "player.png",
     WHIP: "whip.png",
+    WHIPRED: "whipred.png",
     BALL: "pingpong.png",
     NPC_LOT: "npc_lot.png",
     CHAD: "chadsprite.png",
@@ -285,7 +286,7 @@ function (_Phaser$Scene) {
             frameHeight: 80,
             frameWidth: 44
           });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BALL || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIP) {
+        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BALL || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIP || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIPRED) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 32,
             frameWidth: 32
@@ -1792,13 +1793,19 @@ function () {
           loop: false
         });
 
+        var pre = "";
+
+        if (_this.scene.player.whipUpgrade > 0) {
+          pre = "red";
+        }
+
         switch (_this.scene.player.isFacing) {
           case "left":
             _this.scene.whip.setPosition(_this.scene.player.x - 70, _this.scene.player.y + 20);
 
             _this.scene.player.play("attackleft", true);
 
-            _this.scene.whip.play("whip_left", true);
+            _this.scene.whip.play(pre + "whip_left", true);
 
             break;
 
@@ -1807,7 +1814,7 @@ function () {
 
             _this.scene.player.play("attackright");
 
-            _this.scene.whip.play("whip_right");
+            _this.scene.whip.play(pre + "whip_right");
 
             break;
 
@@ -1816,7 +1823,7 @@ function () {
 
             _this.scene.player.play("attackup");
 
-            _this.scene.whip.play("whip_up");
+            _this.scene.whip.play(pre + "whip_up");
 
             break;
 
@@ -1825,7 +1832,7 @@ function () {
 
             _this.scene.player.play("attackdown");
 
-            _this.scene.whip.play("whip_down");
+            _this.scene.whip.play(pre + "whip_down");
 
             break;
         }
@@ -2161,7 +2168,11 @@ function () {
       this.createAnimation("whip_left", 15, _CST.CST.SPRITE.WHIP, 17, 22, true);
       this.createAnimation("whip_up", 15, _CST.CST.SPRITE.WHIP, 8, 11, true);
       this.createAnimation("whip_right", 15, _CST.CST.SPRITE.WHIP, 12, 15, true);
-      this.createAnimation("whip_down", 15, _CST.CST.SPRITE.WHIP, 0, 4, true); //Player attacking animation
+      this.createAnimation("whip_down", 15, _CST.CST.SPRITE.WHIP, 0, 4, true);
+      this.createAnimation("redwhip_left", 15, _CST.CST.SPRITE.WHIP, 41, 46, true);
+      this.createAnimation("redwhip_up", 15, _CST.CST.SPRITE.WHIP, 32, 35, true);
+      this.createAnimation("redwhip_right", 15, _CST.CST.SPRITE.WHIP, 36, 39, true);
+      this.createAnimation("redwhip_down", 15, _CST.CST.SPRITE.WHIP, 24, 28, true); //Player attacking animation
 
       this.createAnimation("attackleft", 15, _CST.CST.SPRITE.PLAYER, 169, 174, false);
       this.createAnimation("attackup", 15, _CST.CST.SPRITE.PLAYER, 156, 161, false);

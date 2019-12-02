@@ -58,6 +58,7 @@ export const CST = {
 	SPRITE:{
 		PLAYER: "player.png",
 		WHIP: "whip.png",
+		WHIPRED: "whipred.png",
 		BALL: "pingpong.png",
 		NPC_LOT: "npc_lot.png",
 		CHAD: "chadsprite.png",
