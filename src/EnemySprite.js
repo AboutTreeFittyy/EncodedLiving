@@ -1,6 +1,6 @@
 /* File Name: EnemySprite.js
  * Author: Mathew Boland
- * Last Updated: November 17, 2019
+ * Last Updated: December 1, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray

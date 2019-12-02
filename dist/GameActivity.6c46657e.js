@@ -127,7 +127,7 @@ exports.CST = void 0;
 
 /* File Name: CST.js
  * Author: Mathew Boland
- * Last Updated: November 17, 2019
+ * Last Updated: December 1, 2019
  * Description: A constant array to hold values for easy access and 
  * interchangability of important commonly used values in the game
  * that can change often in development.
@@ -185,7 +185,6 @@ var CST = {
   SPRITE: {
     PLAYER: "player.png",
     WHIP: "whip.png",
-    WHIPRED: "whipred.png",
     BALL: "pingpong.png",
     NPC_LOT: "npc_lot.png",
     CHAD: "chadsprite.png",
@@ -197,7 +196,6 @@ var CST = {
     STEVIE: "stevie.png",
     NICOLED: "nicolecreepy.png",
     ITEM: "itemsall.png",
-    NPCS: "npcs.png",
     NERD1: "nerd1.png",
     NERD2: "nerd2.png",
     JSON: "json.png",
@@ -280,11 +278,6 @@ function (_Phaser$Scene) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
             frameHeight: 96,
             frameWidth: 64
-          });
-        } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.NPCS) {
-          this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
-            frameHeight: 80,
-            frameWidth: 44
           });
         } else if (_CST.CST.SPRITE[prop] == _CST.CST.SPRITE.BALL || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.ITEM || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIP || _CST.CST.SPRITE[prop] == _CST.CST.SPRITE.WHIPRED) {
           this.load.spritesheet(_CST.CST.SPRITE[prop], _CST.CST.SPRITE[prop], {
@@ -1958,31 +1951,31 @@ function () {
 
       this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);
       this.scene.npcCont = this.scene.add.container();
-      this.createNPCS(4705, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
-      this.createNPCS(5097, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
-      this.createNPCS(513, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
-      this.createNPCS(474, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
-      this.createNPCS(516, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
-      this.createNPCS(4742, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
-      this.createNPCS(4757, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
-      this.createNPCS(4793, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
-      this.createNPCS(594, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-      this.createNPCS(471, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //make enemies group and container to handle them with*/
+      this.createNPCS(4705, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
+      this.createNPCS(5097, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
+      this.createNPCS(513, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
+      this.createNPCS(474, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
+      this.createNPCS(516, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
+      this.createNPCS(4742, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
+      this.createNPCS(4757, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
+      this.createNPCS(4793, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
+      this.createNPCS(594, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+      this.createNPCS(471, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole"); //make enemies group and container to handle them with*/
 
       this.scene.enemySet = this.scene.physics.add.group();
       this.scene.enemyCont = this.scene.add.container(); //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
       //Make different enemies
 
-      this.createEnemies(561, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 1, 2);
-      this.createEnemies(565, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 1, 2);
-      this.createEnemies(569, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 1, 2);
-      this.createEnemies(573, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 1, 2);
-      this.createEnemies(578, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 1, 2);
-      this.createEnemies(589, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 1, 2);
-      this.createEnemies(581, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 1, 2);
-      this.createEnemies(582, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 1, 2);
-      this.createEnemies(468, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
-      this.createEnemies(4725, _CST.CST.SPRITE.NPCS, 6, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
+      this.createEnemies(561, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd1down", 5, 1, 2);
+      this.createEnemies(565, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd1up", 5, 1, 2);
+      this.createEnemies(569, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd1right", 5, 1, 2);
+      this.createEnemies(573, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd1left", 5, 1, 2);
+      this.createEnemies(578, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd2down", 5, 1, 2);
+      this.createEnemies(589, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd2up", 5, 1, 2);
+      this.createEnemies(581, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd2right", 5, 1, 2);
+      this.createEnemies(582, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERD1, 1, "nerd2left", 5, 1, 2);
+      this.createEnemies(468, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
+      this.createEnemies(4725, _CST.CST.SPRITE.VLAD, 8, _CST.CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
       this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     } //Generic item making function
 

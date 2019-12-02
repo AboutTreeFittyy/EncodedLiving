@@ -1,6 +1,6 @@
 /* File Name: CST.js
  * Author: Mathew Boland
- * Last Updated: November 17, 2019
+ * Last Updated: December 1, 2019
  * Description: A constant array to hold values for easy access and 
  * interchangability of important commonly used values in the game
  * that can change often in development.
@@ -58,7 +58,6 @@ export const CST = {
 	SPRITE:{
 		PLAYER: "player.png",
 		WHIP: "whip.png",
-		WHIPRED: "whipred.png",
 		BALL: "pingpong.png",
 		NPC_LOT: "npc_lot.png",
 		CHAD: "chadsprite.png",
@@ -69,8 +68,7 @@ export const CST = {
 		BRAD: "brad.png",
 		STEVIE: "stevie.png",
 		NICOLED: "nicolecreepy.png",
-		ITEM: "itemsall.png",
-		NPCS: "npcs.png",		
+		ITEM: "itemsall.png",	
 		NERD1: "nerd1.png",
 		NERD2: "nerd2.png",	
 		JSON: "json.png",	

@@ -1,6 +1,6 @@
 /* File Name: LevelManager.js
  * Author: Mathew Boland
- * Last Updated: November 12, 2019
+ * Last Updated: December 1, 2019
  * Description: A class to build a levels animations and sprites for the game
  * given the map and scene.
 */
@@ -574,31 +574,31 @@ export class LevelManager{
         //add the collider for all the npcs
         this.scene.physics.add.collider(this.scene.player, this.npcSet, this.scene.player.npcSpeak, null, this);        
         this.scene.npcCont = this.scene.add.container();
-        this.createNPCS(4705, CST.SPRITE.NPCS, 6, CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
-        this.createNPCS(5097, CST.SPRITE.NPCS, 6, CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
-        this.createNPCS(513, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
-        this.createNPCS(474, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
-        this.createNPCS(516, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
-        this.createNPCS(4742, CST.SPRITE.NPCS, 6, CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
-        this.createNPCS(4757, CST.SPRITE.NPCS, 6, CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
-        this.createNPCS(4793, CST.SPRITE.NPCS, 6, CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
-        this.createNPCS(594, CST.SPRITE.NPCS, 6, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
-        this.createNPCS(471, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
+        this.createNPCS(4705, CST.SPRITE.VLAD, 8, CST.SPRITE.CHAD, 0, 3, 1, 4, "chad");
+        this.createNPCS(5097, CST.SPRITE.VLAD, 8, CST.SPRITE.VLAD, 0, 3, 1, 4, "Vlad");
+        this.createNPCS(513, CST.SPRITE.VLAD, 8, CST.SPRITE.NPC_LOT, 49, 85, 61, 73, "Claire1");
+        this.createNPCS(474, CST.SPRITE.VLAD, 8, CST.SPRITE.NPC_LOT, 10, 46, 22, 34, "Claire2");
+        this.createNPCS(516, CST.SPRITE.VLAD, 8, CST.SPRITE.NPC_LOT, 52, 88, 64, 76, "Prof");
+        this.createNPCS(4742, CST.SPRITE.VLAD, 8, CST.SPRITE.KYLE, 2, 14, 6, 10, "Kyle");
+        this.createNPCS(4757, CST.SPRITE.VLAD, 8, CST.SPRITE.BRAD, 2, 14, 6, 10, "Brad");
+        this.createNPCS(4793, CST.SPRITE.VLAD, 8, CST.SPRITE.STEVIE, 18, 0, 9, 27, "Stevie");
+        this.createNPCS(594, CST.SPRITE.VLAD, 8, CST.SPRITE.NICOLED, 2, 14, 6, 10, "NicoleD");
+        this.createNPCS(471, CST.SPRITE.VLAD, 8, CST.SPRITE.NPC_LOT, 8, 44, 20, 32, "Nicole");
         //make enemies group and container to handle them with*/
         this.scene.enemySet = this.scene.physics.add.group();
         this.scene.enemyCont = this.scene.add.container();
         //using npcs 6 frame to have blank sprite generated so I can make my own inside the function
         //Make different enemies
-        this.createEnemies(561, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1down", 5, 1, 2);
-        this.createEnemies(565, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1up", 5, 1, 2);
-        this.createEnemies(569, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1right", 5, 1, 2);
-        this.createEnemies(573, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd1left", 5, 1, 2);
-        this.createEnemies(578, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2down", 5, 1, 2);
-        this.createEnemies(589, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2up", 5, 1, 2);
-        this.createEnemies(581, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2right", 5, 1, 2);
-        this.createEnemies(582, CST.SPRITE.NPCS, 6, CST.SPRITE.NERD1,  1, "nerd2left", 5, 1, 2);
-        this.createEnemies(468, CST.SPRITE.NPCS, 6, CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
-        this.createEnemies(4725, CST.SPRITE.NPCS, 6, CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
+        this.createEnemies(561, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd1down", 5, 1, 2);
+        this.createEnemies(565, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd1up", 5, 1, 2);
+        this.createEnemies(569, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd1right", 5, 1, 2);
+        this.createEnemies(573, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd1left", 5, 1, 2);
+        this.createEnemies(578, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd2down", 5, 1, 2);
+        this.createEnemies(589, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd2up", 5, 1, 2);
+        this.createEnemies(581, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd2right", 5, 1, 2);
+        this.createEnemies(582, CST.SPRITE.VLAD, 8, CST.SPRITE.NERD1,  1, "nerd2left", 5, 1, 2);
+        this.createEnemies(468, CST.SPRITE.VLAD, 8, CST.SPRITE.NPC_LOT, 5, "jason", 5, 0, 1.5);
+        this.createEnemies(4725, CST.SPRITE.VLAD, 8, CST.SPRITE.NERDGIRL, 2, "nerdgirl", 4724, 0, 1.5);
         this.scene.physics.add.collider(this.scene.enemySet, this.scene.topLayer);
     }
 

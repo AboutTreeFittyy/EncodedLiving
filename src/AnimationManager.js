@@ -1,6 +1,6 @@
 /* File Name: AnimationManager.js
  * Author: Mathew Boland
- * Last Updated: November 17, 2019
+ * Last Updated: December 1, 2019
  * Description: A class to initialize all the different animations. To keep it organized 
  * and easy to maintain.
 */
