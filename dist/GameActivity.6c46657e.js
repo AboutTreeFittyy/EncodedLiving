@@ -147,6 +147,8 @@ var CST = {
   IMAGE: {
     ENCODEDLIVING: "encodedliving.png",
     LOADGAME: "loadgame.png",
+    LOAD: "load.png",
+    PASSWORD: "password.png",
     STARTNEWGAME: "startnewgame.png",
     TITLE: "title.jpg",
     PAUSED: "paused.png",
@@ -391,8 +393,8 @@ function (_Phaser$Scene) {
       this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.ENCODEDLIVING).setDepth(1);
       var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
       title.setY(title.height / 2);
-      var startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.STARTNEWGAME).setDepth(1); //let loadButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 +100, CST.IMAGE.LOADGAME).setDepth(1);
-      //create sprites
+      var startButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.STARTNEWGAME).setDepth(1);
+      var loadGameButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, _CST.CST.IMAGE.LOADGAME).setDepth(1); //create sprites
 
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
       hoverSprite.setVisible(false); //animate sprites
@@ -430,21 +432,87 @@ function (_Phaser$Scene) {
         _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL);
       }); //Make load button interactive (currently no load capability in this version so commented out)
 
-      /*
-      loadButton.setInteractive();
-      loadButton.on("pointerover", ()=>{
-      	hoverSprite.setVisible(true);
-      	hoverSprite.play("walk");
-      	hoverSprite.x = loadButton.x - loadButton.width / 2 - 50;
-      	hoverSprite.y = loadButton.y;
-      })
-      loadButton.on("pointerout", ()=>{
-      	hoverSprite.setVisible(false);
-      })
-      loadButton.on("pointerup", ()=>{
-      	this.sound.pauseAll();
-      	this.scene.start(CST.SCENES.FIRSTLEVEL);
-      })*/
+      loadGameButton.setInteractive();
+      loadGameButton.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = loadGameButton.x - loadGameButton.width / 2 - 50;
+        hoverSprite.y = loadGameButton.y;
+      });
+      loadGameButton.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      loadGameButton.on("pointerup", function () {
+        //Change menu layout to be for loading a game
+        startButton.setVisible(false);
+        loadGameButton.setVisible(false);
+        hoverSprite.setVisible(false);
+
+        var pw = _this.add.image(_this.game.renderer.width / 2 - 200, _this.game.renderer.height / 2, _CST.CST.IMAGE.PASSWORD).setDepth(1);
+
+        var exitButton = _this.add.image(_this.game.renderer.width / 2, _this.game.renderer.height * 0.85, _CST.CST.IMAGE.EXIT).setDepth(1);
+
+        var loadButton = _this.add.image(_this.game.renderer.width / 2, _this.game.renderer.height * 0.7, _CST.CST.IMAGE.LOAD).setDepth(1);
+
+        _this.keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+        var pwField = _this.add.text(_this.game.renderer.width / 2, _this.game.renderer.height / 2 - 20, '', {
+          fontFamily: '"Roboto Condensed"'
+        }).setDepth(2).setScale(3);
+
+        pwField.setColor("green"); //Create all the bindings for the keys to enter in the text for a password
+
+        var _loop = function _loop(i) {
+          _this.input.keyboard.on('keyup-' + _this.keys[i], function () {
+            if (pwField.text.length < 10) {
+              pwField.text += _this.keys[i];
+            }
+          });
+        };
+
+        for (var i = 0; i < 26; i++) {
+          _loop(i);
+        } //make backspace delete the end character of the string
+
+
+        _this.input.keyboard.on('keyup-BACKSPACE', function () {
+          pwField.text = pwField.text.substring(0, pwField.text.length - 1);
+          ;
+        }); //Make exit button interactive to return to main part of menu if clicked
+
+
+        exitButton.setInteractive();
+        exitButton.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = exitButton.x - exitButton.width / 2 - 50;
+          hoverSprite.y = exitButton.y;
+        });
+        exitButton.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        exitButton.on("pointerup", function () {
+          startButton.setVisible(true);
+          loadGameButton.setVisible(true);
+          loadButton.setVisible(false);
+          exitButton.setVisible(false);
+          pw.setVisible(false);
+          pwField.setVisible(false);
+          hoverSprite.setVisible(false);
+        }); //Make load button interactive to return to main part of menu if clicked
+
+        loadButton.setInteractive();
+        loadButton.on("pointerover", function () {
+          hoverSprite.setVisible(true);
+          hoverSprite.play("walk");
+          hoverSprite.x = loadButton.x - loadButton.width / 2 - 50;
+          hoverSprite.y = loadButton.y;
+        });
+        loadButton.on("pointerout", function () {
+          hoverSprite.setVisible(false);
+        });
+        loadButton.on("pointerup", function () {});
+      });
     }
   }]);
 

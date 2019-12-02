@@ -20,6 +20,8 @@ export const CST = {
 	IMAGE: {
 		ENCODEDLIVING: "encodedliving.png",
 		LOADGAME: "loadgame.png",
+		LOAD: "load.png",
+		PASSWORD: "password.png",
 		STARTNEWGAME: "startnewgame.png",
 		TITLE: "title.jpg",
 		PAUSED: "paused.png",
