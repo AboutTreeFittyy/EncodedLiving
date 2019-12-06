@@ -22,14 +22,14 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         //Whip upgrade
         this.whipUpgrade = 0;
         //Player stats
-        this.rep = 180; //DVDs increase this as player health
-        this.repMax = 200;
+        this.rep = 80; //DVDs increase this as player health
+        this.repMax = 100;
         this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
         this.knowledgeProgress = 0;
-        this.knowledgeLevel = 10;
+        this.knowledgeLevel = 0;
         this.will = 8; //Energy Drinks increase this as the players stamina
         this.willMax = 10;
-        this.money = 99;
+        this.money = 50;
         this.lives = 4; //Lives to be displayed as grades
         this.maskChad = false; //Whether or not Chad mask obtained
     }

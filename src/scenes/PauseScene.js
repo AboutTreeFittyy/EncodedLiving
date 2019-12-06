@@ -47,6 +47,9 @@ export class PauseScene extends Phaser.Scene{
 		})
 		//Generate password
 		this.pm = new PasswordManager(); 
-		this.pm.generatePassword(this.sc, this.player);
+		console.log(this.pm.decodePassword("ABCDEFG"));
+		console.log(this.pm.decodePassword("ABCDEFB"));
+		console.log(this.pm.decodePassword("BBCDEFB"));
+		this.pm.decodePassword(this.pm.generatePassword(this.sc, this.player));
 	}
 }

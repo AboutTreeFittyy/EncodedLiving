@@ -1,6 +1,6 @@
 /* File Name: FirstLevel.js
  * Author: Mathew Boland
- * Last Updated: November 17, 2019
+ * Last Updated: December 5, 2019
  * Description: This class is used to create the scene for the first level of the game.
  * With the help of other classes it creates the user interface, keybindings, map, saves 
  * progress and makes animations. 
@@ -9,13 +9,18 @@ import {CST} from "../CST";
 import { LevelManager } from "../LevelManager";
 import { AnimationManager } from "../AnimationManager";
 import { Sprite } from "../Sprite";
-
+import { PasswordManager } from "../PasswordManager";
 export class FirstLevel extends Phaser.Scene{
     
     constructor(){
 		super({
 			key: CST.SCENES.FIRSTLEVEL
 		})
+    }
+
+    init(data){
+		//Get data from menu scene that indicates if we need to load from a password or not
+		this.password = data.password;
     }
     
 	create(){
@@ -83,7 +88,12 @@ export class FirstLevel extends Phaser.Scene{
         this.finished1 = false;   
         this.finished2 = false;   
         this.finished3 = false;   
-        this.finished4 = false;     
+        this.finished4 = false;  
+        //Check if game is being loaded using a password or not   
+        if(this.password != null){
+            let pm = new PasswordManager();
+            pm.usePassword(this.password, this.scene, this.player); //Load the game with the given password
+        }
     }   
 
     /*This progress check, checks the following: If the player has talked to Chad

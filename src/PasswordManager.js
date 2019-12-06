@@ -7,57 +7,95 @@ export class PasswordManager{
     
     constructor() {}
 
+    //Function that manipulates the scene to be loaded from the password passed in
+    usePassword(pw, scene, player){
+        //Set player progress
+
+        //Set player level
+        for(var i = 0; i < this.getNumFromChar(pw.slice(1, 2)); i++){
+            //Have everything update to player level
+            player.knowledgeProgress = player.knowledgeNeeded-1;
+            player.addItem(player, "examsheet");
+        }
+        //Set upgrades
+
+        //Set player lives/grade
+
+        //Set player money
+
+        //Refresh inventory
+        player.displayInventory();
+    }
+
     //Generates a password given the game scene and player
     generatePassword(scene, player){
         let pass = '';
+        let upass = '';
         let seed = this.randomNum(0, 25);
         //Check what first letter should be based on player game progress
         //If Chad mask obtained then that is what game progress starts at
         if(player.maskChad == true){
             pass += this.getCharFromNum(this.getNumFromSeed(6, seed));
+            upass += this.getCharFromNum(6);
         }else if(scene.finished4 == true){
             //Progress achieved up to final exam
             pass += this.getCharFromNum(this.getNumFromSeed(5, seed));
+            upass += this.getCharFromNum(5);
         }else if(scene.finished3 == true){
             //Progress achieved up to vlad room unlock
             pass += this.getCharFromNum(this.getNumFromSeed(4, seed));
+            upass += this.getCharFromNum(4);
         }else if(scene.lm.getNPC("NicoleD").state != 9){
             //Progress achieved up to chad room unlock (NicoleD state is no longer 9 after the chad boss fight)
             pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
+            upass += this.getCharFromNum(3);
         }else if(scene.finished2 == true){
             //Progress achieved up to first exam unlock
             pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
+            upass += this.getCharFromNum(2);
         }else if(scene.finished1 == true){
             //Progress achieved up to kitchen room unlock
             pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
+            upass += this.getCharFromNum(1);
         }else{
             //Not enough progress to save
             pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
+            upass += this.getCharFromNum(0);
         }
         //Check what second letter should be based on player level
         pass += this.getCharFromNum(this.getNumFromSeed(player.knowledgeLevel, seed));
+        upass += this.getCharFromNum(player.knowledgeLevel);
         //Check what third letter should be based on player upgrades
         if(player.maxBalls > 3 && player.whipUpgrade > 0){
             //Both upgrades obtained
             pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
+            upass += this.getCharFromNum(3);
         }else if(player.maxBalls > 3){
             //Only ping pong ball upgraded
             pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
+            upass += this.getCharFromNum(2);
         }else if(player.whipUpgrade > 0){
             //Only whip upgraded
             pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
+            upass += this.getCharFromNum(1);
         }else{
             //Nothing upgraded
             pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
+            upass += this.getCharFromNum(0);
         }
         //Check what the fourth letter should be based on player grade
         pass += this.getCharFromNum(this.getNumFromSeed(player.lives - 1, seed));
+        upass += this.getCharFromNum(player.lives - 1);
         //Check what the fifth/sixth letters are based on players money (half dollars are rounded down and not saved)
         let money = Math.floor(player.money);
         pass += this.getCharFromNum(this.getNumFromSeed(((money-(money % 10))/10), seed));
+        upass += this.getCharFromNum(((money-(money % 10))/10));
         pass += this.getCharFromNum(this.getNumFromSeed(money % 10, seed));
+        upass += this.getCharFromNum(money % 10);
         //Save the final letter as the seed used
         pass += this.getCharFromNum(seed);
+        console.log("Password without seed:" +upass);
+        console.log("Password generated: "+pass);
         return pass;
     }
 
@@ -71,15 +109,53 @@ export class PasswordManager{
         return gen;
     }
 
-    //Decrypts teh password given based on the final character seed if a proper password is found
+    //Decrypts the password given based on the final character seed if a proper password is found
     decodePassword(pw){
         //Check length, return null if improper length
-
-        //Get final char to determine seed
-
+        if(pw.length != 7){
+            return null;
+        }
+        let dec = '';
         //Decode password with seed
+        let seed = this.getNumFromChar(pw.slice(6, 7));
+        dec += this.removeSeed(pw.slice(0, 1), seed);
+        dec += this.removeSeed(pw.slice(1, 2), seed);
+        dec += this.removeSeed(pw.slice(2, 3), seed);
+        dec += this.removeSeed(pw.slice(3, 4), seed);
+        dec += this.removeSeed(pw.slice(4, 5), seed);
+        dec += this.removeSeed(pw.slice(5, 6), seed);
+        //Check if any entries are invalid, return null if they are        
+        if(this.getNumFromChar(dec.slice(0, 1)) > 6){
+            return null; //No possible answers above 6 for game progress
+        }
+        if(this.getNumFromChar(dec.slice(1, 2)) > 10){
+            return null; //No possible answers above 10, can't be above max level
+        }
+        if(this.getNumFromChar(dec.slice(2, 3)) > 3){
+            return null; //No possible answers above 3 for upgrades
+        }
+        if(this.getNumFromChar(dec.slice(3, 4)) > 3){
+            return null; //No possible answers above 3 for number of lives (3 is really 4 lives how its implemented)
+        }
+        if(this.getNumFromChar(dec.slice(4, 5)) > 9){
+            return null; //No possible answers above 9 for a digit of base 10
+        }
+        if(this.getNumFromChar(dec.slice(5, 6)) > 9){
+            return null; //No possible answers above 9 for a digit of base 10
+        }
+        //console.log(dec);
+        return dec;
+    }
 
-        //Check if any entries are invalid, return null if they are
+    //Removes the seed offset from a number
+    removeSeed(cha, seed){
+        if(this.getNumFromChar(cha) >= seed){
+            //Seed wouldn't cause it to wrap around so just subtract it
+            return this.getCharFromNum(this.getNumFromChar(cha) - seed);
+        }else{
+            //Have to remove the wrap around from the seed
+            return this.getCharFromNum(26 - (seed - this.getNumFromChar(cha)));
+        }
     }
 
     //Return random number inbetween min and max
@@ -116,6 +192,38 @@ export class PasswordManager{
             case 23: return 'X';
             case 24: return 'Y';
             case 25: return 'Z';
+        }
+    }
+
+    //Gets associated number for char
+    getNumFromChar(cha){
+        switch(cha){
+            case 'A': return 0;
+            case 'B': return 1;
+            case 'C': return 2;
+            case 'D': return 3;
+            case 'E': return 4;
+            case 'F': return 5;
+            case 'G': return 6;
+            case 'H': return 7;
+            case 'I': return 8;
+            case 'J': return 9;
+            case 'K': return 10;
+            case 'L': return 11;
+            case 'M': return 12;
+            case 'N': return 13;
+            case 'O': return 14;
+            case 'P': return 15;
+            case 'Q': return 16;
+            case 'R': return 17;
+            case 'S': return 18;
+            case 'T': return 19;
+            case 'U': return 20;
+            case 'V': return 21;
+            case 'W': return 22;
+            case 'X': return 23;
+            case 'Y': return 24;
+            case 'Z': return 25;
         }
     }
 }

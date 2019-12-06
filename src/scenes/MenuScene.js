@@ -7,6 +7,7 @@
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
 */
 import {CST} from "../CST";
+import { PasswordManager } from "../PasswordManager";
 export class MenuScene extends Phaser.Scene{
 	constructor(){
 		super({
@@ -14,6 +15,9 @@ export class MenuScene extends Phaser.Scene{
 		})
 	}
 	create(){
+		//Stuff for password entry
+		let password = null;
+		this.pm = new PasswordManager();
 		//add in assets
 		this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, CST.IMAGE.ENCODEDLIVING).setDepth(1);
 		let title = this.add.image(this.game.renderer.width / 2,0,CST.IMAGE.TITLE);
@@ -53,7 +57,7 @@ export class MenuScene extends Phaser.Scene{
 		})
 		startButton.on("pointerup", ()=>{
 			this.sound.pauseAll();
-			this.scene.start(CST.SCENES.FIRSTLEVEL);
+			this.scene.start(CST.SCENES.FIRSTLEVEL, {password});
 		})
 		//Make load button interactive (currently no load capability in this version so commented out)
 		loadGameButton.setInteractive();
@@ -121,7 +125,18 @@ export class MenuScene extends Phaser.Scene{
 				hoverSprite.setVisible(false);
 			})
 			loadButton.on("pointerup", ()=>{
-				
+				//Check if password is valid
+				let pw = this.pm.decodePassword(pwField.text);
+				//If valid then load game with it
+				if(pw != null){
+					password = pw;
+					this.sound.pauseAll();
+					this.scene.start(CST.SCENES.FIRSTLEVEL, {password});
+				}else{
+					//Not valid, delete entry 
+					pwField.text = '';
+				}
+
 			})			
 		})
 	}

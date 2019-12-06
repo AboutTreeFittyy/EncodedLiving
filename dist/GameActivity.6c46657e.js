@@ -343,7 +343,377 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.LoadScene = LoadScene;
-},{"../CST":"src/CST.js"}],"src/scenes/MenuScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js"}],"src/PasswordManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PasswordManager = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/* File Name: PasswordManager.js
+ * Author: Mathew Boland
+ * Last Updated: December 5, 2019
+ * Description: A class to generate and decode passwords.
+*/
+var PasswordManager =
+/*#__PURE__*/
+function () {
+  function PasswordManager() {
+    _classCallCheck(this, PasswordManager);
+  } //Function that manipulates the scene to be loaded from the password passed in
+
+
+  _createClass(PasswordManager, [{
+    key: "usePassword",
+    value: function usePassword(pw, scene, player) {
+      //Set player progress
+      //Set player level
+      for (var i = 0; i < this.getNumFromChar(pw.slice(1, 2)); i++) {
+        //Have everything update to player level
+        player.knowledgeProgress = player.knowledgeNeeded - 1;
+        player.addItem(player, "examsheet");
+      } //Set upgrades
+      //Set player lives/grade
+      //Set player money
+      //Refresh inventory
+
+
+      player.displayInventory();
+    } //Generates a password given the game scene and player
+
+  }, {
+    key: "generatePassword",
+    value: function generatePassword(scene, player) {
+      var pass = '';
+      var upass = '';
+      var seed = this.randomNum(0, 25); //Check what first letter should be based on player game progress
+      //If Chad mask obtained then that is what game progress starts at
+
+      if (player.maskChad == true) {
+        pass += this.getCharFromNum(this.getNumFromSeed(6, seed));
+        upass += this.getCharFromNum(6);
+      } else if (scene.finished4 == true) {
+        //Progress achieved up to final exam
+        pass += this.getCharFromNum(this.getNumFromSeed(5, seed));
+        upass += this.getCharFromNum(5);
+      } else if (scene.finished3 == true) {
+        //Progress achieved up to vlad room unlock
+        pass += this.getCharFromNum(this.getNumFromSeed(4, seed));
+        upass += this.getCharFromNum(4);
+      } else if (scene.lm.getNPC("NicoleD").state != 9) {
+        //Progress achieved up to chad room unlock (NicoleD state is no longer 9 after the chad boss fight)
+        pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
+        upass += this.getCharFromNum(3);
+      } else if (scene.finished2 == true) {
+        //Progress achieved up to first exam unlock
+        pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
+        upass += this.getCharFromNum(2);
+      } else if (scene.finished1 == true) {
+        //Progress achieved up to kitchen room unlock
+        pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
+        upass += this.getCharFromNum(1);
+      } else {
+        //Not enough progress to save
+        pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
+        upass += this.getCharFromNum(0);
+      } //Check what second letter should be based on player level
+
+
+      pass += this.getCharFromNum(this.getNumFromSeed(player.knowledgeLevel, seed));
+      upass += this.getCharFromNum(player.knowledgeLevel); //Check what third letter should be based on player upgrades
+
+      if (player.maxBalls > 3 && player.whipUpgrade > 0) {
+        //Both upgrades obtained
+        pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
+        upass += this.getCharFromNum(3);
+      } else if (player.maxBalls > 3) {
+        //Only ping pong ball upgraded
+        pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
+        upass += this.getCharFromNum(2);
+      } else if (player.whipUpgrade > 0) {
+        //Only whip upgraded
+        pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
+        upass += this.getCharFromNum(1);
+      } else {
+        //Nothing upgraded
+        pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
+        upass += this.getCharFromNum(0);
+      } //Check what the fourth letter should be based on player grade
+
+
+      pass += this.getCharFromNum(this.getNumFromSeed(player.lives - 1, seed));
+      upass += this.getCharFromNum(player.lives - 1); //Check what the fifth/sixth letters are based on players money (half dollars are rounded down and not saved)
+
+      var money = Math.floor(player.money);
+      pass += this.getCharFromNum(this.getNumFromSeed((money - money % 10) / 10, seed));
+      upass += this.getCharFromNum((money - money % 10) / 10);
+      pass += this.getCharFromNum(this.getNumFromSeed(money % 10, seed));
+      upass += this.getCharFromNum(money % 10); //Save the final letter as the seed used
+
+      pass += this.getCharFromNum(seed);
+      console.log("Password without seed:" + upass);
+      console.log("Password generated: " + pass);
+      return pass;
+    } //Gets the correct adjusted number based on the seed
+
+  }, {
+    key: "getNumFromSeed",
+    value: function getNumFromSeed(num, seed) {
+      var gen = num + seed; //If the seed generated something above the max character then have it overflow by subtracting the highest value 26 (since 0-25 is 26 numbers)      
+
+      if (gen > 25) {
+        gen -= 26;
+      }
+
+      return gen;
+    } //Decrypts the password given based on the final character seed if a proper password is found
+
+  }, {
+    key: "decodePassword",
+    value: function decodePassword(pw) {
+      //Check length, return null if improper length
+      if (pw.length != 7) {
+        return null;
+      }
+
+      var dec = ''; //Decode password with seed
+
+      var seed = this.getNumFromChar(pw.slice(6, 7));
+      dec += this.removeSeed(pw.slice(0, 1), seed);
+      dec += this.removeSeed(pw.slice(1, 2), seed);
+      dec += this.removeSeed(pw.slice(2, 3), seed);
+      dec += this.removeSeed(pw.slice(3, 4), seed);
+      dec += this.removeSeed(pw.slice(4, 5), seed);
+      dec += this.removeSeed(pw.slice(5, 6), seed); //Check if any entries are invalid, return null if they are        
+
+      if (this.getNumFromChar(dec.slice(0, 1)) > 6) {
+        return null; //No possible answers above 6 for game progress
+      }
+
+      if (this.getNumFromChar(dec.slice(1, 2)) > 10) {
+        return null; //No possible answers above 10, can't be above max level
+      }
+
+      if (this.getNumFromChar(dec.slice(2, 3)) > 3) {
+        return null; //No possible answers above 3 for upgrades
+      }
+
+      if (this.getNumFromChar(dec.slice(3, 4)) > 3) {
+        return null; //No possible answers above 3 for number of lives (3 is really 4 lives how its implemented)
+      }
+
+      if (this.getNumFromChar(dec.slice(4, 5)) > 9) {
+        return null; //No possible answers above 9 for a digit of base 10
+      }
+
+      if (this.getNumFromChar(dec.slice(5, 6)) > 9) {
+        return null; //No possible answers above 9 for a digit of base 10
+      } //console.log(dec);
+
+
+      return dec;
+    } //Removes the seed offset from a number
+
+  }, {
+    key: "removeSeed",
+    value: function removeSeed(cha, seed) {
+      if (this.getNumFromChar(cha) >= seed) {
+        //Seed wouldn't cause it to wrap around so just subtract it
+        return this.getCharFromNum(this.getNumFromChar(cha) - seed);
+      } else {
+        //Have to remove the wrap around from the seed
+        return this.getCharFromNum(26 - (seed - this.getNumFromChar(cha)));
+      }
+    } //Return random number inbetween min and max
+
+  }, {
+    key: "randomNum",
+    value: function randomNum(min, max) {
+      // min and max included 
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    } //Gets associated Char for number
+
+  }, {
+    key: "getCharFromNum",
+    value: function getCharFromNum(num) {
+      switch (num) {
+        case 0:
+          return 'A';
+
+        case 1:
+          return 'B';
+
+        case 2:
+          return 'C';
+
+        case 3:
+          return 'D';
+
+        case 4:
+          return 'E';
+
+        case 5:
+          return 'F';
+
+        case 6:
+          return 'G';
+
+        case 7:
+          return 'H';
+
+        case 8:
+          return 'I';
+
+        case 9:
+          return 'J';
+
+        case 10:
+          return 'K';
+
+        case 11:
+          return 'L';
+
+        case 12:
+          return 'M';
+
+        case 13:
+          return 'N';
+
+        case 14:
+          return 'O';
+
+        case 15:
+          return 'P';
+
+        case 16:
+          return 'Q';
+
+        case 17:
+          return 'R';
+
+        case 18:
+          return 'S';
+
+        case 19:
+          return 'T';
+
+        case 20:
+          return 'U';
+
+        case 21:
+          return 'V';
+
+        case 22:
+          return 'W';
+
+        case 23:
+          return 'X';
+
+        case 24:
+          return 'Y';
+
+        case 25:
+          return 'Z';
+      }
+    } //Gets associated number for char
+
+  }, {
+    key: "getNumFromChar",
+    value: function getNumFromChar(cha) {
+      switch (cha) {
+        case 'A':
+          return 0;
+
+        case 'B':
+          return 1;
+
+        case 'C':
+          return 2;
+
+        case 'D':
+          return 3;
+
+        case 'E':
+          return 4;
+
+        case 'F':
+          return 5;
+
+        case 'G':
+          return 6;
+
+        case 'H':
+          return 7;
+
+        case 'I':
+          return 8;
+
+        case 'J':
+          return 9;
+
+        case 'K':
+          return 10;
+
+        case 'L':
+          return 11;
+
+        case 'M':
+          return 12;
+
+        case 'N':
+          return 13;
+
+        case 'O':
+          return 14;
+
+        case 'P':
+          return 15;
+
+        case 'Q':
+          return 16;
+
+        case 'R':
+          return 17;
+
+        case 'S':
+          return 18;
+
+        case 'T':
+          return 19;
+
+        case 'U':
+          return 20;
+
+        case 'V':
+          return 21;
+
+        case 'W':
+          return 22;
+
+        case 'X':
+          return 23;
+
+        case 'Y':
+          return 24;
+
+        case 'Z':
+          return 25;
+      }
+    }
+  }]);
+
+  return PasswordManager;
+}();
+
+exports.PasswordManager = PasswordManager;
+},{}],"src/scenes/MenuScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -352,6 +722,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.MenuScene = void 0;
 
 var _CST = require("../CST");
+
+var _PasswordManager = require("../PasswordManager");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -389,7 +761,10 @@ function (_Phaser$Scene) {
     value: function create() {
       var _this = this;
 
-      //add in assets
+      //Stuff for password entry
+      var password = null;
+      this.pm = new _PasswordManager.PasswordManager(); //add in assets
+
       this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.ENCODEDLIVING).setDepth(1);
       var title = this.add.image(this.game.renderer.width / 2, 0, _CST.CST.IMAGE.TITLE);
       title.setY(title.height / 2);
@@ -429,7 +804,9 @@ function (_Phaser$Scene) {
       startButton.on("pointerup", function () {
         _this.sound.pauseAll();
 
-        _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL);
+        _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL, {
+          password: password
+        });
       }); //Make load button interactive (currently no load capability in this version so commented out)
 
       loadGameButton.setInteractive();
@@ -511,7 +888,24 @@ function (_Phaser$Scene) {
         loadButton.on("pointerout", function () {
           hoverSprite.setVisible(false);
         });
-        loadButton.on("pointerup", function () {});
+        loadButton.on("pointerup", function () {
+          //Check if password is valid
+          var pw = _this.pm.decodePassword(pwField.text); //If valid then load game with it
+
+
+          if (pw != null) {
+            password = pw;
+
+            _this.sound.pauseAll();
+
+            _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL, {
+              password: password
+            });
+          } else {
+            //Not valid, delete entry 
+            pwField.text = '';
+          }
+        });
       });
     }
   }]);
@@ -520,7 +914,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.MenuScene = MenuScene;
-},{"../CST":"src/CST.js"}],"src/Sprite.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../PasswordManager":"src/PasswordManager.js"}],"src/Sprite.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -909,17 +1303,17 @@ function (_Phaser$Physics$Arcad) {
 
     _this.whipUpgrade = 0; //Player stats
 
-    _this.rep = 180; //DVDs increase this as player health
+    _this.rep = 80; //DVDs increase this as player health
 
-    _this.repMax = 200;
+    _this.repMax = 100;
     _this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
 
     _this.knowledgeProgress = 0;
-    _this.knowledgeLevel = 10;
+    _this.knowledgeLevel = 0;
     _this.will = 8; //Energy Drinks increase this as the players stamina
 
     _this.willMax = 10;
-    _this.money = 99;
+    _this.money = 50;
     _this.lives = 4; //Lives to be displayed as grades
 
     _this.maskChad = false; //Whether or not Chad mask obtained
@@ -2305,6 +2699,8 @@ var _AnimationManager = require("../AnimationManager");
 
 var _Sprite = require("../Sprite");
 
+var _PasswordManager = require("../PasswordManager");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2337,6 +2733,12 @@ function (_Phaser$Scene) {
   }
 
   _createClass(FirstLevel, [{
+    key: "init",
+    value: function init(data) {
+      //Get data from menu scene that indicates if we need to load from a password or not
+      this.password = data.password;
+    }
+  }, {
     key: "create",
     value: function create() {
       //start up the theme for level, commenting out now cause its annoying 
@@ -2417,7 +2819,12 @@ function (_Phaser$Scene) {
       this.finished1 = false;
       this.finished2 = false;
       this.finished3 = false;
-      this.finished4 = false;
+      this.finished4 = false; //Check if game is being loaded using a password or not   
+
+      if (this.password != null) {
+        var pm = new _PasswordManager.PasswordManager();
+        pm.usePassword(this.password, this.scene, this.player); //Load the game with the given password
+      }
     }
     /*This progress check, checks the following: If the player has talked to Chad
     * and Kyle. And if the player has reached the first level. Then it gets rid of the
@@ -2604,207 +3011,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.FirstLevel = FirstLevel;
-},{"../CST":"src/CST.js","../LevelManager":"src/LevelManager.js","../AnimationManager":"src/AnimationManager.js","../Sprite":"src/Sprite.js"}],"src/PasswordManager.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PasswordManager = void 0;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-/* File Name: PasswordManager.js
- * Author: Mathew Boland
- * Last Updated: December 5, 2019
- * Description: A class to generate and decode passwords.
-*/
-var PasswordManager =
-/*#__PURE__*/
-function () {
-  function PasswordManager() {
-    _classCallCheck(this, PasswordManager);
-  } //Generates a password given the game scene and player
-
-
-  _createClass(PasswordManager, [{
-    key: "generatePassword",
-    value: function generatePassword(scene, player) {
-      var pass = '';
-      var seed = this.randomNum(0, 25); //Check what first letter should be based on player game progress
-      //If Chad mask obtained then that is what game progress starts at
-
-      if (player.maskChad == true) {
-        pass += this.getCharFromNum(this.getNumFromSeed(6, seed));
-      } else if (scene.finished4 == true) {
-        //Progress achieved up to final exam
-        pass += this.getCharFromNum(this.getNumFromSeed(5, seed));
-      } else if (scene.finished3 == true) {
-        //Progress achieved up to vlad room unlock
-        pass += this.getCharFromNum(this.getNumFromSeed(4, seed));
-      } else if (scene.lm.getNPC("NicoleD").state != 9) {
-        //Progress achieved up to chad room unlock (NicoleD state is no longer 9 after the chad boss fight)
-        pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
-      } else if (scene.finished2 == true) {
-        //Progress achieved up to first exam unlock
-        pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
-      } else if (scene.finished1 == true) {
-        //Progress achieved up to kitchen room unlock
-        pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
-      } else {
-        //Not enough progress to save
-        pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
-      } //Check what second letter should be based on player level
-
-
-      pass += this.getCharFromNum(this.getNumFromSeed(player.knowledgeLevel, seed)); //Check what third letter should be based on player upgrades
-
-      if (player.maxBalls > 3 && player.whipUpgrade > 0) {
-        //Both upgrades obtained
-        pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
-      } else if (player.maxBalls > 3) {
-        //Only ping pong ball upgraded
-        pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
-      } else if (player.whipUpgrade > 0) {
-        //Only whip upgraded
-        pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
-      } else {
-        //Nothing upgraded
-        pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
-      } //Check what the fourth letter should be based on player grade
-
-
-      pass += this.getCharFromNum(this.getNumFromSeed(player.lives - 1, seed)); //Check what the fifth/sixth letters are based on players money (half dollars are rounded down and not saved)
-
-      var money = Math.floor(player.money);
-      pass += this.getCharFromNum(this.getNumFromSeed((money - money % 10) / 10, seed));
-      pass += this.getCharFromNum(this.getNumFromSeed(money % 10, seed)); //Save the final letter as the seed used
-
-      pass += this.getCharFromNum(seed);
-      return pass;
-    } //Gets the correct adjusted number based on the seed
-
-  }, {
-    key: "getNumFromSeed",
-    value: function getNumFromSeed(num, seed) {
-      var gen = num + seed; //If the seed generated something above the max character then have it overflow by subtracting the highest value 26 (since 0-25 is 26 numbers)      
-
-      if (gen > 25) {
-        gen -= 26;
-      }
-
-      return gen;
-    } //Decrypts teh password given based on the final character seed if a proper password is found
-
-  }, {
-    key: "decodePassword",
-    value: function decodePassword(pw) {} //Check length, return null if improper length
-    //Get final char to determine seed
-    //Decode password with seed
-    //Check if any entries are invalid, return null if they are
-    //Return random number inbetween min and max
-
-  }, {
-    key: "randomNum",
-    value: function randomNum(min, max) {
-      // min and max included 
-      return Math.floor(Math.random() * (max - min + 1) + min);
-    } //Gets associated Char for number
-
-  }, {
-    key: "getCharFromNum",
-    value: function getCharFromNum(num) {
-      switch (num) {
-        case 0:
-          return 'A';
-
-        case 1:
-          return 'B';
-
-        case 2:
-          return 'C';
-
-        case 3:
-          return 'D';
-
-        case 4:
-          return 'E';
-
-        case 5:
-          return 'F';
-
-        case 6:
-          return 'G';
-
-        case 7:
-          return 'H';
-
-        case 8:
-          return 'I';
-
-        case 9:
-          return 'J';
-
-        case 10:
-          return 'K';
-
-        case 11:
-          return 'L';
-
-        case 12:
-          return 'M';
-
-        case 13:
-          return 'N';
-
-        case 14:
-          return 'O';
-
-        case 15:
-          return 'P';
-
-        case 16:
-          return 'Q';
-
-        case 17:
-          return 'R';
-
-        case 18:
-          return 'S';
-
-        case 19:
-          return 'T';
-
-        case 20:
-          return 'U';
-
-        case 21:
-          return 'V';
-
-        case 22:
-          return 'W';
-
-        case 23:
-          return 'X';
-
-        case 24:
-          return 'Y';
-
-        case 25:
-          return 'Z';
-      }
-    }
-  }]);
-
-  return PasswordManager;
-}();
-
-exports.PasswordManager = PasswordManager;
-},{}],"src/scenes/PauseScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../LevelManager":"src/LevelManager.js","../AnimationManager":"src/AnimationManager.js","../Sprite":"src/Sprite.js","../PasswordManager":"src/PasswordManager.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2888,7 +3095,10 @@ function (_Phaser$Scene) {
       }); //Generate password
 
       this.pm = new _PasswordManager.PasswordManager();
-      this.pm.generatePassword(this.sc, this.player);
+      console.log(this.pm.decodePassword("ABCDEFG"));
+      console.log(this.pm.decodePassword("ABCDEFB"));
+      console.log(this.pm.decodePassword("BBCDEFB"));
+      this.pm.decodePassword(this.pm.generatePassword(this.sc, this.player));
     }
   }]);
 
