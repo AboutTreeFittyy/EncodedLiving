@@ -80,10 +80,7 @@ export class FirstLevel extends Phaser.Scene{
         //out of order totally. Also she'll drop exams endlessly so the player can speed through the game when you have chad mask
         let claire2 = this.lm.getNPC("Claire2");
         claire2.state = 7;
-        //start talk with nicole
-        let nicole = this.lm.getNPC("Nicole");
-        this.player.scene.keyboard.E.isDown = true;
-        nicole.npcSpeak(this.player, nicole);   
+         
         //progress tracking flags
         this.finished1 = false;   
         this.finished2 = false;   
@@ -91,8 +88,15 @@ export class FirstLevel extends Phaser.Scene{
         this.finished4 = false;  
         //Check if game is being loaded using a password or not   
         if(this.password != null){
+            //Load game
             let pm = new PasswordManager();
-            pm.usePassword(this.password, this.scene, this.player); //Load the game with the given password
+            pm.usePassword(this.password, this, this.player); //Load the game with the given password
+        }else{
+            //New game
+            //start talk with nicole
+            let nicole = this.lm.getNPC("Nicole");
+            this.player.scene.keyboard.E.isDown = true;
+            nicole.npcSpeak(this.player, nicole);  
         }
     }   
 
@@ -110,7 +114,7 @@ export class FirstLevel extends Phaser.Scene{
             nicole.state = 2;
             //hide blocker and remove their collider
             this.claireRoom.visible = false;
-            this.physics.world.removeCollider(this.claireRoomCollider);
+            this.physics.world.removeCollider(this.claireRoomCollider); 
             this.player.scene.keyboard.E.isDown = true;
             nicole.npcSpeak(this.player, nicole);  
             this.finished1 = true;

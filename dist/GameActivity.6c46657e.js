@@ -376,13 +376,34 @@ function () {
       //Set player progress
       var prog = this.getNumFromChar(pw.slice(0, 1));
 
-      if (prog == 1) {//At kitchen room (Test code: SUUURWR)
-      } else if (prog == 2) {//At first exam (Test code: MNNNKQK)
-      } else if (prog == 3) {//At Chad room (Test code: RRRROUO)
-      } else if (prog == 4) {//At Vlad room (Test code: EDDCAGA)
-      } else if (prog == 5) {//At final exam (Test code: ZYXWUCU)
-      } else if (prog == 6) {} //Has the chad mask (Test code: GEDCAJA)
-      //No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
+      if (prog == 1) {
+        //At kitchen room (Test code: SUUURWR)
+        console.log("Loaded: Kitchen Room");
+        scene.lm.getNPC("chad").state++;
+        scene.lm.getNPC("Kyle").state++;
+      } else if (prog == 2) {
+        //At first exam (Test code: MNNNKQK)
+        console.log("Loaded: First Exam");
+        scene.claireRoom.visible = false;
+        scene.claireRoomCollider.active = false;
+        scene.lm.getNPC("Kyle").state++;
+        scene.lm.getNPC("Stevie").state++;
+        scene.lm.getNPC("Claire1").state++;
+        scene.lm.getNPC("Brad").state++;
+        scene.finished1 = true; //Prevents dialogue from previous section playing too
+      } else if (prog == 3) {
+        //At Chad room (Test code: RRRROUO)
+        console.log("Loaded: Chad Room");
+      } else if (prog == 4) {
+        //At Vlad room (Test code: EDDCAGA)
+        console.log("Loaded: Vlad Room");
+      } else if (prog == 5) {
+        //At final exam (Test code: ZYXWUCU)
+        console.log("Loaded: Final Exam");
+      } else if (prog == 6) {
+        //Has the chad mask (Test code: GEDCAJA)
+        console.log("Loaded: ChadMask");
+      } //No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
       //Set player level
 
 
@@ -2842,11 +2863,7 @@ function (_Phaser$Scene) {
       //out of order totally. Also she'll drop exams endlessly so the player can speed through the game when you have chad mask
 
       var claire2 = this.lm.getNPC("Claire2");
-      claire2.state = 7; //start talk with nicole
-
-      var nicole = this.lm.getNPC("Nicole");
-      this.player.scene.keyboard.E.isDown = true;
-      nicole.npcSpeak(this.player, nicole); //progress tracking flags
+      claire2.state = 7; //progress tracking flags
 
       this.finished1 = false;
       this.finished2 = false;
@@ -2854,8 +2871,15 @@ function (_Phaser$Scene) {
       this.finished4 = false; //Check if game is being loaded using a password or not   
 
       if (this.password != null) {
+        //Load game
         var pm = new _PasswordManager.PasswordManager();
-        pm.usePassword(this.password, this.scene, this.player); //Load the game with the given password
+        pm.usePassword(this.password, this, this.player); //Load the game with the given password
+      } else {
+        //New game
+        //start talk with nicole
+        var nicole = this.lm.getNPC("Nicole");
+        this.player.scene.keyboard.E.isDown = true;
+        nicole.npcSpeak(this.player, nicole);
       }
     }
     /*This progress check, checks the following: If the player has talked to Chad
@@ -3101,6 +3125,7 @@ function (_Phaser$Scene) {
       //add in assets
       this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.20, _CST.CST.IMAGE.PAUSED).setDepth(1);
       var resume = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, _CST.CST.IMAGE.RESUME).setDepth(1);
+      var menu = this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.9, _CST.CST.IMAGE.MENU).setDepth(1);
       var hoverSprite = this.add.sprite(100, 100, _CST.CST.SPRITE.FAT);
       hoverSprite.setVisible(false); //make p resume game as well
 
@@ -3122,6 +3147,25 @@ function (_Phaser$Scene) {
       });
       resume.on("pointerup", function () {
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.stop();
+      });
+      menu.setInteractive();
+      menu.on("pointerover", function () {
+        hoverSprite.setVisible(true);
+        hoverSprite.play("walk");
+        hoverSprite.x = menu.x - menu.width / 2 - 50;
+        hoverSprite.y = menu.y;
+      });
+      menu.on("pointerout", function () {
+        hoverSprite.setVisible(false);
+      });
+      menu.on("pointerup", function () {
+        _this.sc.sound.removeByKey(_CST.CST.AUDIO.THEME1);
+
+        _this.scene.stop(_CST.CST.SCENES.FIRSTLEVEL);
+
+        _this.scene.run(_CST.CST.SCENES.MENU);
 
         _this.scene.stop();
       }); //Generate password
@@ -4452,7 +4496,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50035" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51839" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

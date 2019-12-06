@@ -12,17 +12,26 @@ export class PasswordManager{
         //Set player progress
         let prog = this.getNumFromChar(pw.slice(0, 1));
         if(prog == 1){//At kitchen room (Test code: SUUURWR)
-
+            console.log("Loaded: Kitchen Room");
+            scene.lm.getNPC("chad").state++;
+            scene.lm.getNPC("Kyle").state++;
         }else if(prog == 2){//At first exam (Test code: MNNNKQK)
-
+            console.log("Loaded: First Exam");
+            scene.claireRoom.visible = false;
+            scene.claireRoomCollider.active = false;
+            scene.lm.getNPC("Kyle").state++;
+            scene.lm.getNPC("Stevie").state++;
+            scene.lm.getNPC("Claire1").state++;
+            scene.lm.getNPC("Brad").state++;        
+            scene.finished1 = true; //Prevents dialogue from previous section playing too
         }else if(prog == 3){//At Chad room (Test code: RRRROUO)
-
+            console.log("Loaded: Chad Room");
         }else if(prog == 4){//At Vlad room (Test code: EDDCAGA)
-
+            console.log("Loaded: Vlad Room");
         }else if(prog == 5){//At final exam (Test code: ZYXWUCU)
-
+            console.log("Loaded: Final Exam");
         }else if(prog == 6){//Has the chad mask (Test code: GEDCAJA)
-
+            console.log("Loaded: ChadMask");
         }//No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
         //Set player level
         for(var i = 0; i < this.getNumFromChar(pw.slice(1, 2)); i++){
