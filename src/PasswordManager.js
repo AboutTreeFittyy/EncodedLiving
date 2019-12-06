@@ -10,7 +10,20 @@ export class PasswordManager{
     //Function that manipulates the scene to be loaded from the password passed in
     usePassword(pw, scene, player){
         //Set player progress
+        let prog = this.getNumFromChar(pw.slice(0, 1));
+        if(prog == 1){//At kitchen room (Test code: SUUURWR)
 
+        }else if(prog == 2){//At first exam (Test code: MNNNKQK)
+
+        }else if(prog == 3){//At Chad room (Test code: RRRROUO)
+
+        }else if(prog == 4){//At Vlad room (Test code: EDDCAGA)
+
+        }else if(prog == 5){//At final exam (Test code: ZYXWUCU)
+
+        }else if(prog == 6){//Has the chad mask (Test code: GEDCAJA)
+
+        }//No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
         //Set player level
         for(var i = 0; i < this.getNumFromChar(pw.slice(1, 2)); i++){
             //Have everything update to player level
@@ -18,11 +31,26 @@ export class PasswordManager{
             player.addItem(player, "examsheet");
         }
         //Set upgrades
-
+        let up = this.getNumFromChar(pw.slice(2, 3));
+        if(up == 3){
+            //Both upgrades bought
+            player.balls++;
+            player.maxBalls++;
+            player.whipUpgrade++;
+        }else if(up == 2){
+            //Just ping pong ball bought
+            player.balls++;
+            player.maxBalls++;
+        }else if(up == 1){
+            //Just whip upgraded
+            player.whipUpgrade++;
+        }//No need for else on upgrades because 0 is just nothing upgraded, so nothing to be done
         //Set player lives/grade
-
+        player.lives = this.getNumFromChar(pw.slice(3, 4)) + 1;
         //Set player money
-
+        let firstDigit = this.getNumFromChar(pw.slice(4, 5));
+        let secondDigit = this.getNumFromChar(pw.slice(5, 6));
+        player.money = firstDigit * 10 + secondDigit;
         //Refresh inventory
         player.displayInventory();
     }
@@ -94,7 +122,7 @@ export class PasswordManager{
         upass += this.getCharFromNum(money % 10);
         //Save the final letter as the seed used
         pass += this.getCharFromNum(seed);
-        console.log("Password without seed:" +upass);
+        //console.log("Password without seed:" +upass);
         console.log("Password generated: "+pass);
         return pass;
     }

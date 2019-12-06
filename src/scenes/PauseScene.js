@@ -46,10 +46,10 @@ export class PauseScene extends Phaser.Scene{
             this.scene.stop();
 		})
 		//Generate password
+		let pw = this.add.image(this.game.renderer.width / 2 - 200, this.game.renderer.height / 2 + 150, CST.IMAGE.PASSWORD).setDepth(1);
+		let pwField = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 130, '', { fontFamily: '"Roboto Condensed"' }).setDepth(2).setScale(3);
+		pwField.setColor("red");
 		this.pm = new PasswordManager(); 
-		console.log(this.pm.decodePassword("ABCDEFG"));
-		console.log(this.pm.decodePassword("ABCDEFB"));
-		console.log(this.pm.decodePassword("BBCDEFB"));
-		this.pm.decodePassword(this.pm.generatePassword(this.sc, this.player));
+		pwField.text = this.pm.generatePassword(this.sc, this.player);
 	}
 }

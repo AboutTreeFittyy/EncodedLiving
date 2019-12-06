@@ -374,16 +374,48 @@ function () {
     key: "usePassword",
     value: function usePassword(pw, scene, player) {
       //Set player progress
+      var prog = this.getNumFromChar(pw.slice(0, 1));
+
+      if (prog == 1) {//At kitchen room (Test code: SUUURWR)
+      } else if (prog == 2) {//At first exam (Test code: MNNNKQK)
+      } else if (prog == 3) {//At Chad room (Test code: RRRROUO)
+      } else if (prog == 4) {//At Vlad room (Test code: EDDCAGA)
+      } else if (prog == 5) {//At final exam (Test code: ZYXWUCU)
+      } else if (prog == 6) {} //Has the chad mask (Test code: GEDCAJA)
+      //No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
       //Set player level
+
+
       for (var i = 0; i < this.getNumFromChar(pw.slice(1, 2)); i++) {
         //Have everything update to player level
         player.knowledgeProgress = player.knowledgeNeeded - 1;
         player.addItem(player, "examsheet");
       } //Set upgrades
-      //Set player lives/grade
-      //Set player money
-      //Refresh inventory
 
+
+      var up = this.getNumFromChar(pw.slice(2, 3));
+
+      if (up == 3) {
+        //Both upgrades bought
+        player.balls++;
+        player.maxBalls++;
+        player.whipUpgrade++;
+      } else if (up == 2) {
+        //Just ping pong ball bought
+        player.balls++;
+        player.maxBalls++;
+      } else if (up == 1) {
+        //Just whip upgraded
+        player.whipUpgrade++;
+      } //No need for else on upgrades because 0 is just nothing upgraded, so nothing to be done
+      //Set player lives/grade
+
+
+      player.lives = this.getNumFromChar(pw.slice(3, 4)) + 1; //Set player money
+
+      var firstDigit = this.getNumFromChar(pw.slice(4, 5));
+      var secondDigit = this.getNumFromChar(pw.slice(5, 6));
+      player.money = firstDigit * 10 + secondDigit; //Refresh inventory
 
       player.displayInventory();
     } //Generates a password given the game scene and player
@@ -457,8 +489,8 @@ function () {
       pass += this.getCharFromNum(this.getNumFromSeed(money % 10, seed));
       upass += this.getCharFromNum(money % 10); //Save the final letter as the seed used
 
-      pass += this.getCharFromNum(seed);
-      console.log("Password without seed:" + upass);
+      pass += this.getCharFromNum(seed); //console.log("Password without seed:" +upass);
+
       console.log("Password generated: " + pass);
       return pass;
     } //Gets the correct adjusted number based on the seed
@@ -3094,11 +3126,13 @@ function (_Phaser$Scene) {
         _this.scene.stop();
       }); //Generate password
 
+      var pw = this.add.image(this.game.renderer.width / 2 - 200, this.game.renderer.height / 2 + 150, _CST.CST.IMAGE.PASSWORD).setDepth(1);
+      var pwField = this.add.text(this.game.renderer.width / 2, this.game.renderer.height / 2 + 130, '', {
+        fontFamily: '"Roboto Condensed"'
+      }).setDepth(2).setScale(3);
+      pwField.setColor("red");
       this.pm = new _PasswordManager.PasswordManager();
-      console.log(this.pm.decodePassword("ABCDEFG"));
-      console.log(this.pm.decodePassword("ABCDEFB"));
-      console.log(this.pm.decodePassword("BBCDEFB"));
-      this.pm.decodePassword(this.pm.generatePassword(this.sc, this.player));
+      pwField.text = this.pm.generatePassword(this.sc, this.player);
     }
   }]);
 
@@ -4418,7 +4452,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51013" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50035" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
