@@ -22,15 +22,16 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         //Whip upgrade
         this.whipUpgrade = 0;
         //Player stats
-        this.rep = 18; //DVDs increase this as player health
-        this.repMax = 20;
+        this.rep = 180; //DVDs increase this as player health
+        this.repMax = 200;
         this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
         this.knowledgeProgress = 0;
-        this.knowledgeLevel = 0;
+        this.knowledgeLevel = 10;
         this.will = 8; //Energy Drinks increase this as the players stamina
         this.willMax = 10;
-        this.money = 12;
+        this.money = 99;
         this.lives = 4; //Lives to be displayed as grades
+        this.maskChad = false; //Whether or not Chad mask obtained
     }
 
     //Enters the shop scene when player collides with it and presses E
@@ -120,6 +121,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
                     player.scene.keyboard.E.isDown = true;
                     nicoled.npcSpeak(player, nicoled);
                 }
+                player.maskChad = true;
         }
         player.displayInventory();
     }

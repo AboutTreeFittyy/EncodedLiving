@@ -909,18 +909,20 @@ function (_Phaser$Physics$Arcad) {
 
     _this.whipUpgrade = 0; //Player stats
 
-    _this.rep = 18; //DVDs increase this as player health
+    _this.rep = 180; //DVDs increase this as player health
 
-    _this.repMax = 20;
+    _this.repMax = 200;
     _this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
 
     _this.knowledgeProgress = 0;
-    _this.knowledgeLevel = 0;
+    _this.knowledgeLevel = 10;
     _this.will = 8; //Energy Drinks increase this as the players stamina
 
     _this.willMax = 10;
-    _this.money = 12;
+    _this.money = 99;
     _this.lives = 4; //Lives to be displayed as grades
+
+    _this.maskChad = false; //Whether or not Chad mask obtained
 
     return _this;
   } //Enters the shop scene when player collides with it and presses E
@@ -1030,6 +1032,7 @@ function (_Phaser$Physics$Arcad) {
             nicoled.npcSpeak(player, nicoled);
           }
 
+          player.maskChad = true;
       }
 
       player.displayInventory();
@@ -1824,7 +1827,13 @@ function () {
       this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, E"); //Set listener for p to pause game
 
       this.scene.input.keyboard.on('keyup-P', function () {
-        _this.scene.scene.launch(_CST.CST.SCENES.PAUSE);
+        var scene = _this.scene;
+        var player = _this.scene.player;
+
+        _this.scene.scene.launch(_CST.CST.SCENES.PAUSE, {
+          scene: scene,
+          player: player
+        });
 
         _this.scene.scene.pause();
       }); //Adjust zoom out
@@ -2595,7 +2604,207 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.FirstLevel = FirstLevel;
-},{"../CST":"src/CST.js","../LevelManager":"src/LevelManager.js","../AnimationManager":"src/AnimationManager.js","../Sprite":"src/Sprite.js"}],"src/scenes/PauseScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../LevelManager":"src/LevelManager.js","../AnimationManager":"src/AnimationManager.js","../Sprite":"src/Sprite.js"}],"src/PasswordManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PasswordManager = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/* File Name: PasswordManager.js
+ * Author: Mathew Boland
+ * Last Updated: December 5, 2019
+ * Description: A class to generate and decode passwords.
+*/
+var PasswordManager =
+/*#__PURE__*/
+function () {
+  function PasswordManager() {
+    _classCallCheck(this, PasswordManager);
+  } //Generates a password given the game scene and player
+
+
+  _createClass(PasswordManager, [{
+    key: "generatePassword",
+    value: function generatePassword(scene, player) {
+      var pass = '';
+      var seed = this.randomNum(0, 25); //Check what first letter should be based on player game progress
+      //If Chad mask obtained then that is what game progress starts at
+
+      if (player.maskChad == true) {
+        pass += this.getCharFromNum(this.getNumFromSeed(6, seed));
+      } else if (scene.finished4 == true) {
+        //Progress achieved up to final exam
+        pass += this.getCharFromNum(this.getNumFromSeed(5, seed));
+      } else if (scene.finished3 == true) {
+        //Progress achieved up to vlad room unlock
+        pass += this.getCharFromNum(this.getNumFromSeed(4, seed));
+      } else if (scene.lm.getNPC("NicoleD").state != 9) {
+        //Progress achieved up to chad room unlock (NicoleD state is no longer 9 after the chad boss fight)
+        pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
+      } else if (scene.finished2 == true) {
+        //Progress achieved up to first exam unlock
+        pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
+      } else if (scene.finished1 == true) {
+        //Progress achieved up to kitchen room unlock
+        pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
+      } else {
+        //Not enough progress to save
+        pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
+      } //Check what second letter should be based on player level
+
+
+      pass += this.getCharFromNum(this.getNumFromSeed(player.knowledgeLevel, seed)); //Check what third letter should be based on player upgrades
+
+      if (player.maxBalls > 3 && player.whipUpgrade > 0) {
+        //Both upgrades obtained
+        pass += this.getCharFromNum(this.getNumFromSeed(3, seed));
+      } else if (player.maxBalls > 3) {
+        //Only ping pong ball upgraded
+        pass += this.getCharFromNum(this.getNumFromSeed(2, seed));
+      } else if (player.whipUpgrade > 0) {
+        //Only whip upgraded
+        pass += this.getCharFromNum(this.getNumFromSeed(1, seed));
+      } else {
+        //Nothing upgraded
+        pass += this.getCharFromNum(this.getNumFromSeed(0, seed));
+      } //Check what the fourth letter should be based on player grade
+
+
+      pass += this.getCharFromNum(this.getNumFromSeed(player.lives - 1, seed)); //Check what the fifth/sixth letters are based on players money (half dollars are rounded down and not saved)
+
+      var money = Math.floor(player.money);
+      pass += this.getCharFromNum(this.getNumFromSeed((money - money % 10) / 10, seed));
+      pass += this.getCharFromNum(this.getNumFromSeed(money % 10, seed)); //Save the final letter as the seed used
+
+      pass += this.getCharFromNum(seed);
+      return pass;
+    } //Gets the correct adjusted number based on the seed
+
+  }, {
+    key: "getNumFromSeed",
+    value: function getNumFromSeed(num, seed) {
+      var gen = num + seed; //If the seed generated something above the max character then have it overflow by subtracting the highest value 26 (since 0-25 is 26 numbers)      
+
+      if (gen > 25) {
+        gen -= 26;
+      }
+
+      return gen;
+    } //Decrypts teh password given based on the final character seed if a proper password is found
+
+  }, {
+    key: "decodePassword",
+    value: function decodePassword(pw) {} //Check length, return null if improper length
+    //Get final char to determine seed
+    //Decode password with seed
+    //Check if any entries are invalid, return null if they are
+    //Return random number inbetween min and max
+
+  }, {
+    key: "randomNum",
+    value: function randomNum(min, max) {
+      // min and max included 
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    } //Gets associated Char for number
+
+  }, {
+    key: "getCharFromNum",
+    value: function getCharFromNum(num) {
+      switch (num) {
+        case 0:
+          return 'A';
+
+        case 1:
+          return 'B';
+
+        case 2:
+          return 'C';
+
+        case 3:
+          return 'D';
+
+        case 4:
+          return 'E';
+
+        case 5:
+          return 'F';
+
+        case 6:
+          return 'G';
+
+        case 7:
+          return 'H';
+
+        case 8:
+          return 'I';
+
+        case 9:
+          return 'J';
+
+        case 10:
+          return 'K';
+
+        case 11:
+          return 'L';
+
+        case 12:
+          return 'M';
+
+        case 13:
+          return 'N';
+
+        case 14:
+          return 'O';
+
+        case 15:
+          return 'P';
+
+        case 16:
+          return 'Q';
+
+        case 17:
+          return 'R';
+
+        case 18:
+          return 'S';
+
+        case 19:
+          return 'T';
+
+        case 20:
+          return 'U';
+
+        case 21:
+          return 'V';
+
+        case 22:
+          return 'W';
+
+        case 23:
+          return 'X';
+
+        case 24:
+          return 'Y';
+
+        case 25:
+          return 'Z';
+      }
+    }
+  }]);
+
+  return PasswordManager;
+}();
+
+exports.PasswordManager = PasswordManager;
+},{}],"src/scenes/PauseScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2604,6 +2813,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.PauseScene = void 0;
 
 var _CST = require("../CST");
+
+var _PasswordManager = require("../PasswordManager");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -2637,6 +2848,13 @@ function (_Phaser$Scene) {
   }
 
   _createClass(PauseScene, [{
+    key: "init",
+    value: function init(data) {
+      //Get data from FirstLevel scene to work with in this scene
+      this.sc = data.scene;
+      this.player = data.player;
+    }
+  }, {
     key: "create",
     value: function create() {
       var _this = this;
@@ -2667,7 +2885,10 @@ function (_Phaser$Scene) {
         _this.scene.resume(_CST.CST.SCENES.FIRSTLEVEL);
 
         _this.scene.stop();
-      });
+      }); //Generate password
+
+      this.pm = new _PasswordManager.PasswordManager();
+      this.pm.generatePassword(this.sc, this.player);
     }
   }]);
 
@@ -2675,7 +2896,7 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.PauseScene = PauseScene;
-},{"../CST":"src/CST.js"}],"src/scenes/ShopScene.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","../PasswordManager":"src/PasswordManager.js"}],"src/scenes/ShopScene.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3987,7 +4208,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60588" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51013" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -5,11 +5,18 @@
  * until the resume button is selected.
 */
 import {CST} from "../CST";
+import { PasswordManager } from "../PasswordManager";
 export class PauseScene extends Phaser.Scene{
 	constructor(){
 		super({
 			key: CST.SCENES.PAUSE
 		})
+	}
+	
+	init(data){
+		//Get data from FirstLevel scene to work with in this scene
+		this.sc = data.scene;
+		this.player = data.player;
 	}
 
 	create(){
@@ -38,5 +45,8 @@ export class PauseScene extends Phaser.Scene{
             this.scene.resume(CST.SCENES.FIRSTLEVEL);
             this.scene.stop();
 		})
+		//Generate password
+		this.pm = new PasswordManager(); 
+		this.pm.generatePassword(this.sc, this.player);
 	}
 }

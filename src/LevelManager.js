@@ -432,7 +432,9 @@ export class LevelManager{
         this.scene.keyboard = this.scene.input.keyboard.addKeys("W, A, S, D, E");
         //Set listener for p to pause game
         this.scene.input.keyboard.on('keyup-P', ()=>{
-            this.scene.scene.launch(CST.SCENES.PAUSE);
+            let scene = this.scene;
+            let player = this.scene.player;
+            this.scene.scene.launch(CST.SCENES.PAUSE, {scene, player});
             this.scene.scene.pause();
         })
         //Adjust zoom out
