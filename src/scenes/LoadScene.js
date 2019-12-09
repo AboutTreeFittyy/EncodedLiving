@@ -95,6 +95,7 @@ export class LoadScene extends Phaser.Scene{
 		//load menu when complete
 		this.load.on("complete", ()=>{
 			this.scene.start(CST.SCENES.MENU);
+			this.scene.stop();
 		})
 	}
 }

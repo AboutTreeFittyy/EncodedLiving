@@ -95,11 +95,11 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             case "mask":
                 //Unlock all doors except exam
                 player.scene.claireRoom.visible = false;
-                player.scene.physics.world.removeCollider(player.scene.claireRoomCollider);
+                player.scene.claireRoomCollider.active = false;
                 player.scene.chadRoom.visible = false;
-                player.scene.physics.world.removeCollider(player.scene.chadRoomCollider);
+                player.scene.chadRoomCollider.active = false;
                 player.scene.vladRoom.visible = false;
-                player.scene.physics.world.removeCollider(player.scene.vladRoomCollider);
+                player.scene.vladRoomCollider.active = false;
                 //Hide Claire in case they haven't progressed far enough for her to anyway
                 let claire1 = player.scene.lm.getNPC("Claire1");
                 claire1.x = 0;

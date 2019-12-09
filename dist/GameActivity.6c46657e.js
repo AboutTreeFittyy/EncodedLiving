@@ -335,6 +335,8 @@ function (_Phaser$Scene) {
 
       this.load.on("complete", function () {
         _this.scene.start(_CST.CST.SCENES.MENU);
+
+        _this.scene.stop();
       });
     }
   }]);
@@ -394,15 +396,135 @@ function () {
       } else if (prog == 3) {
         //At Chad room (Test code: RRRROUO)
         console.log("Loaded: Chad Room");
+        var chad = scene.lm.getNPC("chad");
+        chad.x = 0;
+        chad.y = 0;
+        chad.startX = 0;
+        chad.startY = 0;
+        scene.claireRoom.visible = false;
+        scene.claireRoomCollider.active = false;
+        scene.chadRoom.visible = false;
+        scene.chadRoomCollider.active = false;
+        scene.lm.getNPC("Nicole").state = 5;
       } else if (prog == 4) {
         //At Vlad room (Test code: EDDCAGA)
         console.log("Loaded: Vlad Room");
+        scene.claireRoom.visible = false;
+        scene.claireRoomCollider.active = false;
+        scene.chadRoom.visible = false;
+        scene.chadRoomCollider.active = false; //Stevie to vlad room
+
+        var stevie = scene.lm.getNPC("Stevie");
+        stevie.x = 5800;
+        stevie.y = 6820;
+        stevie.startX = 5800;
+        stevie.startY = 6820;
+        stevie.state = 4; //Kyle to chad room
+
+        var kyle = scene.lm.getNPC("Kyle");
+        kyle.x = 1680;
+        kyle.y = 6220;
+        kyle.startX = 1680;
+        kyle.startY = 6220;
+        kyle.state = 5; //Brad in front of player
+
+        var brad = scene.lm.getNPC("Brad");
+        brad.x = 0;
+        brad.y = 0;
+        brad.startX = 0;
+        brad.startY = 0; //Delete Claire1 by sending her into oblivion
+
+        var claire1 = scene.lm.getNPC("Claire1");
+        claire1.x = 0;
+        claire1.y = 0;
+        claire1.startX = 0;
+        claire1.startY = 0; //Make sure claire2 is in state 0 now in case they got the chad mask
+
+        var claire2 = scene.lm.getNPC("Claire2");
+        claire2.state = 2;
+        claire2.startX = 1250;
+        claire2.startY = 4100;
+        claire2.x = 1250;
+        claire2.y = 4100; //Make NicoleD visible
+
+        var nicoled = scene.lm.getNPC("NicoleD");
+        nicoled.state = 3; //turn off Nicole
+
+        var nicole = scene.lm.getNPC("Nicole");
+        nicole.state = 6;
+        nicole.setVisible(false);
+        nicole.disableBody();
       } else if (prog == 5) {
         //At final exam (Test code: ZYXWUCU)
         console.log("Loaded: Final Exam");
+        scene.finished3 = true;
+        scene.claireRoom.visible = false;
+        scene.claireRoomCollider.active = false;
+        scene.chadRoom.visible = false;
+        scene.chadRoomCollider.active = false;
+        scene.vladRoom.visible = false;
+        scene.vladRoomCollider.active = false; //Stevie to vlad room
+
+        var _stevie = scene.lm.getNPC("Stevie");
+
+        _stevie.x = 5800;
+        _stevie.y = 6820;
+        _stevie.startX = 5800;
+        _stevie.startY = 6820;
+        _stevie.state = 5; //Kyle to chad room
+
+        var _kyle = scene.lm.getNPC("Kyle");
+
+        _kyle.x = 1680;
+        _kyle.y = 6220;
+        _kyle.startX = 1680;
+        _kyle.startY = 6220;
+        _kyle.state = 5; //Brad in front of player
+
+        var _brad = scene.lm.getNPC("Brad");
+
+        _brad.x = 0;
+        _brad.y = 0;
+        _brad.startX = 0;
+        _brad.startY = 0; //Set Vlad to boss fight mode
+
+        var vlad = scene.lm.getNPC("Vlad");
+        vlad.state = 1; //Delete Claire1 by sending her into oblivion
+
+        var _claire = scene.lm.getNPC("Claire1");
+
+        _claire.x = 0;
+        _claire.y = 0;
+        _claire.startX = 0;
+        _claire.startY = 0; //Make sure claire2 is in state 0 now in case they got the chad mask
+
+        var _claire2 = scene.lm.getNPC("Claire2");
+
+        _claire2.state = 2;
+        _claire2.startX = 1250;
+        _claire2.startY = 4100;
+        _claire2.x = 1250;
+        _claire2.y = 4100; //Hide chad
+
+        var _chad = scene.lm.getNPC("chad");
+
+        _chad.x = 0;
+        _chad.y = 0;
+        _chad.startX = 0;
+        _chad.startY = 0; //turn off Nicole
+
+        var _nicole = scene.lm.getNPC("Nicole");
+
+        _nicole.state = 6;
+
+        _nicole.setVisible(false);
+
+        _nicole.disableBody();
       } else if (prog == 6) {
         //Has the chad mask (Test code: GEDCAJA)
-        console.log("Loaded: ChadMask");
+        console.log("Loaded: ChadMask"); //Player cheated so this only sets them up as if they just started and got the Chad mask
+
+        player.addItem(player, "mask");
       } //No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
       //Set player level
 
@@ -857,6 +979,8 @@ function (_Phaser$Scene) {
       startButton.on("pointerup", function () {
         _this.sound.pauseAll();
 
+        _this.scene.stop();
+
         _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL, {
           password: password
         });
@@ -950,6 +1074,8 @@ function (_Phaser$Scene) {
             password = pw;
 
             _this.sound.pauseAll();
+
+            _this.scene.stop();
 
             _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL, {
               password: password
@@ -1451,11 +1577,11 @@ function (_Phaser$Physics$Arcad) {
         case "mask":
           //Unlock all doors except exam
           player.scene.claireRoom.visible = false;
-          player.scene.physics.world.removeCollider(player.scene.claireRoomCollider);
+          player.scene.claireRoomCollider.active = false;
           player.scene.chadRoom.visible = false;
-          player.scene.physics.world.removeCollider(player.scene.chadRoomCollider);
+          player.scene.chadRoomCollider.active = false;
           player.scene.vladRoom.visible = false;
-          player.scene.physics.world.removeCollider(player.scene.vladRoomCollider); //Hide Claire in case they haven't progressed far enough for her to anyway
+          player.scene.vladRoomCollider.active = false; //Hide Claire in case they haven't progressed far enough for her to anyway
 
           var claire1 = player.scene.lm.getNPC("Claire1");
           claire1.x = 0;
@@ -1958,7 +2084,7 @@ function () {
 
               this.scene.chadRoom.visible = false;
               this.scene.physics.world.removeCollider(this.scene.chadRoomCollider);
-              this.scene.examRoomCollider = this.scene.physics.add.collider(this.scene.player, this.scene.examRoom, this.scene.player.examBlocked, null, this.scene);
+              this.scene.examRoomCollider.active = true;
               this.scene.examRoom.visible = true;
             }
 
@@ -2899,7 +3025,7 @@ function (_Phaser$Scene) {
         nicole.state = 2; //hide blocker and remove their collider
 
         this.claireRoom.visible = false;
-        this.physics.world.removeCollider(this.claireRoomCollider);
+        this.claireRoomCollider.active = false;
         this.player.scene.keyboard.E.isDown = true;
         nicole.npcSpeak(this.player, nicole);
         this.finished1 = true;
@@ -2924,7 +3050,7 @@ function (_Phaser$Scene) {
         //hide blocker and remove their collider
 
         this.examRoom.visible = false;
-        this.physics.world.removeCollider(this.examRoomCollider);
+        this.examRoomCollider.active = false;
         this.player.scene.keyboard.E.isDown = true;
         nicole.npcSpeak(this.player, nicole); //Move chad to 6200,4020 in the exam room and set him to fight mode
 
@@ -2953,7 +3079,7 @@ function (_Phaser$Scene) {
         nicoled.state = 3; //hide blocker and remove their collider
 
         this.vladRoom.visible = false;
-        this.physics.world.removeCollider(this.vladRoomCollider);
+        this.vladRoomCollider.active = false;
         this.player.scene.keyboard.E.isDown = true;
         nicoled.npcSpeak(this.player, nicoled);
         this.finished3 = true;
@@ -2974,7 +3100,7 @@ function (_Phaser$Scene) {
         nicoled.state = 4; //hide blocker and remove their collider
 
         this.examRoom.visible = false;
-        this.physics.world.removeCollider(this.examRoomCollider);
+        this.examRoomCollider.active = false;
         this.player.scene.keyboard.E.isDown = true;
         nicoled.npcSpeak(this.player, nicoled); //Move Vlad to exam room
 

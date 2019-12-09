@@ -114,7 +114,7 @@ export class FirstLevel extends Phaser.Scene{
             nicole.state = 2;
             //hide blocker and remove their collider
             this.claireRoom.visible = false;
-            this.physics.world.removeCollider(this.claireRoomCollider); 
+            this.claireRoomCollider.active = false;
             this.player.scene.keyboard.E.isDown = true;
             nicole.npcSpeak(this.player, nicole);  
             this.finished1 = true;
@@ -136,7 +136,7 @@ export class FirstLevel extends Phaser.Scene{
             nicole.state = 3; //4th state is her at chad fight
             //hide blocker and remove their collider
             this.examRoom.visible = false;
-            this.physics.world.removeCollider(this.examRoomCollider);
+            this.examRoomCollider.active = false;
             this.player.scene.keyboard.E.isDown = true;
             nicole.npcSpeak(this.player, nicole);  
             //Move chad to 6200,4020 in the exam room and set him to fight mode
@@ -162,7 +162,7 @@ export class FirstLevel extends Phaser.Scene{
             nicoled.state = 3;
             //hide blocker and remove their collider
             this.vladRoom.visible = false;
-            this.physics.world.removeCollider(this.vladRoomCollider);
+            this.vladRoomCollider.active = false;
             this.player.scene.keyboard.E.isDown = true;
             nicoled.npcSpeak(this.player, nicoled);  
             this.finished3 = true;
@@ -181,7 +181,7 @@ export class FirstLevel extends Phaser.Scene{
             nicoled.state = 4;
             //hide blocker and remove their collider
             this.examRoom.visible = false;
-            this.physics.world.removeCollider(this.examRoomCollider);
+            this.examRoomCollider.active = false;
             this.player.scene.keyboard.E.isDown = true;
             nicoled.npcSpeak(this.player, nicoled);  
             //Move Vlad to exam room

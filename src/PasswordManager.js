@@ -26,12 +26,123 @@ export class PasswordManager{
             scene.finished1 = true; //Prevents dialogue from previous section playing too
         }else if(prog == 3){//At Chad room (Test code: RRRROUO)
             console.log("Loaded: Chad Room");
+            let chad = scene.lm.getNPC("chad");
+            chad.x = 0;
+            chad.y = 0;
+            chad.startX = 0;
+            chad.startY = 0;
+            scene.claireRoom.visible = false;
+            scene.claireRoomCollider.active = false;
+            scene.chadRoom.visible = false;
+            scene.chadRoomCollider.active = false;
+            scene.lm.getNPC("Nicole").state = 5;
         }else if(prog == 4){//At Vlad room (Test code: EDDCAGA)
             console.log("Loaded: Vlad Room");
+            scene.claireRoom.visible = false;
+            scene.claireRoomCollider.active = false;
+            scene.chadRoom.visible = false;
+            scene.chadRoomCollider.active = false;
+            //Stevie to vlad room
+            let stevie = scene.lm.getNPC("Stevie");
+            stevie.x = 5800;
+            stevie.y = 6820;
+            stevie.startX = 5800;
+            stevie.startY = 6820;
+            stevie.state = 4;
+            //Kyle to chad room
+            let kyle = scene.lm.getNPC("Kyle");
+            kyle.x = 1680;
+            kyle.y = 6220;
+            kyle.startX = 1680;
+            kyle.startY = 6220;
+            kyle.state = 5;
+            //Brad in front of player
+            let brad = scene.lm.getNPC("Brad");
+            brad.x = 0;
+            brad.y = 0;
+            brad.startX = 0;
+            brad.startY = 0;
+            //Delete Claire1 by sending her into oblivion
+            let claire1 = scene.lm.getNPC("Claire1");
+            claire1.x = 0;
+            claire1.y = 0;
+            claire1.startX = 0;
+            claire1.startY = 0;
+            //Make sure claire2 is in state 0 now in case they got the chad mask
+            let claire2 = scene.lm.getNPC("Claire2");
+            claire2.state = 2;
+            claire2.startX = 1250;
+            claire2.startY = 4100;
+            claire2.x = 1250;
+            claire2.y = 4100;
+            //Make NicoleD visible
+            let nicoled = scene.lm.getNPC("NicoleD");
+            nicoled.state = 3;
+            //turn off Nicole
+            let nicole = scene.lm.getNPC("Nicole");
+            nicole.state = 6;
+            nicole.setVisible(false);
+            nicole.disableBody();
         }else if(prog == 5){//At final exam (Test code: ZYXWUCU)
             console.log("Loaded: Final Exam");
+            scene.finished3 = true;
+            scene.claireRoom.visible = false;
+            scene.claireRoomCollider.active = false;
+            scene.chadRoom.visible = false;
+            scene.chadRoomCollider.active = false;
+            scene.vladRoom.visible = false;
+            scene.vladRoomCollider.active = false;
+            //Stevie to vlad room
+            let stevie = scene.lm.getNPC("Stevie");
+            stevie.x = 5800;
+            stevie.y = 6820;
+            stevie.startX = 5800;
+            stevie.startY = 6820;
+            stevie.state = 5;
+            //Kyle to chad room
+            let kyle = scene.lm.getNPC("Kyle");
+            kyle.x = 1680;
+            kyle.y = 6220;
+            kyle.startX = 1680;
+            kyle.startY = 6220;
+            kyle.state = 5;
+            //Brad in front of player
+            let brad = scene.lm.getNPC("Brad");
+            brad.x = 0;
+            brad.y = 0;
+            brad.startX = 0;
+            brad.startY = 0;
+            //Set Vlad to boss fight mode
+            let vlad = scene.lm.getNPC("Vlad");
+            vlad.state = 1;
+            //Delete Claire1 by sending her into oblivion
+            let claire1 = scene.lm.getNPC("Claire1");
+            claire1.x = 0;
+            claire1.y = 0;
+            claire1.startX = 0;
+            claire1.startY = 0;
+            //Make sure claire2 is in state 0 now in case they got the chad mask
+            let claire2 = scene.lm.getNPC("Claire2");
+            claire2.state = 2;
+            claire2.startX = 1250;
+            claire2.startY = 4100;
+            claire2.x = 1250;
+            claire2.y = 4100;
+            //Hide chad
+            let chad = scene.lm.getNPC("chad");
+            chad.x = 0;
+            chad.y = 0;
+            chad.startX = 0;
+            chad.startY = 0;
+            //turn off Nicole
+            let nicole = scene.lm.getNPC("Nicole");
+            nicole.state = 6;
+            nicole.setVisible(false);
+            nicole.disableBody();
         }else if(prog == 6){//Has the chad mask (Test code: GEDCAJA)
             console.log("Loaded: ChadMask");
+            //Player cheated so this only sets them up as if they just started and got the Chad mask
+            player.addItem(player, "mask");
         }//No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
         //Set player level
         for(var i = 0; i < this.getNumFromChar(pw.slice(1, 2)); i++){

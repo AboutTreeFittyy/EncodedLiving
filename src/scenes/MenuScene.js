@@ -57,6 +57,7 @@ export class MenuScene extends Phaser.Scene{
 		})
 		startButton.on("pointerup", ()=>{
 			this.sound.pauseAll();
+			this.scene.stop();
 			this.scene.start(CST.SCENES.FIRSTLEVEL, {password});
 		})
 		//Make load button interactive (currently no load capability in this version so commented out)
@@ -131,6 +132,7 @@ export class MenuScene extends Phaser.Scene{
 				if(pw != null){
 					password = pw;
 					this.sound.pauseAll();
+					this.scene.stop();
 					this.scene.start(CST.SCENES.FIRSTLEVEL, {password});
 				}else{
 					//Not valid, delete entry 

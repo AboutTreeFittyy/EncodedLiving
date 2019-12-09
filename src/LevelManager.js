@@ -168,7 +168,7 @@ export class LevelManager{
                             //Unblock the chad room
                             this.scene.chadRoom.visible = false;
                             this.scene.physics.world.removeCollider(this.scene.chadRoomCollider);
-                            this.scene.examRoomCollider = this.scene.physics.add.collider(this.scene.player, this.scene.examRoom, this.scene.player.examBlocked, null, this.scene);
+                            this.scene.examRoomCollider.active = true;
                             this.scene.examRoom.visible = true;
                         }
                     case "Kyle":
