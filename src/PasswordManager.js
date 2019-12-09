@@ -1,6 +1,6 @@
 /* File Name: PasswordManager.js
  * Author: Mathew Boland
- * Last Updated: December 5, 2019
+ * Last Updated: December 9, 2019
  * Description: A class to generate and decode passwords.
 */
 export class PasswordManager{
@@ -12,11 +12,11 @@ export class PasswordManager{
         //Set player progress
         let prog = this.getNumFromChar(pw.slice(0, 1));
         if(prog == 1){//At kitchen room (Test code: SUUURWR)
-            console.log("Loaded: Kitchen Room");
+            //console.log("Loaded: Kitchen Room");
             scene.lm.getNPC("chad").state++;
             scene.lm.getNPC("Kyle").state++;
         }else if(prog == 2){//At first exam (Test code: MNNNKQK)
-            console.log("Loaded: First Exam");
+            //console.log("Loaded: First Exam");
             scene.claireRoom.visible = false;
             scene.claireRoomCollider.active = false;
             scene.lm.getNPC("Kyle").state++;
@@ -25,7 +25,7 @@ export class PasswordManager{
             scene.lm.getNPC("Brad").state++;        
             scene.finished1 = true; //Prevents dialogue from previous section playing too
         }else if(prog == 3){//At Chad room (Test code: RRRROUO)
-            console.log("Loaded: Chad Room");
+            //console.log("Loaded: Chad Room");
             let chad = scene.lm.getNPC("chad");
             chad.x = 0;
             chad.y = 0;
@@ -37,7 +37,7 @@ export class PasswordManager{
             scene.chadRoomCollider.active = false;
             scene.lm.getNPC("Nicole").state = 5;
         }else if(prog == 4){//At Vlad room (Test code: EDDCAGA)
-            console.log("Loaded: Vlad Room");
+            //console.log("Loaded: Vlad Room");
             scene.claireRoom.visible = false;
             scene.claireRoomCollider.active = false;
             scene.chadRoom.visible = false;
@@ -84,7 +84,7 @@ export class PasswordManager{
             nicole.setVisible(false);
             nicole.disableBody();
         }else if(prog == 5){//At final exam (Test code: ZYXWUCU)
-            console.log("Loaded: Final Exam");
+            //console.log("Loaded: Final Exam");
             scene.finished3 = true;
             scene.claireRoom.visible = false;
             scene.claireRoomCollider.active = false;
@@ -140,7 +140,7 @@ export class PasswordManager{
             nicole.setVisible(false);
             nicole.disableBody();
         }else if(prog == 6){//Has the chad mask (Test code: GEDCAJA)
-            console.log("Loaded: ChadMask");
+            //console.log("Loaded: ChadMask");
             //Player cheated so this only sets them up as if they just started and got the Chad mask
             player.addItem(player, "mask");
         }//No need to check for prog == 0, as that just means there wasn't enough progress to save and nothing needs to be loaded (Test code: NQQQNRN)
@@ -243,7 +243,7 @@ export class PasswordManager{
         //Save the final letter as the seed used
         pass += this.getCharFromNum(seed);
         //console.log("Password without seed:" +upass);
-        console.log("Password generated: "+pass);
+        //console.log("Password generated: "+pass);
         return pass;
     }
 
@@ -276,8 +276,8 @@ export class PasswordManager{
         if(this.getNumFromChar(dec.slice(0, 1)) > 6){
             return null; //No possible answers above 6 for game progress
         }
-        if(this.getNumFromChar(dec.slice(1, 2)) > 10){
-            return null; //No possible answers above 10, can't be above max level
+        if(this.getNumFromChar(dec.slice(1, 2)) > 5){
+            return null; //No possible answers above 5, can't be above max level
         }
         if(this.getNumFromChar(dec.slice(2, 3)) > 3){
             return null; //No possible answers above 3 for upgrades

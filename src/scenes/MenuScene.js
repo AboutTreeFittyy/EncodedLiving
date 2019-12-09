@@ -39,10 +39,10 @@ export class MenuScene extends Phaser.Scene{
 			})
 		})
 		//create sounds for menu... commented out for the time being as its annoying
-		/*this.sound.play(CST.AUDIO.TITLE, {
+		this.sound.play(CST.AUDIO.TITLE, {
 			volume: 0.25,
 			loop: true
-		})*/
+		})
 		//make start button interactive
 		startButton.setInteractive();
 

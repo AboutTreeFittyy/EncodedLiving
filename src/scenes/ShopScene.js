@@ -90,7 +90,7 @@ export class ShopScene extends Phaser.Scene{
 					this.dialogueText.text = "What are you\ntrying to rob me?";
 				}
 				//Make button not work if maxed out
-				if(this.player.will != this.player.willMax){
+				if(this.player.will == this.player.willMax){
 					energy.on("pointerover", ()=>{hoverSprite.setVisible(false);})
 					energy.on("pointerup", ()=>{hoverSprite.setVisible(false);})
 					hoverSprite.setVisible(false);

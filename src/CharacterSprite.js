@@ -1,6 +1,6 @@
 /* File Name: CharacterSprite.js
  * Author: Mathew Boland
- * Last Updated: December 1, 2019
+ * Last Updated: December 9, 2019
  * Description: A class to create and hold the value of a CharacterSprite object
  * with arcade physics.
  * Citation: Code adapted from: https://github.com/jestarray/gate/tree/yt, jestarray
@@ -22,14 +22,14 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
         //Whip upgrade
         this.whipUpgrade = 0;
         //Player stats
-        this.rep = 80; //DVDs increase this as player health
-        this.repMax = 100;
+        this.rep = 10; //DVDs increase this as player health
+        this.repMax = 10;
         this.knowledgeNeeded = 1; ////Exam sheets increase this as player level
         this.knowledgeProgress = 0;
         this.knowledgeLevel = 0;
-        this.will = 8; //Energy Drinks increase this as the players stamina
+        this.will = 10; //Energy Drinks increase this as the players stamina
         this.willMax = 10;
-        this.money = 50;
+        this.money = 5;
         this.lives = 4; //Lives to be displayed as grades
         this.maskChad = false; //Whether or not Chad mask obtained
     }
@@ -68,24 +68,30 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
             }
             break;
             case "examsheet": //Got Exam Sheet
-            //Increase xp and then if its full, level up player
-            player.knowledgeProgress++;
-            if(player.knowledgeProgress == player.knowledgeNeeded){
-                //Level up player
-                player.knowledgeLevel++;
-                //Increment stats by 5 times the player level
-                player.willMax = player.willMax + player.knowledgeLevel * 5;
-                player.repMax = player.repMax + player.knowledgeLevel * 5;
-                //Fill stats to new max at start of new knowledge level
-                player.will = player.willMax;
-                player.rep = player.repMax;
-                //Reset knowledge progress and double the needed progress to the next level
-                player.knowledgeProgress = 0;
-                player.knowledgeNeeded = player.knowledgeNeeded * 2;
+            //Check that max level isnt reached
+            if(player.knowledgeLevel < 5){
+                //Increase xp and then if its full, level up player
+                player.knowledgeProgress++;
+                if(player.knowledgeProgress == player.knowledgeNeeded){
+                    //Level up player
+                    player.knowledgeLevel++;
+                    //Increment stats by 5 times the player level
+                    player.willMax = player.willMax + player.knowledgeLevel * 5;
+                    player.repMax = player.repMax + player.knowledgeLevel * 5;
+                    //Fill stats to new max at start of new knowledge level
+                    player.will = player.willMax;
+                    player.rep = player.repMax;
+                    //Reset knowledge progress and double the needed progress to the next level
+                    player.knowledgeProgress = 0;
+                    player.knowledgeNeeded = player.knowledgeNeeded * 2;
+                }
             }
             break;
             case "money": //Got Money
-            player.money++;
+            //Limit money to max of 99
+            if(player.money < 99){
+                player.money++;
+            }
             break;
             case "energy": //Got Energy Drink
             if(player.will < player.willMax){

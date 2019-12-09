@@ -1,6 +1,6 @@
 /* File Name: LevelManager.js
  * Author: Mathew Boland
- * Last Updated: December 1, 2019
+ * Last Updated: December 9, 2019
  * Description: A class to build a levels animations and sprites for the game
  * given the map and scene.
 */
