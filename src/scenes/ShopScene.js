@@ -242,7 +242,7 @@ export class ShopScene extends Phaser.Scene{
 			dialogue.setVisible(false);
 		})
 		exam.on("pointerup", ()=>{
-			if(this.player.money > 3.5){
+			if(this.player.money >= 3.5){
 				this.player.money -= 3.5;
 				this.playerMoney.text = "$" +this.player.money;
 				this.player.addItem(this.player,"examsheet");	

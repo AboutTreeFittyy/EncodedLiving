@@ -37,7 +37,9 @@ export class WinScene extends Phaser.Scene{
 			hoverSprite.setVisible(false);
 		})
 		restart.on("pointerup", ()=>{
-            this.data.scene.restart();
+			this.data.scene.stop();
+			let password = null;
+			this.scene.start(CST.SCENES.FIRSTLEVEL, {password});
             this.scene.stop();
         })
         //Make menu button interactive

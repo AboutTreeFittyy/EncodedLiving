@@ -3644,7 +3644,7 @@ function (_Phaser$Scene) {
         dialogue.setVisible(false);
       });
       exam.on("pointerup", function () {
-        if (_this.player.money > 3.5) {
+        if (_this.player.money >= 3.5) {
           _this.player.money -= 3.5;
           _this.playerMoney.text = "$" + _this.player.money;
 
@@ -4520,7 +4520,13 @@ function (_Phaser$Scene) {
         hoverSprite.setVisible(false);
       });
       restart.on("pointerup", function () {
-        _this.data.scene.restart();
+        _this.data.scene.stop();
+
+        var password = null;
+
+        _this.scene.start(_CST.CST.SCENES.FIRSTLEVEL, {
+          password: password
+        });
 
         _this.scene.stop();
       }); //Make menu button interactive
@@ -4591,10 +4597,12 @@ var game = new Phaser.Game({
     pixelArt: true
   },
   physics: {
-    default: "arcade",
+    default: "arcade"
+    /*,
     arcade: {
-      debug: true
-    }
+    debug: true
+    }*/
+
   },
   scale: {
     mode: Phaser.Scale.FIT
